@@ -1,0 +1,57 @@
+# LOGIX COMMAND
+
+> LOGIX COMMAND is a logistics manager operating system by Capital 7 Logistics. LOGIX COMMAND runs the whole crew loop — recruit, onboard, train, deploy, manage — for logistics operators. It runs crew-based logistics work end to end: initiate a job and the system builds the organization for it — org chart, staffing math, paperwork packet and equipment manifest — then tracks the job across a 10-stage workflow while workers claim seats on a load board and complete role training.
+
+LOGIX COMMAND is built for the operators who do physical freight work with crews, not for trucking fleets managing trucks. A job starts with a service line and a unit count; the staffing engine converts that into the exact crew the job needs (positions, headcounts, certification-gated seats), generates the compliance paperwork packet for the job type, and posts the open field positions to a load and worker board where crew members accept or release seats based on their status, roles and certifications. Owners set their own hourly bill and pay rates — the platform never invents a rate. Companies can run the system under their own brand with the white-label tools. Plans exist for operators of every size; subscriptions are currently offered through a waitlist while the cloud edition is completed.
+
+## Who it is for
+
+- Lumper and freight-handling operators running trailer loading/unloading crews (2–30 workers)
+- Small warehouse staffing agencies placing crew labor (roughly 5–75 placements)
+- Small third-party logistics providers (3PLs) under about 100,000 sq ft
+- Building-materials distributors and yards that run their own handling crews
+- Multi-site service contractors running physical labor crews across locations
+
+## Service lines (7)
+
+- Warehouse Workflow Contracting — contract crews running warehouse operations: receiving, put-away, pick/pack, loading.
+- Materials Moving — Stone & Slab — flat slabs lifted to A-frames, loaded and shuttled between warehouses; heavy, fragile, high-value stone.
+- Lumber Services — lumber yard pulls, bundling and banding, flatbed loading and jobsite delivery.
+- Lumper Services — trailer loading and unloading at warehouse docks: restacking and fixing shifted loads, pallet breakdown and repack, per-trailer unload logs with seal verification.
+- Freight & Hauling — line-haul, hotshot and flatbed freight with dispatched, tracked loads.
+- Moving & Relocation — household and commercial moves: pad, wrap, load, haul, place.
+- Clean-Out & Demolition Support — estate and jobsite clean-outs, light demolition support, debris haul-away.
+
+## The 10-stage workflow
+
+Every job moves through the same pipeline: Intake → Site Survey → Quote & Approval → Contract & Insurance → Crew Assigned → Staging & Equipment → Execution → Load-Out / Transport → Delivery Confirmation → Closeout & Invoice. Job progress blends stage position with paperwork-packet completion, so a job cannot look finished while its compliance packet is incomplete.
+
+## Built-in systems
+
+- Staffing engine — converts a job's unit count and a scale setting into position-by-position headcounts, including certification-gated seats (for example, forklift seats that require an OSHA 1910.178 operator badge) and conditional seats that appear when crew size crosses a threshold.
+- Paperwork engine — generates the per-job compliance packet: contracts, site survey sign-off, photo-condition logs, toolbox-talk sign-ins, per-load sheets, insurance certificates, and employment or contractor documents matched to the crew type.
+- Load & Worker Board — open positions post automatically when a job is initiated; workers accept or release seats; eligibility is checked against status, role and certification; assignments sync back to the parent job.
+- Training Academy — 12 training modules in 3 tracks (Lumper Track, Physical Labor Core, and service-specific craft modules) with lessons and quizzes; some board seats flag required training until the worker passes the module.
+- Crew Intake — a structured application (roles, certifications, availability, background-check consent) that lands applicants on the roster for approval.
+- Recruiting tools (Growth Pack add-on) — ad generation shaped per platform (Facebook, LinkedIn, Indeed), an apply-link funnel into the intake form, and AI-visibility generators (an AI Business Card in JSON-LD and an Answer Profile like this file).
+- White-Label Lab — rename the product, change the tagline and color scheme, set the recruiting apply link and the product attribution line; the system re-themes live.
+- Hourly Rates panel — the owner sets a bill rate and a pay rate per position; rates stay blank until the owner sets them, and job labor estimates (bill, cost, margin) are computed from those rates only.
+
+## Plug-in options (with current status)
+
+- Alice Connect — connects Alice AI Office, the AI front office: calls and chats answered by Alice can initiate a job in LOGIX COMMAND, and Alice handles crew notifications, customer confirmations and the post-delivery review request. Status: included with the cloud phase of LOGIX COMMAND, rolling out with per-account workspaces.
+- The Operator by Muse Spark — an AI chief of staff for the board: watches stages, drafts staffing plans from the engine, flags stalled jobs, drafts recruiting ads and summarizes the day for the owner. Status: activates when the platform's Muse Spark key is connected; it is not yet live, and LOGIX COMMAND is not currently powered by Muse Spark.
+- Bring Your Own AI — owners can register their own AI assistant (Claude, ChatGPT, Gemini, Groq, or another OpenAI-compatible provider) with their own API key. Status: the connect panel is in the app today and stores only the last four characters of a key; live operation arrives with the cloud phase.
+
+## Links
+
+- [LOGIX COMMAND app](https://logix.aliceaihub.xyz/) — the live interactive product demo; runs in the browser.
+- [What is a lumper service?](https://logix.aliceaihub.xyz/what-is-a-lumper-service.html) — definition, duties, who buys it, and how a managed operation runs it.
+- [Lumper service cost](https://logix.aliceaihub.xyz/lumper-service-cost.html) — how lumper pricing works: per-trailer, per-case and hourly models, market fee context, and what drives price.
+- [Lumper software](https://logix.aliceaihub.xyz/lumper-software.html) — what crew-based logistics software must do, and how LOGIX COMMAND compares with generic scheduling apps.
+- [Warehouse unloading crew](https://logix.aliceaihub.xyz/warehouse-unloading-crew.html) — for warehouse and DC managers: overflow, peak and no-show coverage with verified counts and signed unload logs.
+- [Freight handling business](https://logix.aliceaihub.xyz/freight-handling-business.html) — for operators: running and growing a freight-handling or lumper business, and getting found by AI search.
+
+## Publisher
+
+LOGIX COMMAND is a product of Capital 7 Logistics, a logistics and labor company based in Wilkes-Barre, Pennsylvania, serving Northeast Pennsylvania including the I-81 warehouse corridor. The company runs its own lumper, slab, warehouse and moving crews on the same system it sells. Contact for the waitlist: capital7lllc@gmail.com.

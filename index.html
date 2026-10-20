@@ -415,6 +415,51 @@ input[type=password]:focus{border-color:var(--accent)}
 .ops-strip .os-name{font-family:var(--font-d);font-weight:900;letter-spacing:.5px;font-size:16.5px;min-width:230px}
 .ops-strip .os-line{color:var(--muted);font-size:14.5px;flex:1;min-width:220px}
 @media(max-width:1080px){.mode-grid{grid-template-columns:1fr}.byo-grid{grid-template-columns:1fr}}
+
+/* ================= v3.3 — TILE REPAIR, HIT TARGETS, TRAINING SHARE ================= */
+/* tap hygiene: no double-tap zoom delay on anything tappable */
+button,[role="button"],.svc,.tpl,.kpi,.mode-card,.price,.ltile,.modcard,.swatch,.prov-chip,.ztab,.check,.qopt,.chipopt span{touch-action:manipulation}
+/* sticky topbar must never cover a scrolled-to target */
+html{scroll-padding-top:88px}
+#acadPlayer,#intake,.plugin-card,.price{scroll-margin-top:88px}
+/* the toast announces — it never eats a tap */
+.toast{pointer-events:none}
+/* KPI tiles are navigation now — affordance to match */
+.kpi{cursor:pointer;transition:transform .2s ease,border-color .2s ease}
+.kpi:hover{transform:translateY(-3px);border-color:var(--accent)}
+.kpi:focus-visible,.mode-card:focus-visible,.plug-banner:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* plug-in mode cards jump to their detail card */
+.mode-card{cursor:pointer;transition:transform .2s ease,border-color .2s ease}
+.mode-card:hover{transform:translateY(-3px);border-color:var(--accent)}
+/* tier cards select their JOIN button */
+.price{cursor:pointer}
+@keyframes joinFlash{0%,100%{box-shadow:0 0 0 0 transparent}25%,75%{box-shadow:0 0 0 3px var(--accent),0 0 26px var(--accent-glow)}}
+.price.flash{animation:joinFlash 1.1s ease 2}
+/* load tiles: the photo + title are the drawer tap target */
+.ltile .lt-img,.ltile h5{cursor:pointer}
+/* module cards open as a whole */
+.modcard{cursor:pointer;transition:border-color .2s,transform .2s}
+.modcard:hover{transform:translateY(-2px)}
+/* 44px minimum hit targets on tile + chip actions */
+.btn{min-height:44px}
+.btn.small{min-height:44px}
+.ztab{min-height:44px}
+.eq-row .seg button{min-height:44px;display:inline-flex;align-items:center}
+.segx button{min-height:44px}
+.prov-chip{min-height:44px;display:inline-flex;align-items:center}
+.chipopt span{display:inline-flex;align-items:center;min-height:44px}
+.namechip button{min-height:44px;padding:9px 13px;font-size:11.5px;display:inline-flex;align-items:center}
+.namechip{align-items:center}
+/* 360px phones: a load tile never exceeds the screen */
+.lb-grid{grid-template-columns:repeat(auto-fill,minmax(min(345px,100%),1fr))}
+/* roster assignment states */
+.wcard .w-assign.done{color:var(--good)}
+/* training share sheet */
+.share-wrap{position:fixed;inset:0;z-index:85;display:none}
+.share-wrap.open{display:block}
+.share-bg{position:absolute;inset:0;background:rgba(3,5,10,.72);backdrop-filter:blur(3px)}
+.share-panel{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(560px,94vw);max-height:88vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--line2);border-radius:18px;padding:24px;animation:fadeUp .3s ease both}
+.share-panel .d-sec{font-family:var(--font-m);font-size:11px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin:18px 0 10px}
 </style>
 </head>
 <body>
@@ -479,17 +524,17 @@ window.MUSE_TICKER = {
         <div class="hero-in">
           <div class="tag">Operations Command · <span class="brand-name">LOGIX COMMAND</span></div>
           <h3>EVERY JOB. EVERY CREW.<br>ONE COMMAND SCREEN.</h3>
-          <p>Initiate a job and the system builds the organization for it — org chart, staffing math, paperwork packet and equipment manifest — before the first truck rolls.</p>
+          <p>Recruit workers. Onboard them with the paperwork done. Train them in the Academy. Deploy them from the board. Manage the whole operation — one command screen. Initiate a job and the system builds the organization for it — org chart, staffing math, paperwork packet and equipment manifest — before the first truck rolls.</p>
           <button class="btn primary" data-goto="initiate">⚡ INITIATE A JOB</button>
           <button class="btn ghost" data-goto="board" style="margin-left:8px">VIEW WORKFLOW BOARD</button>
         </div>
       </div>
       <div class="plug-banner" data-goto="plugins" role="button" tabindex="0">THREE WAYS TO RUN IT: <span><b>YOUR CREW COMMANDS IT</b> · <b>YOUR AI RUNS IT</b> · <b>ALICE RUNS THE OFFICE</b></span><span style="margin-left:auto">PLUG-INS &amp; AI →</span></div>
       <div class="kpis">
-        <div class="kpi"><span class="k-ic">📋</span><div class="k-label">Active Jobs</div><div class="k-num" id="kpiJobs">0</div><div class="k-sub">across all service lines</div></div>
-        <div class="kpi"><span class="k-ic">👷</span><div class="k-label">Crew Deployed</div><div class="k-num" id="kpiCrew">0</div><div class="k-sub">positions filled on live jobs</div></div>
-        <div class="kpi"><span class="k-ic">🚛</span><div class="k-label">Loads In Motion</div><div class="k-num" id="kpiLoads">0</div><div class="k-sub">units on jobs in execution</div></div>
-        <div class="kpi"><span class="k-ic">💰</span><div class="k-label">Pipeline Value</div><div class="k-num" id="kpiValue">$0</div><div class="k-sub">open job value, all stages</div></div>
+        <div class="kpi" data-kpi="board" role="button" tabindex="0" title="Open the Workflow Board"><span class="k-ic">📋</span><div class="k-label">Active Jobs</div><div class="k-num" id="kpiJobs">0</div><div class="k-sub">across all service lines → board</div></div>
+        <div class="kpi" data-kpi="loadboard" role="button" tabindex="0" title="Open the Load & Worker Board"><span class="k-ic">👷</span><div class="k-label">Crew Deployed</div><div class="k-num" id="kpiCrew">0</div><div class="k-sub">positions filled on live jobs → roster</div></div>
+        <div class="kpi" data-kpi="board" role="button" tabindex="0" title="Open the Workflow Board"><span class="k-ic">🚛</span><div class="k-label">Loads In Motion</div><div class="k-num" id="kpiLoads">0</div><div class="k-sub">units on jobs in execution → board</div></div>
+        <div class="kpi" data-kpi="board" role="button" tabindex="0" title="Open the Workflow Board"><span class="k-ic">💰</span><div class="k-label">Pipeline Value</div><div class="k-num" id="kpiValue">$0</div><div class="k-sub">open job value, all stages → board</div></div>
       </div>
       <div class="grid2">
         <div class="panel">
@@ -505,6 +550,7 @@ window.MUSE_TICKER = {
         </div>
       </div>
       <div class="dash-credit" id="dashCredit">LOGIX COMMAND — a Capital 7 Logistics product</div>
+      <div style="text-align:center;font-family:var(--font-m);font-size:11px;letter-spacing:1.2px;color:var(--faint);margin-top:10px">GUIDES: <a href="what-is-a-lumper-service.html" style="color:var(--muted)">WHAT IS A LUMPER SERVICE</a> · <a href="lumper-service-cost.html" style="color:var(--muted)">LUMPER COSTS</a> · <a href="lumper-software.html" style="color:var(--muted)">LUMPER SOFTWARE</a> · <a href="warehouse-unloading-crew.html" style="color:var(--muted)">FOR WAREHOUSES</a> · <a href="freight-handling-business.html" style="color:var(--muted)">FOR OPERATORS</a></div>
     </section>
 
     <!-- ================= INITIATE JOB ================= -->
@@ -883,19 +929,19 @@ window.MUSE_TICKER = {
       </div>
 
       <div class="mode-grid">
-        <div class="mode-card">
+        <div class="mode-card" data-mode="self" role="button" tabindex="0" title="You run it — open the Command Dashboard">
           <div class="m-ic">🎛️</div>
           <h4>RUN IT YOURSELF</h4>
           <p>Manual command — you and your leads drive every stage, seat and signature from this screen. Nothing moves without your say-so.</p>
           <div class="m-chip"><span class="stpill st-avail">ACTIVE — DEFAULT MODE</span></div>
         </div>
-        <div class="mode-card">
+        <div class="mode-card" data-mode="byo" role="button" tabindex="0" title="Jump to Bring Your Own AI">
           <div class="m-ic">🔌</div>
           <h4>PLUG IN YOUR AI</h4>
           <p>Bring your own assistant — connect the AI you already use and let it work the board alongside your crew.</p>
           <div class="m-chip"><span class="stpill st-filling">WORKS WITH THE CLOUD PHASE</span></div>
         </div>
-        <div class="mode-card">
+        <div class="mode-card" data-mode="alice" role="button" tabindex="0" title="Jump to Alice Connect">
           <div class="m-ic">🗣️</div>
           <h4>LET ALICE RUN IT</h4>
           <p>Alice AI Office answers the phones and the chats, then hands LOGIX staffed, paperwork-ready jobs.</p>
@@ -903,7 +949,7 @@ window.MUSE_TICKER = {
         </div>
       </div>
 
-      <div class="panel plugin-card" style="margin-bottom:16px">
+      <div class="panel plugin-card" id="plugSparkCard" style="margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <h4 style="font-family:var(--font-d);font-size:20px;letter-spacing:.5px">THE OPERATOR — BY MUSE SPARK</h4>
           <span class="badge-spark">⚡ Powered by Muse Spark</span>
@@ -921,7 +967,7 @@ window.MUSE_TICKER = {
         <div style="margin-top:14px"><a class="btn primary" id="plugSparkBtn" href="mailto:capital7lllc@gmail.com">JOIN THE SPARK OPERATOR LIST</a></div>
       </div>
 
-      <div class="panel plugin-card" style="margin-bottom:16px">
+      <div class="panel plugin-card" id="plugAliceCard" style="margin-bottom:16px">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <h4 style="font-family:var(--font-d);font-size:20px;letter-spacing:.5px">ALICE CONNECT</h4>
           <span class="stpill st-filling" style="margin-left:auto">INCLUDED WITH THE CLOUD PHASE</span>
@@ -938,7 +984,7 @@ window.MUSE_TICKER = {
         <div style="margin-top:14px"><a class="btn" id="plugAliceBtn" href="mailto:capital7lllc@gmail.com">JOIN THE ALICE CONNECT LIST</a></div>
       </div>
 
-      <div class="panel plugin-card">
+      <div class="panel plugin-card" id="plugByoCard">
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <h4 style="font-family:var(--font-d);font-size:20px;letter-spacing:.5px">BRING YOUR OWN AI</h4>
           <span class="stpill st-filling" style="margin-left:auto">WORKS WITH THE CLOUD PHASE</span>
@@ -973,10 +1019,11 @@ window.MUSE_TICKER = {
         <div class="tag">Subscription · The Offer</div>
         <h3>RUN YOUR WHOLE OPERATION ON LOGIX</h3>
         <p>One system that structures the company, staffs the job, builds the paperwork and rides every load from intake to invoice.</p>
+        <p style="color:var(--accent);font-weight:800;letter-spacing:.6px;margin-top:10px">Recruit · Onboard · Train · Deploy · Manage — the whole crew loop, one system.</p>
       </div>
       <div class="price-grid" id="priceGrid"></div>
       <div class="note-box" style="margin-top:20px"><b>Founding pricing — set by the owner, change anytime in settings.</b> White-Label Partner seats carry full rebrand + resell rights: your clients run the platform under your name, and their customers never see LOGIX branding. Every tier starts on the waitlist — founding seats are issued in order. Recruiting ads, the ad composer and AI Visibility live in the Growth Pack add-on below.</div>
-      <div class="price" style="margin-top:16px;border-style:dashed">
+      <div class="price" id="gpCard" style="margin-top:16px;border-style:dashed">
         <div class="p-tag">Optional Add-On · Any Tier</div>
         <h4>GROWTH PACK — RECRUITING, ADS &amp; AI VISIBILITY</h4>
         <div class="amt">$79<small>/mo add-on</small></div>
@@ -1008,6 +1055,11 @@ window.MUSE_TICKER = {
 <div class="drawer-wrap" id="drawerWrap">
   <div class="drawer-bg" id="drawerBg"></div>
   <div class="drawer" id="drawer"></div>
+</div>
+<!-- ============ TRAINING SHARE SHEET (v3.3) ============ -->
+<div class="share-wrap" id="shareWrap">
+  <div class="share-bg" id="shareBg"></div>
+  <div class="share-panel" id="sharePanel" role="dialog" aria-modal="true" aria-label="Share or assign a training module"></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -1208,6 +1260,7 @@ function migrate(){
   if(!state.training) state.training = {};
   if(state.acadId === undefined) state.acadId = null;
   if(!state.plugins) state.plugins = { alice:{ interest:false }, spark:{ interest:false }, byo:{ provider:"", model:"", keyLast4:"" } };
+  if(!state.assignments) state.assignments = [];
   if(!state.plugins.alice) state.plugins.alice = { interest:false };
   if(!state.plugins.spark) state.plugins.spark = { interest:false };
   if(!state.plugins.byo) state.plugins.byo = { provider:"", model:"", keyLast4:"" };
@@ -1255,7 +1308,7 @@ function syncStaffing(job){
 function seed(){
   state = { brand:{ name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl:"", attribution:"Capital 7 Logistics" },
     jobs:[], workers:[], postings:[], actingId:null, feed:[], tpl:"growing",
-    rates:{}, entitlements:{ growthPack:true }, aiVis:{ area:"Northeast Pennsylvania", checks:{} }, _lumperSeeded:true, training:{}, acadId:null,
+    rates:{}, entitlements:{ growthPack:true }, aiVis:{ area:"Northeast Pennsylvania", checks:{} }, _lumperSeeded:true, training:{}, acadId:null, assignments:[],
     plugins:{ alice:{ interest:false }, spark:{ interest:false }, byo:{ provider:"", model:"", keyLast4:"" } } };
   /* ---- workers ---- */
   var W = function(name, roles, certs, status, done){ return { id:uid("w"), name:name, roles:roles, certs:certs, status:status, jobsDone:done, isNew:false, phone:"", county:"Luzerne" }; };
@@ -1738,20 +1791,40 @@ function renderSwatches(){
 }
 
 /* ================= PRICING ================= */
+/* v3.3: tapping a tier card selects it — its JOIN button is scrolled into view, flashed and focused */
+function focusJoin(card){
+  if(!card) return;
+  var a = card.querySelector("a.btn"); if(!a) return;
+  a.scrollIntoView({ behavior:"smooth", block:"center" });
+  card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash");
+  setTimeout(function(){ try{ a.focus({ preventScroll:true }); }catch(e){ try{ a.focus(); }catch(e2){} } }, 350);
+}
 function renderPricing(){
   $("priceGrid").innerHTML = TIERS.map(function(t){
-    return '<div class="price' + (t.hot ? " hot" : "") + '">' + (t.hot ? '<span class="p-flag">MOST POPULAR</span>' : "") +
+    return '<div class="price' + (t.hot ? " hot" : "") + '" data-tier="' + t.name + '">' + (t.hot ? '<span class="p-flag">MOST POPULAR</span>' : "") +
       '<div class="p-tag">' + esc(t.tag) + "</div><h4>" + esc(t.name) + '</h4><div class="amt">$' + t.amt + "<small>/mo</small></div>" +
       '<div class="setup">' + (t.setup ? "+ $" + t.setup + " one-time setup" : "No setup fee") + '</div><div class="setup" style="color:var(--accent)">Recruiting ads: Growth Pack add-on</div><ul>' +
       t.feats.map(function(f){ return "<li>" + esc(f) + "</li>"; }).join("") + "</ul>" +
       '<a class="btn ' + (t.hot ? "primary" : "") + '" style="width:100%;justify-content:center" href="mailto:capital7lllc@gmail.com?subject=' + encodeURIComponent("LOGIX COMMAND waitlist — " + t.name + " — by " + ((state.brand.attribution || "").trim() || "Capital 7 Logistics")) + "&body=" + encodeURIComponent("Hi — please add me to the LOGIX COMMAND waitlist for the " + t.name + " tier.\n\nLOGIX COMMAND — by " + ((state.brand.attribution || "").trim() || "Capital 7 Logistics") + ".") + '">JOIN THE WAITLIST</a></div>';
   }).join("");
+  $("priceGrid").querySelectorAll("[data-tier]").forEach(function(card){
+    card.addEventListener("click", function(ev){
+      if(ev.target.closest("a,button")) return;
+      focusJoin(card);
+    });
+  });
 }
 
 /* ================= PLUG-INS & AI (v3.2) ================= */
 /* state.plugins = { alice:{interest}, spark:{interest}, byo:{provider, model, keyLast4} }.
    The BYO full API key is NEVER stored or logged — only its last 4 characters are kept. */
 function plugAttr(){ return (state.brand.attribution || "").trim() || "Capital 7 Logistics"; }
+/* v3.3: the three mode cards at the top of Plug-Ins & AI jump to their detail below */
+function modeJump(mode){
+  if(mode === "self"){ gotoView("dashboard"); toast("🎛️ Manual command — this is where you run it: the Command Dashboard"); return; }
+  var el = document.getElementById(mode === "alice" ? "plugAliceCard" : "plugByoCard");
+  if(el) el.scrollIntoView({ behavior:"smooth", block:"start" });
+}
 function plugMail(subject, body){
   return "mailto:capital7lllc@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
 }
@@ -2053,10 +2126,11 @@ function renderAcademy(){
       var rec = aw ? trainMap(aw.id)[m.id] : null;
       var done = !!(rec && rec.done);
       var num = MODULES.indexOf(m) + 1;
-      return '<div class="modcard' + (acad.open === m.id ? " open" : "") + '"><div class="m-top"><span class="m-tag">' + esc(m.tag) + '</span><span class="m-mins">' + m.mins + ' MIN</span></div>' +
+      return '<div class="modcard' + (acad.open === m.id ? " open" : "") + '" data-card="' + m.id + '"><div class="m-top"><span class="m-tag">' + esc(m.tag) + '</span><span class="m-mins">' + m.mins + ' MIN</span></div>' +
         '<h5>' + num + ". " + esc(m.title) + '</h5><p class="m-blurb">' + esc(m.blurb) + '</p>' +
         '<div class="m-foot">' + (done ? '<span class="stpill st-full">✓ COMPLETE · ' + rec.score + '%</span>' : '<span class="stpill st-off">NOT STARTED</span>') +
-        '<button type="button" class="btn small' + (done ? "" : " primary") + '" data-mod="' + m.id + '">' + (done ? "REVIEW ↺" : "OPEN MODULE →") + "</button></div></div>";
+        '<span style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn small" data-share="' + m.id + '">📤 SHARE / ASSIGN</button>' +
+        '<button type="button" class="btn small' + (done ? "" : " primary") + '" data-mod="' + m.id + '">' + (done ? "REVIEW ↺" : "OPEN MODULE →") + "</button></span></div></div>";
     }).join("");
     return '<div class="track-head"><div><div class="tag" style="font-family:var(--font-m);font-size:11.5px;letter-spacing:2.4px;color:var(--accent)">' + t.name + '</div>' +
       '<p style="color:var(--muted);font-size:14.5px;margin-top:4px">' + t.sub + "</p></div>" +
@@ -2065,6 +2139,16 @@ function renderAcademy(){
   }).join("");
   tracksEl.querySelectorAll("[data-mod]").forEach(function(b){
     b.addEventListener("click", function(){ openModule(b.getAttribute("data-mod")); });
+  });
+  tracksEl.querySelectorAll("[data-share]").forEach(function(b){
+    b.addEventListener("click", function(ev){ ev.stopPropagation(); openShare(b.getAttribute("data-share")); });
+  });
+  /* v3.3: the whole module card is the tap target, not just its button */
+  tracksEl.querySelectorAll(".modcard").forEach(function(card){
+    card.addEventListener("click", function(ev){
+      if(ev.target.closest("button, a, select, input, textarea, label")) return;
+      openModule(card.getAttribute("data-card"));
+    });
   });
   renderMatrix();
 }
@@ -2078,7 +2162,8 @@ function renderPlayer(){
   var head = '<div class="m-top"><span class="m-tag">' + esc(m.tag) + '</span><span class="m-mins">' + m.mins + " MIN · QUIZ: 4 QUESTIONS · PASS AT 75%</span></div>" +
     '<h4 style="font-family:var(--font-d);font-size:23px;margin:6px 0 4px">' + esc(m.title) + '</h4>' +
     '<p style="color:var(--muted);font-size:14.5px">Training as <b style="color:var(--ink)">' + esc(aw.name) + "</b>" +
-    (rec && rec.done ? ' · <span style="color:var(--good);font-weight:700">✓ PASSED · ' + rec.score + "%</span>" : "") + "</p>";
+    (rec && rec.done ? ' · <span style="color:var(--good);font-weight:700">✓ PASSED · ' + rec.score + "%</span>" : "") + "</p>" +
+    '<div style="margin-top:12px"><button type="button" class="btn small" id="plShare">📤 SHARE / ASSIGN THIS MODULE</button></div>';
   var body = "";
   if(acad.phase === "lessons"){
     body = m.sections.map(function(s, i){
@@ -2106,6 +2191,7 @@ function renderPlayer(){
       '<div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn primary" id="plRetake">' + (r.pass ? "RETAKE FOR A BETTER SCORE" : "RETAKE THE QUIZ") + '</button><button type="button" class="btn" id="plClose2">DONE</button></div>';
   }
   p.innerHTML = head + body;
+  var shb = $("plShare"); if(shb) shb.addEventListener("click", function(){ openShare(m.id); });
   var q = $("plQuiz"); if(q) q.addEventListener("click", function(){ acad.phase = "quiz"; acad.result = null; renderAcademy(); scrollPlayer(); });
   var c = $("plClose"); if(c) c.addEventListener("click", function(){ acad.open = null; renderAcademy(); });
   var bk = $("plBack"); if(bk) bk.addEventListener("click", function(){ acad.phase = "lessons"; renderAcademy(); scrollPlayer(); });
@@ -2150,11 +2236,124 @@ function renderMatrix(){
     return '<td class="mpct" style="color:' + col + '">' + pct + "%</td>";
   };
   el.innerHTML = '<table class="mtx"><thead><tr><th style="text-align:left">WORKER</th>' +
-    TRACKS.map(function(t){ return "<th>" + t.name + "</th>"; }).join("") + "<th>OVERALL</th></tr></thead><tbody>" +
+    TRACKS.map(function(t){ return "<th>" + t.name + "</th>"; }).join("") + "<th>OVERALL</th><th>ASSIGNMENTS</th></tr></thead><tbody>" +
     (state.workers || []).map(function(w){
+      var asg = assignmentsFor(w.id);
+      var asgDone = asg.filter(function(a){ return moduleDone(w.id, a.moduleId); }).length;
+      var asgCell = asg.length ? '<td class="mpct" style="color:' + (asgDone >= asg.length ? "var(--good)" : "var(--warn)") + '">📩 ' + asgDone + "/" + asg.length + " DONE</td>" : '<td class="mpct" style="color:var(--faint)">—</td>';
       return "<tr><td><b>" + esc(w.name) + '</b> <span style="color:var(--faint);font-size:12px">' + esc((w.status || "").toUpperCase()) + "</span></td>" +
-        TRACKS.map(function(t){ return cell(trackPct(w.id, t.key)); }).join("") + cell(workerTrainPct(w.id)) + "</tr>";
+        TRACKS.map(function(t){ return cell(trackPct(w.id, t.key)); }).join("") + cell(workerTrainPct(w.id)) + asgCell + "</tr>";
     }).join("") + "</tbody></table>";
+}
+
+/* ================= TRAINING SHARE / ASSIGN (v3.3) ================= */
+/* state.assignments = [{ workerId, moduleId, at }] — status is DERIVED from
+   state.training at render time (assigned vs ✓ done), never stored. */
+var share = { moduleId:null, picked:{} };
+function assignmentsFor(wid){ return (state.assignments || []).filter(function(a){ return a.workerId === wid; }); }
+function moduleLink(mid){ return window.location.href.split("#")[0] + "#academy/" + mid; }
+function moduleQualifies(m){
+  for(var k in REQ_MODULE){ if(REQ_MODULE[k] === m.id) return SERVICES[k].name + " crew seats on the Load Board"; }
+  if(m.track === "lumper") return "lumper crew seats on the Load Board";
+  if(m.track === "core") return "every physical crew seat — the labor-core standard";
+  return "service-crew seats on the Load Board";
+}
+function shareTextFor(m, worker){
+  return (worker ? worker.name.split(" ")[0] + " — " : "") + "your training assignment from " + state.brand.name + ": \"" + m.title + "\" (" + m.mins + " min — lessons + a short quiz, pass at 75%). " +
+    "Passing it qualifies you for " + moduleQualifies(m) + ". Open it here: " + moduleLink(m.id);
+}
+function assignModule(wid, mid){
+  if(!state.assignments) state.assignments = [];
+  var exists = state.assignments.some(function(a){ return a.workerId === wid && a.moduleId === mid; });
+  if(!exists){ state.assignments.push({ workerId:wid, moduleId:mid, at:Date.now() }); save(); }
+  return !exists;
+}
+function assignListHTML(w){
+  var list = assignmentsFor(w.id);
+  if(!list.length) return "";
+  return list.map(function(a){
+    var done = moduleDone(w.id, a.moduleId);
+    return '<div class="w-assign' + (done ? " done" : "") + '">' + (done ? "✓ DONE — " : "📩 ASSIGNED: ") + esc(moduleTitle(a.moduleId)) + "</div>";
+  }).join("");
+}
+function openShare(mid){
+  if(!moduleById(mid)) return;
+  share.moduleId = mid; share.picked = {};
+  renderShare();
+  $("shareWrap").classList.add("open");
+}
+function closeShare(){ var w = $("shareWrap"); if(w) w.classList.remove("open"); share.moduleId = null; share.picked = {}; }
+function renderShare(){
+  var m = moduleById(share.moduleId); var panel = $("sharePanel"); if(!m || !panel) return;
+  panel.innerHTML =
+    '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div>' +
+    '<div class="m-tag">📤 SHARE / ASSIGN TRAINING</div>' +
+    '<h4 style="font-family:var(--font-d);font-size:20px;margin:5px 0 4px">' + esc(m.title) + '</h4>' +
+    '<p style="color:var(--muted);font-size:14.5px;line-height:1.55">Passing qualifies a worker for ' + esc(moduleQualifies(m)) + '. Pick the workers you are onboarding — assigning records it on their roster card and in the matrix, and it flips to ✓ DONE the moment they pass.</p></div>' +
+    '<button type="button" class="btn small" id="shareClose">✕ CLOSE</button></div>' +
+    '<div style="margin-top:16px">' + (state.workers || []).map(function(w){
+      var done = moduleDone(w.id, m.id);
+      var assigned = assignmentsFor(w.id).some(function(a){ return a.moduleId === m.id; });
+      return '<label class="check' + (done ? " done" : "") + '"><input type="checkbox" data-sharew="' + w.id + '"' + (share.picked[w.id] ? " checked" : "") + (done ? " disabled" : "") + '><span><span class="c-t">' + esc(w.name) + '</span> ' +
+        (done ? '<span class="stpill st-full">✓ ALREADY PASSED</span>' : assigned ? '<span class="stpill st-assigned">📩 ASSIGNED</span>' : '<span class="stpill st-off">' + esc((w.status || "").toUpperCase()) + '</span>') +
+        '<br><span class="c-d">' + (done ? "Passed — nothing left to assign." : "Training record: " + workerTrainPct(w.id) + "% complete") + '</span></span></label>';
+    }).join("") + "</div>" +
+    '<div id="sharePicked"></div>' +
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button type="button" class="btn primary" id="shareAssign">📩 ASSIGN TO PICKED WORKERS</button>' +
+    '<button type="button" class="btn" id="shareLink">🔗 SHARE LINK</button></div>' +
+    '<p style="color:var(--faint);font-size:13px;margin-top:12px;line-height:1.55">SHARE LINK sends the module by itself (Messages, WhatsApp, email…). ASSIGN records it first — then send each worker their personal link from the list that appears below.</p>';
+  $("shareClose").addEventListener("click", closeShare);
+  panel.querySelectorAll("[data-sharew]").forEach(function(cb){
+    cb.addEventListener("change", function(){ share.picked[cb.getAttribute("data-sharew")] = cb.checked; });
+  });
+  $("shareAssign").addEventListener("click", function(){
+    var ids = Object.keys(share.picked).filter(function(k){ return share.picked[k]; });
+    if(!ids.length){ toast("Pick at least one worker first"); return; }
+    var added = 0;
+    ids.forEach(function(wid){ if(assignModule(wid, m.id)) added++; });
+    logFeed("📩 Training assigned — <b>" + esc(m.title) + "</b> → " + ids.map(function(wid){ var w = workerById(wid); return w ? esc(w.name.split(" ")[0]) : ""; }).filter(Boolean).join(", "), true);
+    save(); renderShare(); renderRoster(); renderMatrix();
+    toast(added ? "📩 Assigned — " + m.title + " is on their roster cards" : "Already assigned — use the send buttons below");
+  });
+  $("shareLink").addEventListener("click", function(){ shareModuleLink(m, null); });
+  renderSharePicked();
+}
+function renderSharePicked(){
+  var box = $("sharePicked"); if(!box || !share.moduleId) return;
+  var m = moduleById(share.moduleId); if(!m){ box.innerHTML = ""; return; }
+  var assigned = (state.assignments || []).filter(function(a){ return a.moduleId === share.moduleId; });
+  if(!assigned.length){ box.innerHTML = ""; return; }
+  box.innerHTML = '<div class="d-sec">ASSIGNED — SEND EACH WORKER THEIR LINK</div>' +
+    assigned.map(function(a){
+      var w = workerById(a.workerId); if(!w) return "";
+      var done = moduleDone(w.id, share.moduleId);
+      return '<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:9px 0;border-bottom:1px dashed var(--line)"><span style="font-weight:700">' + esc(w.name) + "</span>" +
+        (done ? '<span class="stpill st-full">✓ DONE</span>' : '<span class="stpill st-assigned">📩 ASSIGNED</span>') +
+        '<button type="button" class="btn small" style="margin-left:auto" data-sendw="' + w.id + '">📤 SEND VIA SHARE</button></div>';
+    }).join("");
+  box.querySelectorAll("[data-sendw]").forEach(function(b){
+    b.addEventListener("click", function(){ shareModuleLink(m, workerById(b.getAttribute("data-sendw"))); });
+  });
+}
+function shareModuleLink(m, worker){
+  var text = shareTextFor(m, worker);
+  if(navigator.share){
+    navigator.share({ title: state.brand.name + " Training — " + m.title, text: text, url: moduleLink(m.id) }).then(function(){}, function(){});
+  } else {
+    copyText(text, "Share message copied — paste it to your worker");
+  }
+}
+/* deep links: #academy/<moduleId> opens the Academy on that module; unknown ids land on the grid */
+function routeHash(){
+  var h = window.location.hash || "";
+  if(h === "#intake"){ gotoView("intake"); return; }
+  if(h.indexOf("#academy/") === 0){
+    var mid = h.slice("#academy/".length);
+    gotoView("academy");
+    if(moduleById(mid)) openModule(mid);
+    return;
+  }
+  if(h === "#academy") gotoView("academy");
 }
 /* academy boot: render once init() has seeded state */
 function acadBoot(){ if(window.state && state.jobs){ renderAcademy(); } else { setTimeout(acadBoot, 80); } }
@@ -2214,7 +2413,7 @@ function renderLoadBoard(){
                 (el.ok ? "" : '<span class="sl-why">' + esc(el.why) + "</span>")) +
         "</div></div>";
     }).join("");
-    return '<div class="ltile"><div class="lt-img"><img src="' + svc.img + '" alt="' + esc(svc.name) + '"><span class="lt-svc">' + svc.icon + " " + esc(svc.name) + '</span><span class="lt-status"><span class="stpill ' + st.cls + '">' + st.label + '</span></span></div>' +
+    return '<div class="ltile" data-post="' + p.id + '"><div class="lt-img"><img src="' + svc.img + '" alt="' + esc(svc.name) + '"><span class="lt-svc">' + svc.icon + " " + esc(svc.name) + '</span><span class="lt-status"><span class="stpill ' + st.cls + '">' + st.label + '</span></span></div>' +
       '<div class="lt-body"><h5>' + esc(job.title) + '</h5><div class="lt-meta">📍 ' + esc(job.site) + (job.dest ? " → " + esc(job.dest) : "") + "<br>🗓 " + esc(p.date || "TBD") + " · " + esc(p.loadLabel) + " · Client: " + esc(job.client) + '</div>' +
       '<div class="lt-pay">PAY BASIS · PER JOB — OWNER SETS RATE</div>' +
       trainLineHTML(job) +
@@ -2232,6 +2431,15 @@ function renderLoadBoard(){
   });
   $("lbGrid").querySelectorAll("[data-promote]").forEach(function(b){
     b.addEventListener("click", function(){ promoteLoad(b.getAttribute("data-promote")); });
+  });
+  /* v3.3: the whole load tile is the hit area — tapping the photo/body opens the
+     parent job's command drawer (buttons inside keep their own actions) */
+  $("lbGrid").querySelectorAll(".ltile").forEach(function(tile){
+    tile.addEventListener("click", function(ev){
+      if(ev.target.closest("button, a, select, input, textarea, label")) return;
+      var post = state.postings.filter(function(p){ return p.id === tile.getAttribute("data-post"); })[0];
+      if(post) openDrawer(post.jobId);
+    });
   });
   renderRoster();
 }
@@ -2301,6 +2509,7 @@ function renderRoster(){
       (w.certs || []).map(function(c){ return '<span class="badge">🏅 ' + esc(CERTS[c] || c) + "</span>"; }).join("") +
       '<span class="badge" style="border-color:var(--accent);color:var(--accent)">🎓 TRAINING ' + workerTrainPct(w.id) + "%</span>" + "</div>" +
       trainListHTML(w) +
+      assignListHTML(w) +
       assignTxt +
       '<div class="w-foot"><span>JOBS DONE · ' + (w.jobsDone || 0) + "</span><span>" + esc(w.county || "") + "</span></div>" +
       (w.status === "applicant" ? '<div style="display:flex;gap:9px;margin-top:13px"><button type="button" class="btn primary small" data-approve="' + w.id + '">✓ APPROVE TO ROSTER</button><button type="button" class="btn small danger" data-decline="' + w.id + '">DECLINE</button></div>' : "") +
@@ -2575,6 +2784,20 @@ function init(){
   document.querySelectorAll("[data-goto]").forEach(function(b){
     b.addEventListener("click", function(){ gotoView(b.getAttribute("data-goto")); });
   });
+  /* v3.3 tile wiring: KPI tiles navigate, mode cards jump, the plug banner is keyboard-operable */
+  document.querySelectorAll("[data-kpi]").forEach(function(el){
+    el.addEventListener("click", function(){ gotoView(el.getAttribute("data-kpi")); });
+    el.addEventListener("keydown", function(ev){ if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); gotoView(el.getAttribute("data-kpi")); } });
+  });
+  document.querySelectorAll("[data-mode]").forEach(function(el){
+    el.addEventListener("click", function(){ modeJump(el.getAttribute("data-mode")); });
+    el.addEventListener("keydown", function(ev){ if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); modeJump(el.getAttribute("data-mode")); } });
+  });
+  var gpc = $("gpCard");
+  if(gpc) gpc.addEventListener("click", function(ev){ if(ev.target.closest("a,button")) return; focusJoin(gpc); });
+  var pb = document.querySelector(".plug-banner");
+  if(pb) pb.addEventListener("keydown", function(ev){ if(ev.key === "Enter" || ev.key === " "){ ev.preventDefault(); gotoView("plugins"); } });
+  var sbg = $("shareBg"); if(sbg) sbg.addEventListener("click", closeShare);
   $("topInitiate").addEventListener("click", function(){ gotoView("initiate"); });
   /* wizard */
   $("wizNext1").addEventListener("click", function(){ wizGo(2); });
@@ -2641,8 +2864,9 @@ function init(){
   $("byoProvider").addEventListener("change", renderPlugins);
   $("aiCardCopy").addEventListener("click", function(){ copyText(aiBusinessCard(), "AI Business Card copied — paste it into your website <head>"); });
   $("aiProfileCopy").addEventListener("click", function(){ copyText(answerProfile(), "Answer Profile copied — publish it as yoursite.com/llms.txt"); });
-  /* apply-link landing */
-  if(window.location.hash === "#intake") gotoView("intake");
+  /* deep links: #intake · #academy/<moduleId> (share links) */
+  routeHash();
+  window.addEventListener("hashchange", routeHash);
   /* reveal on scroll */
   if("IntersectionObserver" in window){
     var io = new IntersectionObserver(function(entries){
