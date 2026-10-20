@@ -387,6 +387,34 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px}
 .lt-train{font-family:var(--font-m);font-size:10.5px;letter-spacing:1.1px;color:var(--cyan);margin-top:8px;text-transform:uppercase;line-height:1.6}
 .sl-flag{color:var(--warn);font-size:13px;font-weight:700;margin-top:7px;line-height:1.5}
 .w-train{font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.6}
+/* ================= PLUG-INS & AI (v3.2) ================= */
+.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
+.mode-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.mode-card.hot{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-soft),0 14px 34px rgba(0,0,0,.35)}
+.mode-card .m-ic{font-size:26px;margin-bottom:10px}
+.mode-card h4{font-family:var(--font-d);font-size:18px;letter-spacing:.5px;margin-bottom:7px}
+.mode-card p{color:var(--muted);font-size:15px;line-height:1.55}
+.mode-card .m-chip{margin-top:14px}
+.badge-spark{display:inline-block;font-family:var(--font-m);font-size:11.5px;font-weight:700;letter-spacing:1.6px;padding:7px 14px;border-radius:99px;color:#14100a;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 18px var(--accent-glow);text-transform:uppercase}
+.plug-banner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px;padding:15px 20px;border:1px solid var(--accent);border-radius:14px;background:linear-gradient(90deg,var(--accent-soft),transparent);cursor:pointer;font-family:var(--font-m);font-size:12.5px;letter-spacing:1.4px;color:var(--ink);text-transform:uppercase;transition:all .2s ease}
+.plug-banner:hover{box-shadow:0 0 22px var(--accent-glow)}
+.plug-banner b{color:var(--accent)}
+.plugin-card ul{list-style:none;margin:12px 0 4px}
+.plugin-card ul li{padding:6px 0 6px 24px;position:relative;color:#cfdaf0;font-size:15.5px;line-height:1.5}
+.plugin-card ul li::before{content:"▸";position:absolute;left:2px;color:var(--accent);font-weight:900}
+.prov-chips{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}
+.prov-chip{font-family:var(--font-m);font-size:11.5px;letter-spacing:1.1px;padding:7px 14px;border-radius:99px;border:1px solid var(--line2);color:var(--muted);cursor:pointer;background:var(--panel);text-transform:uppercase;transition:all .2s}
+.prov-chip:hover{color:var(--ink);border-color:var(--accent)}
+.prov-chip.sel{color:var(--accent-ink);background:var(--accent);border-color:var(--accent);font-weight:700}
+.byo-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+input[type=password]{width:100%;background:#0a1120;border:1px solid var(--line2);border-radius:11px;color:var(--ink);padding:12px 14px;font-family:var(--font-b);font-size:16.5px;font-weight:600;outline:none;transition:border-color .2s}
+input[type=password]:focus{border-color:var(--accent)}
+.ops-strip{margin-top:16px;border:1px solid var(--line2);border-radius:18px;padding:24px 27px;background:linear-gradient(180deg,var(--panel2),var(--panel))}
+.ops-strip .os-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 0;border-top:1px dashed var(--line2)}
+.ops-strip .os-row:first-of-type{border-top:none}
+.ops-strip .os-name{font-family:var(--font-d);font-weight:900;letter-spacing:.5px;font-size:16.5px;min-width:230px}
+.ops-strip .os-line{color:var(--muted);font-size:14.5px;flex:1;min-width:220px}
+@media(max-width:1080px){.mode-grid{grid-template-columns:1fr}.byo-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -407,7 +435,8 @@ window.MUSE_TICKER = {
     "PAPERWORK ENGINE — W-9 · I-9 · COI · COMP CERTS",
     "WHITE-LABEL READY — <b>YOUR BRAND, YOUR CLIENTS</b>",
     "10-STAGE WORKFLOW BOARD",
-    "LOADS IN MOTION → <b>DELIVERY CONFIRMED</b>"
+    "LOADS IN MOTION → <b>DELIVERY CONFIRMED</b>",
+    "PLUG IN YOUR AI — <b>OR LET ALICE RUN THE OFFICE</b>"
   ]
 };
 </script>
@@ -425,6 +454,7 @@ window.MUSE_TICKER = {
     <button class="nav-btn" data-view="academy"><span class="ic">🎓</span>Training Academy</button>
     <button class="nav-btn" data-view="org"><span class="ic">♟</span>Org Builder</button>
     <button class="nav-btn" data-view="intake"><span class="ic">📥</span>Crew Intake</button>
+    <button class="nav-btn" data-view="plugins"><span class="ic">🔌</span>Plug-Ins &amp; AI</button>
     <button class="nav-btn" data-view="whitelabel"><span class="ic">🎨</span>White-Label Lab</button>
     <button class="nav-btn" data-view="pricing"><span class="ic">💎</span>Subscription</button>
     <div class="side-foot"><b>SYSTEM STATUS</b>All engines online. Staffing engine, paperwork engine and workflow board run 100% in your browser — your data never leaves this device.</div>
@@ -454,6 +484,7 @@ window.MUSE_TICKER = {
           <button class="btn ghost" data-goto="board" style="margin-left:8px">VIEW WORKFLOW BOARD</button>
         </div>
       </div>
+      <div class="plug-banner" data-goto="plugins" role="button" tabindex="0">THREE WAYS TO RUN IT: <span><b>YOUR CREW COMMANDS IT</b> · <b>YOUR AI RUNS IT</b> · <b>ALICE RUNS THE OFFICE</b></span><span style="margin-left:auto">PLUG-INS &amp; AI →</span></div>
       <div class="kpis">
         <div class="kpi"><span class="k-ic">📋</span><div class="k-label">Active Jobs</div><div class="k-num" id="kpiJobs">0</div><div class="k-sub">across all service lines</div></div>
         <div class="kpi"><span class="k-ic">👷</span><div class="k-label">Crew Deployed</div><div class="k-num" id="kpiCrew">0</div><div class="k-sub">positions filled on live jobs</div></div>
@@ -843,6 +874,99 @@ window.MUSE_TICKER = {
       </div>
     </section>
 
+    <!-- ================= PLUG-INS & AI ================= -->
+    <section class="view" id="view-plugins">
+      <div class="sec-head">
+        <div class="tag">Plug-Ins · AI Operators</div>
+        <h3>RUN IT YOURSELF. PLUG IN YOUR AI. OR LET ALICE RUN IT.</h3>
+        <p>LOGIX COMMAND works by hand on day one. When you're ready, plug in an AI operator — yours, or ours — and the board starts working for you.</p>
+      </div>
+
+      <div class="mode-grid">
+        <div class="mode-card">
+          <div class="m-ic">🎛️</div>
+          <h4>RUN IT YOURSELF</h4>
+          <p>Manual command — you and your leads drive every stage, seat and signature from this screen. Nothing moves without your say-so.</p>
+          <div class="m-chip"><span class="stpill st-avail">ACTIVE — DEFAULT MODE</span></div>
+        </div>
+        <div class="mode-card">
+          <div class="m-ic">🔌</div>
+          <h4>PLUG IN YOUR AI</h4>
+          <p>Bring your own assistant — connect the AI you already use and let it work the board alongside your crew.</p>
+          <div class="m-chip"><span class="stpill st-filling">WORKS WITH THE CLOUD PHASE</span></div>
+        </div>
+        <div class="mode-card">
+          <div class="m-ic">🗣️</div>
+          <h4>LET ALICE RUN IT</h4>
+          <p>Alice AI Office answers the phones and the chats, then hands LOGIX staffed, paperwork-ready jobs.</p>
+          <div class="m-chip"><span class="stpill st-filling">INCLUDED WITH THE CLOUD PHASE</span></div>
+        </div>
+      </div>
+
+      <div class="panel plugin-card" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <h4 style="font-family:var(--font-d);font-size:20px;letter-spacing:.5px">THE OPERATOR — BY MUSE SPARK</h4>
+          <span class="badge-spark">⚡ Powered by Muse Spark</span>
+          <span class="stpill st-filling" style="margin-left:auto">ACTIVATES WITH THE PLATFORM KEY</span>
+        </div>
+        <p style="color:var(--muted);font-size:16px;line-height:1.6;margin-top:10px">An AI chief of staff for your board. The Operator watches every stage so you don't have to — and drafts the work, ready for your approval.</p>
+        <ul>
+          <li><b>Watches the stages</b> — every job, every stage, around the clock</li>
+          <li><b>Drafts staffing plans</b> straight from the staffing engine when a job lands</li>
+          <li><b>Flags stalled jobs</b> before a customer has to ask where their load is</li>
+          <li><b>Drafts recruiting ads</b> for open seats (Growth Pack)</li>
+          <li><b>Summarizes the day</b> for the owner — what moved, what's stuck, what's next</li>
+        </ul>
+        <p style="color:var(--muted);font-size:14.5px;line-height:1.6;margin-top:10px">The Spark operator switches on when the platform's Muse Spark key is connected — the same key that powers Alice's premium brain.</p>
+        <div style="margin-top:14px"><a class="btn primary" id="plugSparkBtn" href="mailto:capital7lllc@gmail.com">JOIN THE SPARK OPERATOR LIST</a></div>
+      </div>
+
+      <div class="panel plugin-card" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <h4 style="font-family:var(--font-d);font-size:20px;letter-spacing:.5px">ALICE CONNECT</h4>
+          <span class="stpill st-filling" style="margin-left:auto">INCLUDED WITH THE CLOUD PHASE</span>
+        </div>
+        <p style="color:var(--accent);font-family:var(--font-m);font-size:11.5px;letter-spacing:2px;margin-top:8px">POWERED BY ALICE AI OFFICE</p>
+        <p style="color:var(--muted);font-size:16px;line-height:1.6;margin-top:8px">Your front office, plugged straight into your operation. Alice takes the call — LOGIX builds the job.</p>
+        <ul>
+          <li>Alice <b>answers calls and chats</b> so no lead hits voicemail</li>
+          <li>Qualified jobs arrive as <b>one-click job initiation</b> in LOGIX</li>
+          <li><b>Crew notifications</b> go out when seats open and assignments change</li>
+          <li><b>Customer confirmations</b> — booked, on the way, delivered</li>
+          <li>A <b>review request</b> follows every completed delivery</li>
+        </ul>
+        <div style="margin-top:14px"><a class="btn" id="plugAliceBtn" href="mailto:capital7lllc@gmail.com">JOIN THE ALICE CONNECT LIST</a></div>
+      </div>
+
+      <div class="panel plugin-card">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <h4 style="font-family:var(--font-d);font-size:20px;letter-spacing:.5px">BRING YOUR OWN AI</h4>
+          <span class="stpill st-filling" style="margin-left:auto">WORKS WITH THE CLOUD PHASE</span>
+        </div>
+        <p style="color:var(--muted);font-size:16px;line-height:1.6;margin-top:8px">Already have an AI assistant? Plug it in. Pick your provider, drop in your key, and your assistant gets the same operator seat.</p>
+        <div class="prov-chips" id="byoChips">
+          <span class="prov-chip" data-prov="Muse">Muse</span>
+          <span class="prov-chip" data-prov="ChatGPT">ChatGPT</span>
+          <span class="prov-chip" data-prov="Gemini">Gemini</span>
+          <span class="prov-chip" data-prov="Groq">Groq</span>
+          <span class="prov-chip" data-prov="Other (OpenAI-compatible)">Other (OpenAI-compatible)</span>
+        </div>
+        <div class="byo-grid">
+          <div><label class="f">Provider</label><select id="byoProvider"><option value="">Select a provider…</option><option>Muse</option><option>ChatGPT</option><option>Gemini</option><option>Groq</option><option>Other (OpenAI-compatible)</option></select></div>
+          <div><label class="f">API Key</label><input type="password" id="byoKey" placeholder="Paste your API key" autocomplete="off"></div>
+          <div><label class="f">Model Name</label><input type="text" id="byoModel" placeholder="e.g. your model name"></div>
+        </div>
+        <p style="color:var(--muted);font-size:14.5px;line-height:1.6;margin-top:13px">Your key, your account — LOGIX never sees your full key; only its last 4 characters are kept, in your workspace. In this on-device demo the key is not transmitted anywhere — the connection is saved as a preference on this device, and live operation arrives with the cloud phase.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center">
+          <button class="btn primary" id="byoSave">SAVE CONNECTION</button>
+          <button class="btn" id="byoDisconnect" style="display:none">DISCONNECT</button>
+          <span id="byoStatus" style="font-size:14.5px;color:var(--muted)">Not connected.</span>
+        </div>
+      </div>
+
+      <div class="note-box" style="margin-top:16px"><b>Honest status:</b> the plug-ins above switch on with the cloud phase and the platform key — today, LOGIX runs in manual command mode, and this screen saves your plug-in preferences on this device so everything is ready the moment the operators activate.</div>
+    </section>
+
     <!-- ================= PRICING ================= -->
     <section class="view" id="view-pricing">
       <div class="sec-head">
@@ -865,6 +989,15 @@ window.MUSE_TICKER = {
           <li>Engine-source checklist — Google, Bing, LinkedIn, Indeed, Facebook and your site</li>
         </ul>
         <a class="btn" style="width:100%;justify-content:center" id="gpWaitlist" href="mailto:capital7lllc@gmail.com?subject=LOGIX%20COMMAND%20waitlist%20%E2%80%94%20Growth%20Pack%20%E2%80%94%20by%20Capital%207%20Logistics">ADD THE GROWTH PACK</a>
+      </div>
+      <div class="ops-strip">
+        <div class="p-tag">AI OPERATORS · PLUG-INS</div>
+        <h4 style="font-family:var(--font-d);font-size:20px;letter-spacing:.5px;margin:6px 0 4px">THREE WAYS TO RUN IT</h4>
+        <div class="os-row"><span class="os-name">🎛️ RUN IT YOURSELF</span><span class="os-line">Manual command — the default. You drive every stage.</span><span class="stpill st-avail">ACTIVE — DEFAULT MODE</span></div>
+        <div class="os-row"><span class="os-name">⚡ THE OPERATOR — BY MUSE SPARK</span><span class="os-line">An AI chief of staff for the board — stage watch, staffing drafts, stall flags, the owner's day summary.</span><span class="badge-spark">⚡ Powered by Muse Spark</span><span class="stpill st-filling">ACTIVATES WITH THE PLATFORM KEY</span></div>
+        <div class="os-row"><span class="os-name">🗣️ ALICE CONNECT</span><span class="os-line">Powered by Alice AI Office — calls and chats become staffed, paperwork-ready jobs.</span><span class="stpill st-filling">INCLUDED WITH THE CLOUD PHASE</span></div>
+        <div class="os-row"><span class="os-name">🔌 BRING YOUR OWN AI</span><span class="os-line">Muse · ChatGPT · Gemini · Groq · any OpenAI-compatible assistant — your key, your account.</span><span class="stpill st-filling">WORKS WITH THE CLOUD PHASE</span></div>
+        <div style="margin-top:14px"><button class="btn small" data-goto="plugins">OPEN PLUG-INS &amp; AI →</button></div>
       </div>
       <p style="text-align:center;color:var(--muted);font-size:13.5px;margin-top:22px">Built and operated by <span id="subCredit">Capital 7 Logistics</span>.</p>
     </section>
@@ -1074,6 +1207,13 @@ function migrate(){
   if(!state.aiVis.checks) state.aiVis.checks = {};
   if(!state.training) state.training = {};
   if(state.acadId === undefined) state.acadId = null;
+  if(!state.plugins) state.plugins = { alice:{ interest:false }, spark:{ interest:false }, byo:{ provider:"", model:"", keyLast4:"" } };
+  if(!state.plugins.alice) state.plugins.alice = { interest:false };
+  if(!state.plugins.spark) state.plugins.spark = { interest:false };
+  if(!state.plugins.byo) state.plugins.byo = { provider:"", model:"", keyLast4:"" };
+  if(state.plugins.byo.provider == null) state.plugins.byo.provider = "";
+  if(state.plugins.byo.model == null) state.plugins.byo.model = "";
+  if(state.plugins.byo.keyLast4 == null) state.plugins.byo.keyLast4 = "";
   (state.jobs || []).forEach(function(j){ if(!j.hours) j.hours = 8; });
   if(!state._lumperSeeded){
     var demo = buildLumperDemo();
@@ -1115,7 +1255,8 @@ function syncStaffing(job){
 function seed(){
   state = { brand:{ name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl:"", attribution:"Capital 7 Logistics" },
     jobs:[], workers:[], postings:[], actingId:null, feed:[], tpl:"growing",
-    rates:{}, entitlements:{ growthPack:true }, aiVis:{ area:"Northeast Pennsylvania", checks:{} }, _lumperSeeded:true, training:{}, acadId:null };
+    rates:{}, entitlements:{ growthPack:true }, aiVis:{ area:"Northeast Pennsylvania", checks:{} }, _lumperSeeded:true, training:{}, acadId:null,
+    plugins:{ alice:{ interest:false }, spark:{ interest:false }, byo:{ provider:"", model:"", keyLast4:"" } } };
   /* ---- workers ---- */
   var W = function(name, roles, certs, status, done){ return { id:uid("w"), name:name, roles:roles, certs:certs, status:status, jobsDone:done, isNew:false, phone:"", county:"Luzerne" }; };
   state.workers = [
@@ -1212,7 +1353,7 @@ function applyBrand(){
 }
 
 /* ================= NAV ================= */
-var VIEW_TITLES = { dashboard:"COMMAND DASHBOARD", initiate:"INITIATE JOB", board:"WORKFLOW BOARD", loadboard:"LOAD & WORKER BOARD", academy:"TRAINING ACADEMY", org:"ORG BUILDER", intake:"CREW INTAKE", whitelabel:"WHITE-LABEL LAB", pricing:"SUBSCRIPTION" };
+var VIEW_TITLES = { dashboard:"COMMAND DASHBOARD", initiate:"INITIATE JOB", board:"WORKFLOW BOARD", loadboard:"LOAD & WORKER BOARD", academy:"TRAINING ACADEMY", org:"ORG BUILDER", intake:"CREW INTAKE", plugins:"PLUG-INS & AI", whitelabel:"WHITE-LABEL LAB", pricing:"SUBSCRIPTION" };
 function gotoView(v){
   document.querySelectorAll(".view").forEach(function(s){ s.classList.toggle("active", s.id === "view-" + v); });
   document.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-view") === v); });
@@ -1224,6 +1365,7 @@ function gotoView(v){
   if(v === "academy") renderAcademy();
   if(v === "org") renderOrgBuilder();
   if(v === "intake") renderAds();
+  if(v === "plugins") renderPlugins();
   if(v === "whitelabel") renderRates();
 }
 
@@ -1604,6 +1746,63 @@ function renderPricing(){
       t.feats.map(function(f){ return "<li>" + esc(f) + "</li>"; }).join("") + "</ul>" +
       '<a class="btn ' + (t.hot ? "primary" : "") + '" style="width:100%;justify-content:center" href="mailto:capital7lllc@gmail.com?subject=' + encodeURIComponent("LOGIX COMMAND waitlist — " + t.name + " — by " + ((state.brand.attribution || "").trim() || "Capital 7 Logistics")) + "&body=" + encodeURIComponent("Hi — please add me to the LOGIX COMMAND waitlist for the " + t.name + " tier.\n\nLOGIX COMMAND — by " + ((state.brand.attribution || "").trim() || "Capital 7 Logistics") + ".") + '">JOIN THE WAITLIST</a></div>';
   }).join("");
+}
+
+/* ================= PLUG-INS & AI (v3.2) ================= */
+/* state.plugins = { alice:{interest}, spark:{interest}, byo:{provider, model, keyLast4} }.
+   The BYO full API key is NEVER stored or logged — only its last 4 characters are kept. */
+function plugAttr(){ return (state.brand.attribution || "").trim() || "Capital 7 Logistics"; }
+function plugMail(subject, body){
+  return "mailto:capital7lllc@gmail.com?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+}
+function renderPlugins(){
+  if(!state || !state.plugins) return;
+  var ab = $("plugAliceBtn"), sb = $("plugSparkBtn");
+  if(ab){
+    ab.href = plugMail("LOGIX COMMAND — Alice Connect interest — by " + plugAttr(),
+      "Hi — I'm interested in Alice Connect for LOGIX COMMAND (Alice AI Office answers calls/chats and hands LOGIX staffed, paperwork-ready jobs).\n\nLOGIX COMMAND — by " + plugAttr() + ".");
+    ab.textContent = state.plugins.alice.interest ? "YOU'RE ON THE LIST ✓" : "JOIN THE ALICE CONNECT LIST";
+  }
+  if(sb){
+    sb.href = plugMail("LOGIX COMMAND — Spark Operator interest — by " + plugAttr(),
+      "Hi — I'm interested in The Operator by Muse Spark for LOGIX COMMAND (stage watch, staffing drafts, stall flags, day summaries).\n\nLOGIX COMMAND — by " + plugAttr() + ".");
+    sb.textContent = state.plugins.spark.interest ? "YOU'RE ON THE LIST ✓" : "JOIN THE SPARK OPERATOR LIST";
+  }
+  var byo = state.plugins.byo || { provider:"", model:"", keyLast4:"" };
+  var sel = $("byoProvider"), mod = $("byoModel"), st = $("byoStatus"), dc = $("byoDisconnect");
+  if(sel && document.activeElement !== sel) sel.value = byo.provider || "";
+  if(mod && document.activeElement !== mod) mod.value = byo.model || "";
+  document.querySelectorAll("#byoChips .prov-chip").forEach(function(c){
+    c.classList.toggle("sel", c.getAttribute("data-prov") === (byo.provider || ""));
+  });
+  if(st){
+    if(byo.provider && byo.keyLast4) st.innerHTML = "● Connected as <b>••••" + esc(byo.keyLast4) + "</b> — " + esc(byo.provider) + (byo.model ? " · " + esc(byo.model) : "") + " <span style='color:var(--faint)'>(preference saved on this device — live operation arrives with the cloud phase)</span>";
+    else if(byo.provider) st.textContent = "Provider preference saved: " + byo.provider + " — paste your API key and save to complete the connection.";
+    else st.textContent = "Not connected.";
+  }
+  if(dc) dc.style.display = (byo.provider || byo.keyLast4) ? "" : "none";
+}
+function togglePlugInterest(which, ev){
+  var p = state.plugins[which];
+  if(p.interest){ if(ev) ev.preventDefault(); p.interest = false; toast("Removed from the list"); }
+  else { p.interest = true; toast("✓ You're on the list"); }
+  save(); renderPlugins();
+}
+function saveByo(){
+  var prov = $("byoProvider").value, model = $("byoModel").value.trim(), key = $("byoKey").value;
+  if(!prov){ toast("Pick a provider first"); return; }
+  /* keep ONLY the last 4 characters of the key — the full key is never stored or logged */
+  var last4 = key ? key.slice(-4) : (state.plugins.byo.keyLast4 || "");
+  state.plugins.byo = { provider: prov, model: model, keyLast4: last4 };
+  $("byoKey").value = "";
+  save(); renderPlugins();
+  toast(last4 ? "🔌 Connection saved — key kept as ••••" + last4 + " only" : "🔌 Provider preference saved");
+}
+function disconnectByo(){
+  state.plugins.byo = { provider:"", model:"", keyLast4:"" };
+  $("byoKey").value = "";
+  save(); renderPlugins();
+  toast("Plug-in disconnected — saved key fragment cleared");
 }
 </script>
 
@@ -2366,6 +2565,7 @@ function init(){
   buildTicker();
   applyBrand();
   renderSvcGrid(); renderWizSteps(); renderSwatches(); renderPricing();
+  renderPlugins();
   renderIntake(); renderAds(); renderRates();
   renderDashboard(); renderBoard(); renderLoadBoard(); renderOrgBuilder();
   /* nav */
@@ -2427,6 +2627,18 @@ function init(){
   $("wlApplyUrl").addEventListener("input", function(){ state.brand.applyUrl = this.value; save(); renderAds(); });
   /* ai visibility */
   $("aiArea").addEventListener("input", function(){ state.aiVis.area = this.value; save(); renderAiVis(); });
+  /* plug-ins & AI */
+  $("plugAliceBtn").addEventListener("click", function(ev){ togglePlugInterest("alice", ev); });
+  $("plugSparkBtn").addEventListener("click", function(ev){ togglePlugInterest("spark", ev); });
+  $("byoSave").addEventListener("click", saveByo);
+  $("byoDisconnect").addEventListener("click", disconnectByo);
+  document.querySelectorAll("#byoChips .prov-chip").forEach(function(c){
+    c.addEventListener("click", function(){
+      $("byoProvider").value = c.getAttribute("data-prov");
+      document.querySelectorAll("#byoChips .prov-chip").forEach(function(x){ x.classList.toggle("sel", x === c); });
+    });
+  });
+  $("byoProvider").addEventListener("change", renderPlugins);
   $("aiCardCopy").addEventListener("click", function(){ copyText(aiBusinessCard(), "AI Business Card copied — paste it into your website <head>"); });
   $("aiProfileCopy").addEventListener("click", function(){ copyText(answerProfile(), "Answer Profile copied — publish it as yoursite.com/llms.txt"); });
   /* apply-link landing */
