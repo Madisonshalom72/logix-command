@@ -34,6 +34,8 @@ aside{background:linear-gradient(180deg,var(--bg2),var(--bg));border-right:1px s
 .logo-mark{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-family:var(--font-d);font-weight:900;font-size:20px;color:var(--accent-ink);box-shadow:0 0 22px var(--accent-glow);flex-shrink:0}
 .logo h1{font-family:var(--font-d);font-size:16.5px;letter-spacing:1.2px;line-height:1.15}
 .logo small{display:block;font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:1.6px;font-weight:400}
+.logo small.brand-by{color:var(--accent);font-size:9px;letter-spacing:2.4px;font-weight:700;margin-top:3px}
+.dash-credit{text-align:center;font-family:var(--font-m);font-size:11px;letter-spacing:1.8px;color:var(--faint);margin-top:28px;text-transform:uppercase}
 .nav-btn{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:transparent;border:1px solid transparent;color:var(--muted);padding:11px 13px;border-radius:11px;font-size:16.5px;font-weight:600;letter-spacing:.4px;transition:all .2s ease}
 .nav-btn .ic{font-size:17px;width:22px;text-align:center}
 .nav-btn:hover{color:var(--ink);background:var(--panel)}
@@ -414,7 +416,7 @@ window.MUSE_TICKER = {
   <aside>
     <div class="logo">
       <div class="logo-mark" id="logoMark">L</div>
-      <h1><span class="brand-name">LOGIX COMMAND</span><small class="brand-tag">LOGISTICS MANAGER OS</small></h1>
+      <h1><span class="brand-name">LOGIX COMMAND</span><small class="brand-tag">LOGISTICS MANAGER OS</small><small class="brand-by">BY CAPITAL 7 LOGISTICS</small></h1>
     </div>
     <button class="nav-btn active" data-view="dashboard"><span class="ic">◈</span>Command Dashboard</button>
     <button class="nav-btn" data-view="initiate"><span class="ic">⚡</span>Initiate Job</button>
@@ -471,6 +473,7 @@ window.MUSE_TICKER = {
           <div style="margin-top:18px"><button class="btn small" data-goto="board">OPEN THE BOARD →</button></div>
         </div>
       </div>
+      <div class="dash-credit" id="dashCredit">LOGIX COMMAND — a Capital 7 Logistics product</div>
     </section>
 
     <!-- ================= INITIATE JOB ================= -->
@@ -589,6 +592,10 @@ window.MUSE_TICKER = {
           <div style="height:14px"></div>
           <label class="f">Tagline</label>
           <input type="text" id="wlTag" placeholder="Your tagline">
+          <div style="height:14px"></div>
+          <label class="f">Product Attribution (the "by" line)</label>
+          <input type="text" id="wlAttribution" placeholder="Capital 7 Logistics">
+          <p style="color:var(--faint);font-size:13px;margin-top:8px;line-height:1.5">Ships as "Capital 7 Logistics". White-label buyers replace it with their own company — the Partner tier removes the LOGIX COMMAND name entirely.</p>
           <div style="height:18px"></div>
           <label class="f">Color System</label>
           <div class="swatches" id="wlSwatches" style="margin-bottom:30px"></div>
@@ -610,7 +617,8 @@ window.MUSE_TICKER = {
             <div class="pf-head">
               <div class="logo-mark" id="pfMark">L</div>
               <div><div style="font-family:var(--font-d);font-weight:700;letter-spacing:1px" class="brand-name" id="pfName">LOGIX COMMAND</div>
-              <div style="font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:1.6px" class="brand-tag" id="pfTag">LOGISTICS MANAGER OS</div></div>
+              <div style="font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:1.6px" class="brand-tag" id="pfTag">LOGISTICS MANAGER OS</div>
+              <div style="font-family:var(--font-m);font-size:9px;color:var(--accent);letter-spacing:2.4px;font-weight:700;margin-top:2px" class="brand-by">BY CAPITAL 7 LOGISTICS</div></div>
               <div style="margin-left:auto" class="pill">CLIENT PORTAL</div>
             </div>
             <div class="pf-body">
@@ -856,8 +864,9 @@ window.MUSE_TICKER = {
           <li>AI Business Card + Answer Profile (llms.txt) generators — built to be found and cited by the answer engines</li>
           <li>Engine-source checklist — Google, Bing, LinkedIn, Indeed, Facebook and your site</li>
         </ul>
-        <a class="btn" style="width:100%;justify-content:center" href="mailto:capital7lllc@gmail.com?subject=LOGIX%20COMMAND%20waitlist%20%E2%80%94%20Growth%20Pack">ADD THE GROWTH PACK</a>
+        <a class="btn" style="width:100%;justify-content:center" id="gpWaitlist" href="mailto:capital7lllc@gmail.com?subject=LOGIX%20COMMAND%20waitlist%20%E2%80%94%20Growth%20Pack%20%E2%80%94%20by%20Capital%207%20Logistics">ADD THE GROWTH PACK</a>
       </div>
+      <p style="text-align:center;color:var(--muted);font-size:13.5px;margin-top:22px">Built and operated by <span id="subCredit">Capital 7 Logistics</span>.</p>
     </section>
   </main>
 </div>
@@ -1055,8 +1064,9 @@ function buildLumperDemo(){
     slots:[ {role:"lumperlead", count:1, reqCert:null, assigned:[]}, {role:"lumper", count:3, reqCert:null, assigned:[]} ] } };
 }
 function migrate(){
-  if(!state.brand) state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold" };
+  if(!state.brand) state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", attribution:"Capital 7 Logistics" };
   if(state.brand.applyUrl == null) state.brand.applyUrl = "";
+  if(state.brand.attribution == null || state.brand.attribution === "") state.brand.attribution = "Capital 7 Logistics";
   if(!state.rates) state.rates = {};
   if(!state.entitlements) state.entitlements = { growthPack:true };
   if(state.entitlements.growthPack == null) state.entitlements.growthPack = true;
@@ -1103,7 +1113,7 @@ function syncStaffing(job){
   }
 }
 function seed(){
-  state = { brand:{ name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl:"" },
+  state = { brand:{ name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl:"", attribution:"Capital 7 Logistics" },
     jobs:[], workers:[], postings:[], actingId:null, feed:[], tpl:"growing",
     rates:{}, entitlements:{ growthPack:true }, aiVis:{ area:"Northeast Pennsylvania", checks:{} }, _lumperSeeded:true, training:{}, acadId:null };
   /* ---- workers ---- */
@@ -1183,6 +1193,15 @@ function applyBrand(){
   r.setProperty("--accent-soft", rgba(p.accent, .12)); r.setProperty("--accent-glow", rgba(p.accent, .45));
   document.querySelectorAll(".brand-name").forEach(function(el){ el.textContent = b.name; });
   document.querySelectorAll(".brand-tag").forEach(function(el){ el.textContent = b.tag; });
+  var attr = (b.attribution || "").trim() || "Capital 7 Logistics";
+  document.querySelectorAll(".brand-by").forEach(function(el){ el.textContent = "BY " + attr.toUpperCase(); });
+  var dc = $("dashCredit"); if(dc) dc.textContent = b.name + " — a " + attr + " product";
+  var sc = $("subCredit"); if(sc) sc.textContent = attr;
+  var gp = $("gpWaitlist");
+  if(gp) gp.href = "mailto:capital7lllc@gmail.com?subject=" + encodeURIComponent("LOGIX COMMAND waitlist — Growth Pack — by " + attr) +
+    "&body=" + encodeURIComponent("Hi — please add the Growth Pack to my LOGIX COMMAND subscription.\n\nLOGIX COMMAND — by " + attr + ".");
+  var wat = $("wlAttribution");
+  if(wat && document.activeElement !== wat) wat.value = attr === "Capital 7 Logistics" ? "" : attr;
   var first = (b.name || "L").trim().charAt(0).toUpperCase() || "L";
   ["logoMark","pfMark"].forEach(function(id){ var el = $(id); if(el) el.textContent = first; });
   document.title = b.name + " — Logistics Manager OS";
@@ -1583,7 +1602,7 @@ function renderPricing(){
       '<div class="p-tag">' + esc(t.tag) + "</div><h4>" + esc(t.name) + '</h4><div class="amt">$' + t.amt + "<small>/mo</small></div>" +
       '<div class="setup">' + (t.setup ? "+ $" + t.setup + " one-time setup" : "No setup fee") + '</div><div class="setup" style="color:var(--accent)">Recruiting ads: Growth Pack add-on</div><ul>' +
       t.feats.map(function(f){ return "<li>" + esc(f) + "</li>"; }).join("") + "</ul>" +
-      '<a class="btn ' + (t.hot ? "primary" : "") + '" style="width:100%;justify-content:center" href="mailto:capital7lllc@gmail.com?subject=' + encodeURIComponent("LOGIX COMMAND waitlist — " + t.name) + '">JOIN THE WAITLIST</a></div>';
+      '<a class="btn ' + (t.hot ? "primary" : "") + '" style="width:100%;justify-content:center" href="mailto:capital7lllc@gmail.com?subject=' + encodeURIComponent("LOGIX COMMAND waitlist — " + t.name + " — by " + ((state.brand.attribution || "").trim() || "Capital 7 Logistics")) + "&body=" + encodeURIComponent("Hi — please add me to the LOGIX COMMAND waitlist for the " + t.name + " tier.\n\nLOGIX COMMAND — by " + ((state.brand.attribution || "").trim() || "Capital 7 Logistics") + ".") + '">JOIN THE WAITLIST</a></div>';
   }).join("");
 }
 </script>
@@ -2387,18 +2406,19 @@ function init(){
   /* white label */
   $("wlName").addEventListener("input", function(){ state.brand.name = (this.value || "").trim() || "LOGIX COMMAND"; applyBrand(); renderAds(); });
   $("wlTag").addEventListener("input", function(){ state.brand.tag = (this.value || "").trim() || "LOGISTICS MANAGER OS"; applyBrand(); renderAds(); });
+  $("wlAttribution").addEventListener("input", function(){ state.brand.attribution = (this.value || "").trim() || "Capital 7 Logistics"; applyBrand(); save(); renderPricing(); });
   $("wlCapital7").addEventListener("click", function(){
-    state.brand = { name:"Capital 7 Logistics", tag:"MOVING · HANDYMAN · LOGISTICS", preset:"gold", applyUrl: state.brand.applyUrl || "" };
-    applyBrand(); save(); renderAds(); toast("♛ Rebranded — the whole platform is now Capital 7 Logistics");
+    state.brand = { name:"Capital 7 Logistics", tag:"MOVING · HANDYMAN · LOGISTICS", preset:"gold", applyUrl: state.brand.applyUrl || "", attribution:"Capital 7 Logistics" };
+    applyBrand(); save(); renderAds(); renderPricing(); toast("♛ Rebranded — the whole platform is now Capital 7 Logistics");
   });
   $("wlDefault").addEventListener("click", function(){
-    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl: state.brand.applyUrl || "" };
-    applyBrand(); save(); renderAds(); toast("Brand reset to LOGIX COMMAND");
+    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl: state.brand.applyUrl || "", attribution: state.brand.attribution || "Capital 7 Logistics" };
+    applyBrand(); save(); renderAds(); renderPricing(); toast("Brand reset to LOGIX COMMAND");
   });
   $("wlSave").addEventListener("click", function(){ save(); toast("💾 Brand saved — it persists on this device"); });
   $("wlReset").addEventListener("click", function(){
-    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl: state.brand.applyUrl || "" };
-    applyBrand(); save(); renderAds(); toast("Brand reset");
+    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl: state.brand.applyUrl || "", attribution: state.brand.attribution || "Capital 7 Logistics" };
+    applyBrand(); save(); renderAds(); renderPricing(); toast("Brand reset");
   });
   /* rates + growth pack */
   $("ratesSave").addEventListener("click", function(){ save(); renderOrgBuilder(); renderRates(); toast("💾 Rates saved — labor math is live"); });
