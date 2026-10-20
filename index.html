@@ -340,6 +340,51 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px}
   .pos{width:100%}
   .hero-in{padding:22px}
 }
+
+/* ---- Training Academy ---- */
+.acad-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
+.acad-stat{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px}
+.acad-stat .v{font-family:var(--font-d);font-size:32px;font-weight:900;color:var(--accent);line-height:1}
+.acad-stat .l{font-family:var(--font-m);font-size:10.5px;letter-spacing:1.4px;color:var(--muted);margin-top:8px;text-transform:uppercase;line-height:1.5}
+.track-head{display:flex;justify-content:space-between;align-items:flex-end;gap:18px;margin:30px 0 14px;flex-wrap:wrap}
+.track-prog{min-width:210px;flex:0 1 280px}
+.track-prog span{font-family:var(--font-m);font-size:11px;letter-spacing:1.2px;color:var(--muted);display:block;margin-bottom:6px}
+.modgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:15px}
+.modcard{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:9px;transition:border-color .2s}
+.modcard:hover{border-color:var(--line2)}
+.modcard.open{border-color:var(--accent)}
+.m-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.m-tag{font-family:var(--font-m);font-size:10px;letter-spacing:1.6px;color:var(--accent);text-transform:uppercase;font-weight:700}
+.m-mins{font-family:var(--font-m);font-size:10px;letter-spacing:1.2px;color:var(--faint)}
+.modcard h5{font-family:var(--font-d);font-size:17.5px;font-weight:800;line-height:1.25}
+.m-blurb{color:var(--muted);font-size:14px;line-height:1.55;flex:1}
+.m-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
+#acadPlayer{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--accent);border-radius:var(--radius);padding:24px;margin:6px 0 8px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.lesson{padding:13px 0;border-bottom:1px solid var(--line)}
+.lesson:last-of-type{border-bottom:none}
+.lesson h5{font-family:var(--font-d);font-size:16px;margin-bottom:5px;color:var(--ink)}
+.lesson p{color:var(--muted);font-size:15px;line-height:1.65}
+.qblock{padding:14px 0;border-bottom:1px solid var(--line)}
+.qblock:last-of-type{border-bottom:none}
+.qtext{font-weight:700;font-size:15.5px;margin-bottom:10px;line-height:1.5}
+.qopt{display:flex;gap:11px;align-items:flex-start;padding:9px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:7px;cursor:pointer;font-size:14.5px;line-height:1.5;color:var(--muted)}
+.qopt:hover{border-color:var(--line2);color:var(--ink)}
+.qopt input{width:17px;height:17px;accent-color:var(--accent);margin-top:2px;flex-shrink:0}
+.qopt.locked{cursor:default}
+.qopt.right{border-color:var(--good);color:var(--ink);background:rgba(61,220,132,.07)}
+.qopt.wrong{border-color:var(--bad);color:var(--ink);background:rgba(255,90,90,.07)}
+.qwhy{font-size:13.5px;color:var(--muted);line-height:1.55;margin-top:8px;border-left:3px solid var(--accent);padding-left:11px}
+.score-banner{border-radius:12px;padding:16px 18px;font-family:var(--font-d);font-size:19px;font-weight:800;margin-bottom:8px}
+.score-banner.pass{border:1px solid var(--good);color:var(--good);background:rgba(61,220,132,.07)}
+.score-banner.fail{border:1px solid var(--bad);color:var(--bad);background:rgba(255,90,90,.07)}
+.score-banner .sb-sub{font-family:inherit;font-size:13.5px;font-weight:600;color:var(--muted);margin-top:5px}
+.mtx{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+.mtx th{font-family:var(--font-m);font-size:10.5px;letter-spacing:1.4px;color:var(--muted);text-align:center;padding:9px 10px;border-bottom:1px solid var(--line2);text-transform:uppercase}
+.mtx td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink)}
+.mtx td.mpct{text-align:center;font-family:var(--font-m);font-weight:700}
+.lt-train{font-family:var(--font-m);font-size:10.5px;letter-spacing:1.1px;color:var(--cyan);margin-top:8px;text-transform:uppercase;line-height:1.6}
+.sl-flag{color:var(--warn);font-size:13px;font-weight:700;margin-top:7px;line-height:1.5}
+.w-train{font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.6}
 </style>
 </head>
 <body>
@@ -375,6 +420,7 @@ window.MUSE_TICKER = {
     <button class="nav-btn" data-view="initiate"><span class="ic">⚡</span>Initiate Job</button>
     <button class="nav-btn" data-view="board"><span class="ic">▦</span>Workflow Board</button>
     <button class="nav-btn" data-view="loadboard"><span class="ic">🧲</span>Load &amp; Worker Board</button>
+    <button class="nav-btn" data-view="academy"><span class="ic">🎓</span>Training Academy</button>
     <button class="nav-btn" data-view="org"><span class="ic">♟</span>Org Builder</button>
     <button class="nav-btn" data-view="intake"><span class="ic">📥</span>Crew Intake</button>
     <button class="nav-btn" data-view="whitelabel"><span class="ic">🎨</span>White-Label Lab</button>
@@ -624,6 +670,31 @@ window.MUSE_TICKER = {
       </div>
       <div id="zone-loads"><div class="lb-grid" id="lbGrid"></div></div>
       <div id="zone-roster" style="display:none"><div class="wgrid" id="rosterGrid"></div></div>
+    </section>
+
+    <!-- ================= TRAINING ACADEMY ================= -->
+    <section class="view" id="view-academy">
+      <div class="sec-head">
+        <div class="tag">Training Academy</div>
+        <h3>TRAINED CREWS DON'T GUESS. THEY KNOW.</h3>
+        <p>Short, real modules for the physical work — lumper dock craft, body mechanics, freight care, and one craft module per labor line. Lessons, a four-question quiz, a 75% pass mark. Records ride with the worker onto every board in the system.</p>
+      </div>
+      <div class="acad-stats" id="acadStats"></div>
+      <div class="acting-bar">
+        <div>
+          <div style="font-family:var(--font-d);font-size:14px;letter-spacing:.6px">TRAINING AS</div>
+          <div style="color:var(--muted);font-size:13.5px">Pick a worker — lessons and quiz passes save to their record</div>
+        </div>
+        <select id="acadAs"></select>
+        <span id="acadInfo" style="font-size:14.5px;color:var(--muted)"></span>
+      </div>
+      <div id="acadPlayer" style="display:none"></div>
+      <div id="acadTracks"></div>
+      <div class="panel" style="margin-top:28px">
+        <h4>CREW TRAINING MATRIX</h4>
+        <div class="p-sub">Completion by worker and track, across the whole roster. Managers: chase the gaps before they become incidents.</div>
+        <div id="acadMatrix" style="overflow-x:auto"></div>
+      </div>
     </section>
 
     <!-- ================= CREW INTAKE ================= -->
@@ -991,6 +1062,8 @@ function migrate(){
   if(state.entitlements.growthPack == null) state.entitlements.growthPack = true;
   if(!state.aiVis) state.aiVis = { area:"Northeast Pennsylvania", checks:{} };
   if(!state.aiVis.checks) state.aiVis.checks = {};
+  if(!state.training) state.training = {};
+  if(state.acadId === undefined) state.acadId = null;
   (state.jobs || []).forEach(function(j){ if(!j.hours) j.hours = 8; });
   if(!state._lumperSeeded){
     var demo = buildLumperDemo();
@@ -1032,7 +1105,7 @@ function syncStaffing(job){
 function seed(){
   state = { brand:{ name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl:"" },
     jobs:[], workers:[], postings:[], actingId:null, feed:[], tpl:"growing",
-    rates:{}, entitlements:{ growthPack:true }, aiVis:{ area:"Northeast Pennsylvania", checks:{} }, _lumperSeeded:true };
+    rates:{}, entitlements:{ growthPack:true }, aiVis:{ area:"Northeast Pennsylvania", checks:{} }, _lumperSeeded:true, training:{}, acadId:null };
   /* ---- workers ---- */
   var W = function(name, roles, certs, status, done){ return { id:uid("w"), name:name, roles:roles, certs:certs, status:status, jobsDone:done, isNew:false, phone:"", county:"Luzerne" }; };
   state.workers = [
@@ -1048,6 +1121,12 @@ function seed(){
   ];
   state.workers[8].isNew = true;
   state.actingId = state.workers[0].id;
+  state.acadId = state.workers[0].id;
+  /* ---- seeded training records (the Academy is alive on first open) ---- */
+  var TREC = function(score, daysAgo){ return { done:true, score:score, at: Date.now() - daysAgo * 864e5 }; };
+  state.training = {};
+  state.training[state.workers[0].id] = { "body-mechanics": TREC(100, 6), "forklift-awareness": TREC(100, 6), "slab-handling": TREC(75, 2) };
+  state.training[state.workers[1].id] = { "dock-safety": TREC(100, 9), "seals-counts": TREC(100, 9), "body-mechanics": TREC(100, 8), "ppe-heat": TREC(75, 8), "forklift-awareness": TREC(100, 7), "jobsite-conduct": TREC(100, 7) };
   /* ---- demo jobs ---- */
   var slab = mkJob({ service:"slab", client:"ABG Stone Imports", title:"Quartz Slab Program — 1,650 Slabs",
     site:"1055 Hanover St, Wilkes-Barre, PA", dest:"Scranton Warehouse", units:1650, value:11500,
@@ -1114,7 +1193,7 @@ function applyBrand(){
 }
 
 /* ================= NAV ================= */
-var VIEW_TITLES = { dashboard:"COMMAND DASHBOARD", initiate:"INITIATE JOB", board:"WORKFLOW BOARD", loadboard:"LOAD & WORKER BOARD", org:"ORG BUILDER", intake:"CREW INTAKE", whitelabel:"WHITE-LABEL LAB", pricing:"SUBSCRIPTION" };
+var VIEW_TITLES = { dashboard:"COMMAND DASHBOARD", initiate:"INITIATE JOB", board:"WORKFLOW BOARD", loadboard:"LOAD & WORKER BOARD", academy:"TRAINING ACADEMY", org:"ORG BUILDER", intake:"CREW INTAKE", whitelabel:"WHITE-LABEL LAB", pricing:"SUBSCRIPTION" };
 function gotoView(v){
   document.querySelectorAll(".view").forEach(function(s){ s.classList.toggle("active", s.id === "view-" + v); });
   document.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-view") === v); });
@@ -1123,6 +1202,7 @@ function gotoView(v){
   if(v === "dashboard") renderDashboard();
   if(v === "board") renderBoard();
   if(v === "loadboard") renderLoadBoard();
+  if(v === "academy") renderAcademy();
   if(v === "org") renderOrgBuilder();
   if(v === "intake") renderAds();
   if(v === "whitelabel") renderRates();
@@ -1509,6 +1589,363 @@ function renderPricing(){
 </script>
 
 <script>
+/* ================= TRAINING ACADEMY ================= */
+/* state.training = { workerId: { moduleId: { done, score, at } } } — records ride with the worker. */
+var TRACKS = [
+  { key:"lumper", name:"LUMPER TRACK", sub:"The dock craft — trailer entry, seals, restacks, pace. The flagship crew skill set." },
+  { key:"core", name:"PHYSICAL LABOR CORE", sub:"Every physical worker, every service line. No exceptions, no shortcuts." },
+  { key:"service", name:"SERVICE-SPECIFIC", sub:"One module per labor line — the craft details that keep freight and people whole." }
+];
+var MODULES = [
+  { id:"dock-safety", track:"lumper", tag:"LUMPER SERVICES", title:"Dock Safety & Trailer Entry", mins:12,
+    blurb:"Chocks, restraints, plates, floor checks — nobody enters an unsecured trailer.",
+    sections:[
+      ["Secure the trailer before anything else","Before a trailer is touched, the brakes are set and the wheels are chocked. Verify the dock lock or restraint is engaged and showing green, and that the dock plate is set flat, rated for the load, and not bouncing. If any one of those three — chocks, restraint, plate — is missing, the trailer is not ready and nobody goes in. Never take the driver's word for it; look with your own eyes."],
+      ["The entry check","Walk the trailer before the crew enters. Floor boards must be sound — no soft spots, holes or broken boards that can drop a foot or a pallet jack. Check the roof and walls, and confirm the load is stable and not leaning against the doors. Open the doors slowly and stand to the side: a shifted load can fall out the moment the doors swing."],
+      ["Lockout awareness — glad hands and yard moves","A trailer can be pulled away mid-unload if the yard doesn't know a crew is inside. The restraint and the glad-hand (air-line) lock exist to prevent exactly that. Only the Lead authorizes releasing a restraint — and only after the unload log is signed and the crew is confirmed out of the trailer."],
+      ["Spotter and communication rules","One voice runs the door: the Lumper Lead. Anyone can call STOP for a hazard, and work halts until it is cleared. Keep the door path clear, agree on hand signals before the first case moves, and never enter a trailer while a forklift is actively working it unless the operator has set the load down and acknowledged you."]
+    ],
+    quiz:[
+      ["Before anyone enters a trailer, which three things must be verified?",["The seal photo, count sheet and radio check","Wheels chocked, dock restraint engaged, dock plate set","Doors open, lights on, driver present","Pallet jack ready, wrap stocked, Lead on site"],1,"Chocks, restraint and plate are what physically keep the trailer at the dock and bridge the gap safely."],
+      ["You open a trailer door and the load is leaning hard against it. What do you do?",["Catch it as it falls","Push it back with a pallet jack","Secure the door and call the Lead — the load gets restacked from a safe position","Unload it quickly before it falls"],2,"Falling freight is never caught by a person. The Lead plans a safe restack."],
+      ["Who can authorize releasing the dock restraint?",["The driver","Any lumper on the crew","Only the Lead, after the log is signed and the crew is confirmed out","Dispatch, by phone"],2,"The restraint release is the moment a trailer can be pulled — it belongs to one named person, after a signed log and a confirmed-empty trailer."],
+      ["The trailer floor has a soft, spongy section near the rear. Correct action?",["Work around it quietly","Mark it, tell the Lead, and keep feet and wheels off it until it is cleared","Cover it with cardboard","Load over it first so it is covered"],1,"A weak floor can drop a loaded pallet jack. It gets reported, marked and avoided — never hidden."]
+    ] },
+  { id:"seals-counts", track:"lumper", tag:"LUMPER SERVICES", title:"Seals, Counts & the Unload Log", mins:10,
+    blurb:"Seal verification, door counts and the signed unload log — the paper that protects everyone.",
+    sections:[
+      ["The seal is the contract","The seal number on the paperwork is the proof the load was not touched in transit. Before breaking any seal, read the number off the paperwork, read the number on the seal, and confirm they match — out loud, to the Lead. A mismatch means stop: photograph everything and call the Lead before that door opens."],
+      ["Photo the seal, then break it","Photograph the intact seal with the trailer number in frame before cutting it. Cut with the proper tool and keep the broken seal with the paperwork — it is evidence. Never break a seal 'to save time' and verify later; the chain of custody is the entire point."],
+      ["Count as you unload","Counts happen at the door, piece by piece or pallet by pallet, against the bill of lading and packing list — not from memory at the end of the trailer. Call counts to the log keeper, watch for mixed SKUs on one pallet, and set damaged or wet cases aside in the exceptions spot, photographed where you found them."],
+      ["The unload log and the Lead's signature","Every trailer gets a log line: trailer number, seal number, door, start time, stop time, piece count, exceptions. Shortages, overages and damage are reported the moment they are found — not at shift end — because the claim window closes fast. The work on that trailer is not done until the Lumper Lead reviews and signs the log."]
+    ],
+    quiz:[
+      ["The seal number on the trailer does not match the paperwork. First move?",["Break it anyway and note it later","Stop, photograph everything, and call the Lead before opening","Swap in a new seal","Refuse the trailer and walk away"],1,"A mismatch can mean a claim or the wrong trailer entirely. Opening the door destroys the evidence."],
+      ["When do piece counts happen?",["At the end of the shift, from memory","As freight comes off the trailer, checked against the paperwork","Only if the driver asks","The facility counts for us"],1,"Door counts against the paperwork are the only counts that hold up. Memory counts do not."],
+      ["You find water-damaged cases halfway through a pallet. What do you do?",["Bury them in the middle of the restack","Throw them out","Set them aside in the exceptions spot, photograph them, and report immediately","Mention it at lunch"],2,"Claims run on same-shift documentation and photos taken where the damage was found."],
+      ["A trailer is officially done when…",["The last box is out","The freight is stacked somewhere on the dock","The unload log is complete and the Lead has signed it","The driver leaves"],2,"The signed log is the record — counts, times, seal and exceptions. No signature, no done."]
+    ] },
+  { id:"restack-pallet", track:"lumper", tag:"LUMPER SERVICES", title:"Restack & Pallet Building", mins:12,
+    blurb:"Rebuild shifted loads into square, wrapped, one-unit pallets that survive the next leg.",
+    sections:[
+      ["Why loads shift — and what a restack fixes","Braking, cornering and road vibration walk freight toward the doors and lean it sideways. A restack is not cosmetic: a rebuilt pallet with square corners, interlocked tiers and a tight wrap survives the next leg of the trip without crushing cases or falling at the next door."],
+      ["Build the base right","The heaviest, sturdiest cases go on the bottom; nothing heavy rides on crushable cartons. Keep the footprint inside the pallet edges — overhang gets torn off by forks and racking, and underhang wastes stability. Align the corners so weight travels case to case, never onto empty space."],
+      ["Tier and brick patterns","Alternate each layer's orientation — the brick or interlock pattern — so the stack locks together instead of forming columns that split apart under vibration. Keep layers level: fill gaps with dunnage or a filler case rather than bridging over them. Follow the spec for max height and case orientation — labels out, this-side-up arrows up."],
+      ["Stretch-wrap technique","Lock the tail to the pallet. Wrap the base with two tight passes that capture the bottom layer AND the pallet itself, spiral up with about 50 percent overlap, finish with two passes at the top and tuck the tail. A good wrap is firm enough that load and pallet move as one unit when tilted — the one-unit test a Lead may spot-check at any time."]
+    ],
+    quiz:[
+      ["The heaviest cases belong…",["On top, for easy access","In the middle","On the bottom — and never on top of crushable cartons","Wherever they fit"],2,"Heavy on the bottom, light on top. Weight stacked on crushable cartons destroys the freight below it."],
+      ["What does the brick / interlock pattern prevent?",["Overhang","Columns splitting apart under vibration","Label damage","Wrap waste"],1,"Interlocked tiers lock the stack together; straight columns shear and split on the road."],
+      ["The correct stretch-wrap sequence is:",["Top first, then the base","Base lock capturing pallet and bottom layer, spiral up at 50 percent overlap, top passes, tuck the tail","One pass around the middle","Wrap only the corners"],1,"Base lock first — if the wrap does not capture the pallet, the load is not attached to it."],
+      ["Cases hanging past the pallet edge are a problem because…",["They look messy","Forks and racking tear them off, and the stack loses stability","They make counting harder","They are fine as long as they are wrapped"],1,"Overhang is torn off by forks and racking, and it cantilever-loads the stack. Inside the edges, always."]
+    ] },
+  { id:"pace-sorting", track:"lumper", tag:"LUMPER SERVICES", title:"Pace, Sorting & Freight Care", mins:10,
+    blurb:"Sort at the door, handle freight like it matters, and keep the turn clock honest.",
+    sections:[
+      ["Sort it as it comes off","Sorting on the dock beats re-handling later. Freight leaves the trailer already grouped by PO, aisle or destination, and staged in its lane. Read labels while you carry, place — never toss — each case into its zone, and flag mixed pallets to the Lead instead of burying them."],
+      ["Freight care is the job","No throwing, no dropping, no standing or kneeling on cases. Fragile marks and this-side-up arrows are instructions, not decorations. Heavy-over-light applies in your arms too: never carry a heavy case on top of a fragile one, and set every load down square so the next person's lift is clean."],
+      ["Rollers, conveyors and dock flow","On roller lines, keep hands clear of pinch points and never ride or sit on a conveyor. Feed freight at the pace the line actually takes — flooding a line jams it, starving it wastes the crew. Keep your lane, your staging area and the door path swept and clear as you go; clutter is where injuries hide."],
+      ["Turn-time discipline and calling the Lead","Drivers and doors run on clocks, and a steady pace beats heroic bursts followed by standing around. Watch your trailer's turn target and flag problems early: damaged freight, a count that is drifting, a door issue. Calling the Lead at the first sign of trouble is doing the job right — never an interruption."]
+    ],
+    quiz:[
+      ["Sorting happens best…",["After everything is stacked on the dock","As freight comes off the trailer, by PO, aisle or destination","Later, at the warehouse","Only for fragile freight"],1,"Sorting at the door kills re-handling — and every re-handle is another chance to break freight."],
+      ["A case is marked fragile, this-side-up. You:",["Ignore it — it is marketing","Carry it level, arrows up, never under a heavy case","Put it on the bottom to protect the others","Toss it gently onto the pallet"],1,"Orientation marks are handling instructions. Level, arrows up, nothing heavy on top."],
+      ["The roller line is jammed ahead of you. You:",["Push harder to clear it","Climb in and clear the jam","Stop feeding, keep hands clear of pinch points, and call it out","Route around through the forklift lane"],2,"Hands stay out of pinch points and bodies stay out of the line. Stop, call it out, let it be cleared safely."],
+      ["Mid-trailer, you notice the count drifting off the paperwork. Best move?",["Finish the trailer, mention it later","Flag the Lead immediately, while it is cheap to fix","Adjust the log to match","Switch to another trailer"],1,"A count problem found at case 40 costs minutes. Found at the end, it costs the claim."]
+    ] },
+  { id:"body-mechanics", track:"core", tag:"PHYSICAL LABOR CORE", title:"Body Mechanics & Safe Lifting", mins:10,
+    blurb:"Neutral spine, legs do the work, team lifts over 50 lbs — backs are career equipment.",
+    sections:[
+      ["The neutral spine","Your back is strongest when it keeps its natural S-curve. Set up every lift: feet shoulder-width, load close to your body, core braced, hinge at the hips — not the waist. Bending at the waist with straight legs turns a light box into several hundred pounds of force at the lower back."],
+      ["Legs lift, backs break","Drive the lift with your legs and keep the load in the power zone, between your knees and your chest. Never twist under load — turn with your feet. If a lift requires reaching, leaning or twisting, the setup is wrong: move your feet or move the load first."],
+      ["Team lifts and the 50-lb rule","Anything over 50 lbs — or awkward, or unstable at any weight — is a team lift or a mechanical lift. No exceptions for 'just this once.' One person calls the lift ('ready — on three'), both keep the load level, and either person can call a set-down at any time. Pride is not PPE."],
+      ["Mechanical aids first, micro-breaks always","Dollies, pallet jacks, carts and lifters exist so backs do not have to. Reaching for the tool is the professional move, not the slow one. Rotate heavy tasks across the crew, take micro-breaks, and warm up cold muscles before the first lift of the shift — not after something hurts."]
+    ],
+    quiz:[
+      ["The correct lift setup is:",["Straight legs, bend at the waist","Load close, core braced, hinge at the hips, lift with the legs","Twist as you lift to save steps","Reach as far as you can so you move less"],1,"Hips hinge, legs drive, spine neutral. That is the strongest, safest lifting posture there is."],
+      ["A case weighs 65 lbs and is awkward. You:",["Lift it fast before it gets heavier","Drag it to the pallet","Team lift or mechanical aid — over 50 lbs is never a solo lift","Skip it and say nothing"],2,"Over 50 lbs, awkward or unstable means team or machine. Every time, including 'just this once.'"],
+      ["You need to change direction while carrying a load. You:",["Twist at the waist","Turn with your feet, keeping the load steady","Swing the load around with momentum","Rest it on your shoulder and spin"],1,"Twisting under load is one of the top causes of back injuries in this trade. Feet move, spine doesn't."],
+      ["Reaching for a dolly instead of hand-carrying is…",["The slow way","The professional standard — mechanical aids first","Only for new hires","Only for freight over 200 lbs"],1,"Tools first is the standard. The dolly is faster AND it saves the back for the next lift."]
+    ] },
+  { id:"ppe-heat", track:"core", tag:"PHYSICAL LABOR CORE", title:"PPE & Heat Safety", mins:10,
+    blurb:"Task PPE every shift, the heat-illness ladder, and the water-rest-shade rhythm.",
+    sections:[
+      ["PPE by task, every shift","Steel-toe boots wherever freight moves. Gloves matched to the freight — cut-resistant for slab and banding work. Hi-vis vest on any dock or yard. Eye protection for cutting, banding and demo. PPE lives on your body, not in your locker — and if a piece is damaged or missing, tell the Lead before the shift starts, not after the incident."],
+      ["Heat illness — know the ladder","Heat exhaustion shows as heavy sweating, weakness, nausea, headache and dizziness: move to shade, loosen clothing, sip water, and tell the Lead. Heat stroke is the emergency at the top of the ladder — a worker who is confused, or hot with skin gone dry: that is a 911 call and active cooling (cold water or ice at the neck, armpits and groin) while you wait. Nobody toughs out heat stroke."],
+      ["Water, rest, shade — the rhythm","Hydrate before you are thirsty: roughly a cup of water every 15 to 20 minutes during hard work in heat, with electrolytes on long hot shifts. Take shade breaks as prescribed. Run the buddy check — confusion and stumbling show up to a partner before the victim feels them — and speak up early. Early symptoms are cheap to fix."],
+      ["Cold stress note","Winter docks carry their own risk: numb fingers lose grip, layers can snag, and wet gloves in wind accelerate frostbite. Keep a dry glove swap ready, take warm-up breaks, and treat shivering that suddenly stops as a red flag — not a recovery."]
+    ],
+    quiz:[
+      ["A crewmate is confused, hot, and has stopped sweating. You:",["Hand them a soda","Sit them in the truck with the AC on","Call 911 and start active cooling — this is heat stroke","Finish the trailer first, then check on them"],2,"Confusion plus hot, dry skin is heat stroke — a life-threatening emergency. 911 and active cooling, immediately."],
+      ["Buddy checks matter because…",["The Lead requires the paperwork","Heat illness signs like confusion show to others before the victim notices them","They fill break time","Insurance asks for them"],1,"You are the early-warning system for your partner. Confusion and stumbling are visible from outside first."],
+      ["The hydration standard for hard work in heat is:",["Drink at lunch","About a cup of water every 15–20 minutes, before thirst hits","Energy drinks on breaks","Water only after the shift"],1,"Thirst lags behind need. Small, steady intake every 15–20 minutes keeps you ahead of the heat."],
+      ["Your gloves are torn before the shift. You:",["Work anyway — it is light freight","Tell the Lead and get a replacement pair before starting","Wrap them in tape","Borrow a pair mid-shift if it gets bad"],1,"Damaged PPE gets replaced before the shift starts. That is what the Lead and the spare kit are for."]
+    ] },
+  { id:"forklift-awareness", track:"core", tag:"PHYSICAL LABOR CORE", title:"Forklift Awareness for Ground Crew", mins:10,
+    blurb:"Pedestrian survival around forklifts — eye contact, blind spots, signals. Awareness only, not certification.",
+    sections:[
+      ["What this module is — and is not","This is pedestrian awareness for ground crew. It does NOT certify you to operate a forklift: only trained, evaluated and authorized operators drive, under OSHA 1910.178. Your job around forklifts is to be predictable, visible, and never in the machine's path."],
+      ["The rules that keep pedestrians alive","Never walk under raised forks or a raised load — ever, for any reason, even 'just for a second.' Never ride on forks or pallets. Stay out of the travel path, and remember the rear end swings wide in the opposite direction of the turn: the tail can hit you even when the forks are nowhere near."],
+      ["Eye contact and the operator's blind spots","A loaded forklift can hide an entire person behind the load and the mast. Assume the operator cannot see you until you have eye contact AND a clear acknowledgment — a wave or thumbs-up back. If you cannot see the operator's eyes, they cannot see you. Cross aisles at corners, slowly, looking both ways, like crossing a street."],
+      ["Spotting and hand signals","When spotting, stand where the operator can see you — never between the machine and a fixed object, and never behind it. Use the agreed signals: palm-up raised hand means STOP (anyone's stop halts the machine), a beckoning motion means come ahead slowly, framing hands show remaining distance. If sight lines break down, stop the movement and reset."]
+    ],
+    quiz:[
+      ["This module certifies you to…",["Drive a forklift","Nothing — it is awareness only; operating requires OSHA 1910.178 training, evaluation and authorization","Drive when the operator is busy","Spot loads from the forks"],1,"Awareness is not certification. Operators are trained, evaluated and authorized — a separate, formal process."],
+      ["A load is raised on forks and you need to get past. You:",["Duck under quickly","Go around the travel path — out from under the load entirely","Wave and run through","Wait directly under the forks until it moves"],1,"Never under raised forks or a raised load. Around, every time, no exceptions."],
+      ["The operator has not acknowledged you. You assume…",["They saw you anyway","They cannot see you until eye contact and acknowledgment","The horn will warn you in time","The load is small, so it is fine"],1,"No eye contact, no acknowledgment, no assumption of safety. Loaded masts hide whole people."],
+      ["While spotting, the safe position is…",["Between the forklift and the racking","Directly behind the machine","Where the operator can see you, clear of the travel path and any fixed object","Standing on the pallet"],2,"Visible to the operator, out of the path, and never pinned between the machine and something solid."]
+    ] },
+  { id:"jobsite-conduct", track:"core", tag:"PHYSICAL LABOR CORE", title:"Jobsite Conduct & Customer Property", mins:10,
+    blurb:"Photo-condition first, respect the site, report it the same shift, phones parked.",
+    sections:[
+      ["Photo-condition before you touch it","Before freight or property is handled, its condition gets photographed — scratches, cracks, dents, existing damage. Thirty seconds of photos before the move is what turns a damage argument into a closed file. If you find pre-existing damage, shoot it and tell the Lead BEFORE the item moves."],
+      ["Respect the site","The customer's building, yard and freight are somebody's business. Stay in assigned areas, keep lanes and exits clear, take no shortcuts through offices or restricted zones, and leave every area cleaner than you found it — straps, wrap tails and banding get binned, not dropped."],
+      ["Report incidents the same shift","Damage, injury, near-miss, a customer's complaint — it goes to the Lead the same shift, while it is still small. Hidden damage always surfaces later, bigger, and as somebody's fault. Reporting early is what professionals do, and it is how the company protects you too."],
+      ["Phone discipline","Phones stay parked while freight is moving — no calls, texts or scrolling in travel paths, on docks, or while spotting. Break areas are for phones. One glance down in a forklift lane is the whole accident report."]
+    ],
+    quiz:[
+      ["Before handling a customer's item, you:",["Move fast before the customer changes their mind","Photograph its condition first, and flag existing damage to the Lead","Ask the customer to sign a waiver","Wrap it quickly so damage cannot be seen"],1,"The before-photo is the proof. Existing damage gets documented before the item moves, not argued after."],
+      ["You scuff a case during a restack. Correct action:",["Turn it so the scuff does not show","Report it to the Lead the same shift","Mention it next week if anyone asks","Blame the inbound load"],1,"Same-shift reporting keeps a scuff a scuff. Hidden, it becomes a claim and a credibility problem."],
+      ["Phone use while spotting a forklift is:",["Fine at low speed","Never — phones stay parked while freight moves","OK for voice calls only","OK if the operator knows"],1,"While freight is moving, phones are parked. Break areas exist for a reason."],
+      ["Wrap tails and banding on the dock floor are:",["The facility's problem","Yours — bin them as you go; clutter causes incidents","A month-end sweep job","Fine to kick under a pallet"],1,"Debris underfoot is a trip, a puncture and a rolled ankle. Clean as you go is the standard."]
+    ] }
+];
+
+MODULES.push(
+  { id:"slab-handling", track:"service", tag:"MATERIALS MOVING — STONE & SLAB", title:"Stone & Slab Handling", mins:12,
+    blurb:"Vacuum lifters, A-frames and two-person carries — stone handled slow and right.",
+    sections:[
+      ["Stone punishes shortcuts","A quartz or granite slab is heavy, brittle at the edges, and worth more than the truck carrying it. It does not bend — it snaps, usually at the worst moment, over somebody's foot. Every move is planned before the slab leaves the bundle: path clear, A-frame ready, crew briefed."],
+      ["Check the lifting gear first","Vacuum lifter pads must be clean and sealing, with the suction gauge in the green through a test lift. Clamps must be rated for the slab's weight, with jaws that bite true. Any gear that fails its check is tagged out on the spot — never 'one more lift.' Test-lift a few inches, hold, check the balance, then move."],
+      ["A-frame loading order and carries","Load A-frames evenly side to side so the frame stays balanced: largest slabs first against the frame, padding between faces, edges protected. Carries are two-person minimum with one caller, the slab kept vertical and hands on the edges — and never a hand under a suspended slab. Tag lines guide the load; hands do not catch it."],
+      ["Set-down and photo discipline","A slab comes down the way it went up: slow, called, onto a prepared frame or bundle — never leaned 'for a minute' against anything unplanned. Photo-log the condition before and after every move. A chip found after set-down with no before-photo becomes your chip."]
+    ],
+    quiz:[
+      ["Before the move, the vacuum lifter's pads are dirty and suction reads weak. You:",["Wipe the pads and go","Tag the gear out and tell the Lead — a failed check stops the lift","Use clamps on the polished face instead","Just lift it lower"],1,"Gear that fails its check is tagged out, on the spot. Stone does not forgive a dropped seal."],
+      ["Hands under a suspended slab are…",["Fine with gloves on","Never — tag lines guide the load; hands never go under it","Fine for the lead hand","Fine at low height"],1,"No body part goes under a suspended slab. Tag lines do the guiding."],
+      ["A-frames are loaded:",["All on one side, for speed","Evenly side to side, largest first, faces padded, edges protected","Smallest slabs first","In whatever order they arrive"],1,"Balanced side to side, biggest against the frame — an unbalanced A-frame is a tipping hazard."],
+      ["A slab may be leaned temporarily against…",["A wall, just for a minute","The side of the truck","Nothing unplanned — only a prepared A-frame or bundle","Another slab"],2,"There is no temporary lean for stone. Prepared frame or bundle, or it does not come down."]
+    ] },
+  { id:"lumber-pulls", track:"service", tag:"LUMBER SERVICES", title:"Lumber Pulls & Banding", mins:10,
+    blurb:"Pull lists, grade marks, banding safety and delivery-order flatbed loads.",
+    sections:[
+      ["Pull to the list","A pull starts at the paperwork: species, dimension, grade, count — pulled in list order and checked off as you go. Short counts and substitutions get flagged to the Lead at the rack, not discovered at the jobsite. Straight, clean stock goes in the bundle; cull goes to the cull pile, never hidden under good boards."],
+      ["Grade marks and reading the board","The grade stamp tells you what a board is rated for, and structural pieces must match the spec on the list. Check every board as it comes off the rack for warp, split ends and rot. A bad board buried in a bundle becomes a rejected load at delivery — and a wasted trip."],
+      ["Banding and strapping safety","Banding under tension is stored energy. Stand to the side of the strap line, never over it. Cut bands with the proper cutter while controlling both ends — a released band whips. Gloves and eye protection go on for every band, and used banding goes straight into the scrap bin, never underfoot."],
+      ["Flatbed load order and forklift handoff","Build loads in delivery order — the last stop rides accessible, the first stop comes off clean — with weight low and centered and nothing overhanging the bed. At the handoff, the puller confirms count and bundle integrity with the operator before the forks slide in, and pedestrians stay clear until the load is set and the operator signals."]
+    ],
+    quiz:[
+      ["At the rack, you find the count short by four boards. You:",["Substitute a similar size","Flag it to the Lead at the rack, before the bundle is built","Note it on the truck paperwork later","Top it up from the cull pile"],1,"Shortages surface at the rack, where they are cheap. At the jobsite, they are a failed delivery."],
+      ["Cutting a tensioned band, you stand…",["Directly over the strap","To the side of the strap line, controlling both ends with the proper cutter","Wherever, as long as gloves are on","Behind the bundle only"],1,"A released band whips along its line. Side position, proper cutter, both ends controlled."],
+      ["Flatbed loads are built…",["Heaviest pieces on top","In delivery order, weight low and centered, nothing past the bed","By board length only","In the order boards come off the rack"],1,"Delivery order, low and centered, inside the bed — a load that unloads right at every stop."],
+      ["Warped or split boards found during a pull go…",["In the middle of the bundle","To the cull pile — never hidden inside good stock","On the truck anyway","Back on top of the rack"],1,"Cull is cull. Hidden bad stock turns into a rejected load and a burned customer."]
+    ] },
+  { id:"warehouse-workflow", track:"service", tag:"WAREHOUSE WORKFLOW CONTRACTING", title:"Warehouse Workflow Basics", mins:10,
+    blurb:"Zones and addresses, pick paths, scanner discipline and the handoff note.",
+    sections:[
+      ["Zones, aisles and addresses","A warehouse runs on locations: zones, aisles, bays, levels — every pallet has an address and the system knows it. Work only in your assigned zones, keep to the marked pedestrian lanes, and never relocate freight without the move existing in the system first. A pallet the system cannot find does not exist."],
+      ["Pick paths and scanner discipline","Pick in the sequenced path the system gives you — it exists to prevent backtracking and collisions. Scan every pick, every put-away, every move: the scan IS the inventory record. A wrong scan is worse than a slow scan, so verify location and count before you confirm."],
+      ["Staging lanes and the dock","Staged freight lives in its lane — labeled, in ship order, with nothing stored in travel paths and nothing blocking doors or fire extinguishers. A clean staging lane at shift end is the handoff you owe the next crew, and the count they can trust."],
+      ["Shift handoff notes","At shift end, the notes tell the next crew what they cannot see: shortages found, damaged locations, equipment quirks, trailers half-finished and their log status. Write it like the reader's shift depends on it — it does. Unfinished work without a note is tomorrow's incident."]
+    ],
+    quiz:[
+      ["A pallet needs moving, but there is no system task for it. You:",["Move it and tell someone later","Do not move it off-system — get the move created first","Move it within the same aisle only","Photograph it and move it"],1,"Off-system freight is lost freight. The move exists in the system first, then the pallet moves."],
+      ["The scan's real job is…",["Speed","The inventory record — accuracy beats speed; verify before confirming","Optional on repeat picks","Only needed for inbound freight"],1,"The scan is the record the whole building runs on. A wrong scan is worse than a slow one."],
+      ["Staging lanes must stay clear of…",["Nothing — staging can go anywhere","Travel paths, doors and fire extinguishers","Only forklift lanes","Only other pallets"],1,"Staged freight lives in its lane. Travel paths, doors and extinguishers stay clear, always."],
+      ["A half-finished trailer at shift end needs…",["Nothing — the next crew will figure it out","A handoff note with its log status, so the next crew can finish it","A brand-new seal","To be emptied before you leave"],1,"The handoff note carries what the next crew cannot see — including exactly where that trailer's log stands."]
+    ] },
+  { id:"move-day", track:"service", tag:"MOVING & RELOCATION", title:"Move-Day Labor", mins:12,
+    blurb:"Pad and wrap first, protect the house, load the truck like a wall, call the stairs.",
+    sections:[
+      ["Pad and wrap — protection before motion","Furniture does not move until it is protected: pads fully covering finished surfaces, shrink wrap holding pads in place and drawers and doors shut, glass and mirrors crated or double-padded. A piece damaged in the truck was really damaged at the wrap station — protection is the job, not the delay before it."],
+      ["Protect the house, not just the furniture","Door jamb guards go on the main path, floor runners down in the traffic lanes, handrail padding on stair turns. The customer's walls and floors are part of the load plan. Damage to the house is the claim customers remember longest — and the easiest one to prevent."],
+      ["Load order in the truck","The truck loads like a wall: heavy, square furniture first, forming a solid base tier; weight distributed and strapped tier by tier; fragile and light pieces on top; nothing riding on upholstery. Last on is first off — so plan the load backward from the destination rooms."],
+      ["Stair carries and customer communication","Stairs are two-person carries with a caller: the person at the bottom sets the pace and calls the steps, hands stay low, the piece tilted to the carry — never rushed by a watching customer. With customers, be friendly, brief and factual: explain what you are doing before you do it, flag pre-existing damage the moment it is spotted, and route concerns to the Crew Lead instead of debating them."]
+    ],
+    quiz:[
+      ["A piece is ready to carry but has not been padded. You:",["Carry it carefully","Pad and wrap it first — protection before motion","Carry it last","Carry it upside down"],1,"Nothing moves unprotected. The wrap station is where truck damage is prevented."],
+      ["Door jamb guards and floor runners protect…",["The crew","The customer's house — they are part of the load plan","The truck","Appearances only"],1,"Walls, jambs and floors are in the plan. House damage is the most remembered, most preventable claim."],
+      ["In the truck, fragile and light items ride…",["On the floor by the door","On top, with heavy square pieces forming strapped base tiers","Against the rear door","In the cab"],1,"Heavy and square form the wall; fragile and light ride on top, never under weight."],
+      ["On a stair carry, the pace is set by…",["The person at the top","The person at the bottom, who calls the steps","The customer","Whoever is stronger"],1,"The bottom carrier bears the load and sees the footing — they call the steps and set the pace."]
+    ] }
+);
+
+/* service-line training gates: accepting a seat on these lines without the module = flagged, not blocked */
+var REQ_MODULE = { lumper:"dock-safety", slab:"slab-handling" };
+var acad = { open:null, phase:"lessons", result:null };
+
+function acadWorker(){ var w = state.acadId ? workerById(state.acadId) : null; return w || (state.workers && state.workers[0]) || null; }
+function trainMap(wid){ return (state.training && state.training[wid]) || {}; }
+function moduleById(id){ return MODULES.filter(function(m){ return m.id === id; })[0]; }
+function moduleTitle(id){ var m = moduleById(id); return m ? m.title : id; }
+function moduleDone(wid, mid){ var r = trainMap(wid)[mid]; return !!(r && r.done); }
+function trackModules(key){ return MODULES.filter(function(m){ return m.track === key; }); }
+function trackPct(wid, key){ var ms = trackModules(key); if(!ms.length) return 0; var d = 0; ms.forEach(function(m){ if(moduleDone(wid, m.id)) d++; }); return Math.round(d / ms.length * 100); }
+function workerTrainPct(wid){ var d = 0; MODULES.forEach(function(m){ if(moduleDone(wid, m.id)) d++; }); return Math.round(d / MODULES.length * 100); }
+/* board helpers (called from the Load Board render + accept flow) */
+function trainLineHTML(job){
+  if(!job) return "";
+  if(job.service === "lumper") return '<div class="lt-train">🎓 TRAINING: LUMPER TRACK — Dock Safety &amp; Trailer Entry before the first solo shift</div>';
+  if(job.service === "slab") return '<div class="lt-train">🎓 TRAINING: Stone &amp; Slab Handling module for every slab crew seat</div>';
+  return "";
+}
+function slotFlagHTML(slot, job){
+  var req = job ? REQ_MODULE[job.service] : null; if(!req) return "";
+  var names = [];
+  (slot.assigned || []).forEach(function(wid){ if(!moduleDone(wid, req)){ var w = workerById(wid); if(w) names.push(w.name.split(" ")[0]); } });
+  if(!names.length) return "";
+  return '<div class="sl-flag">⚠ ' + esc(names.join(" · ")) + " — " + esc(moduleTitle(req)) + " training pending</div>";
+}
+function trainListHTML(w){
+  var done = MODULES.filter(function(m){ return moduleDone(w.id, m.id); });
+  if(!done.length) return "";
+  return '<div class="w-train">🎓 Completed: ' + done.map(function(m){ return esc(m.title); }).join(" · ") + "</div>";
+}
+
+function renderAcademy(){
+  var statsEl = $("acadStats"); if(!statsEl) return;
+  var workers = state.workers || [];
+  var totalSlots = workers.length * MODULES.length, totalDone = 0, trainedWorkers = 0;
+  workers.forEach(function(w){
+    var d = 0; MODULES.forEach(function(m){ if(moduleDone(w.id, m.id)) d++; });
+    totalDone += d;
+    if(TRACKS.some(function(t){ return trackPct(w.id, t.key) === 100; })) trainedWorkers++;
+  });
+  var companyPct = totalSlots ? Math.round(totalDone / totalSlots * 100) : 0;
+  var trainedPct = workers.length ? Math.round(trainedWorkers / workers.length * 100) : 0;
+  statsEl.innerHTML =
+    '<div class="acad-stat"><div class="v">' + MODULES.length + '</div><div class="l">TRAINING MODULES LIVE</div></div>' +
+    '<div class="acad-stat"><div class="v">' + trainedPct + '%</div><div class="l">WORKERS TRAINED — A FULL TRACK COMPLETE</div></div>' +
+    '<div class="acad-stat"><div class="v">' + companyPct + '%</div><div class="l">COMPANY COMPLETION — ALL CREW, ALL MODULES</div></div>' +
+    '<div class="acad-stat"><div class="v">' + totalDone + '</div><div class="l">MODULE PASSES ON RECORD</div></div>';
+  var sel = $("acadAs");
+  if(sel){
+    sel.innerHTML = workers.map(function(w){ return '<option value="' + w.id + '"' + (acadWorker() && acadWorker().id === w.id ? " selected" : "") + ">" + esc(w.name) + " — " + esc((w.status || "").toUpperCase()) + "</option>"; }).join("");
+    sel.onchange = function(){ state.acadId = this.value; acad.open = null; acad.phase = "lessons"; acad.result = null; save(); renderAcademy(); };
+  }
+  var aw = acadWorker();
+  var info = $("acadInfo");
+  if(info) info.innerHTML = aw ? ("Training record: <b style='color:var(--ink)'>" + workerTrainPct(aw.id) + "% complete</b> · " + MODULES.filter(function(m){ return moduleDone(aw.id, m.id); }).length + " of " + MODULES.length + " modules passed") : "";
+  renderPlayer();
+  var tracksEl = $("acadTracks"); if(!tracksEl) return;
+  tracksEl.innerHTML = TRACKS.map(function(t){
+    var ms = trackModules(t.key);
+    var pct = aw ? trackPct(aw.id, t.key) : 0;
+    var cards = ms.map(function(m){
+      var rec = aw ? trainMap(aw.id)[m.id] : null;
+      var done = !!(rec && rec.done);
+      var num = MODULES.indexOf(m) + 1;
+      return '<div class="modcard' + (acad.open === m.id ? " open" : "") + '"><div class="m-top"><span class="m-tag">' + esc(m.tag) + '</span><span class="m-mins">' + m.mins + ' MIN</span></div>' +
+        '<h5>' + num + ". " + esc(m.title) + '</h5><p class="m-blurb">' + esc(m.blurb) + '</p>' +
+        '<div class="m-foot">' + (done ? '<span class="stpill st-full">✓ COMPLETE · ' + rec.score + '%</span>' : '<span class="stpill st-off">NOT STARTED</span>') +
+        '<button type="button" class="btn small' + (done ? "" : " primary") + '" data-mod="' + m.id + '">' + (done ? "REVIEW ↺" : "OPEN MODULE →") + "</button></div></div>";
+    }).join("");
+    return '<div class="track-head"><div><div class="tag" style="font-family:var(--font-m);font-size:11.5px;letter-spacing:2.4px;color:var(--accent)">' + t.name + '</div>' +
+      '<p style="color:var(--muted);font-size:14.5px;margin-top:4px">' + t.sub + "</p></div>" +
+      '<div class="track-prog"><span>' + (aw ? esc(aw.name.split(" ")[0]) + " · " + pct + "%" : "") + '</span><div class="progress"><i style="width:' + pct + '%"></i></div></div></div>' +
+      '<div class="modgrid">' + cards + "</div>";
+  }).join("");
+  tracksEl.querySelectorAll("[data-mod]").forEach(function(b){
+    b.addEventListener("click", function(){ openModule(b.getAttribute("data-mod")); });
+  });
+  renderMatrix();
+}
+function renderPlayer(){
+  var p = $("acadPlayer"); if(!p) return;
+  var aw = acadWorker();
+  if(!acad.open || !aw){ p.innerHTML = ""; p.style.display = "none"; return; }
+  var m = moduleById(acad.open); if(!m){ p.innerHTML = ""; p.style.display = "none"; return; }
+  p.style.display = "block";
+  var rec = trainMap(aw.id)[m.id];
+  var head = '<div class="m-top"><span class="m-tag">' + esc(m.tag) + '</span><span class="m-mins">' + m.mins + " MIN · QUIZ: 4 QUESTIONS · PASS AT 75%</span></div>" +
+    '<h4 style="font-family:var(--font-d);font-size:23px;margin:6px 0 4px">' + esc(m.title) + '</h4>' +
+    '<p style="color:var(--muted);font-size:14.5px">Training as <b style="color:var(--ink)">' + esc(aw.name) + "</b>" +
+    (rec && rec.done ? ' · <span style="color:var(--good);font-weight:700">✓ PASSED · ' + rec.score + "%</span>" : "") + "</p>";
+  var body = "";
+  if(acad.phase === "lessons"){
+    body = m.sections.map(function(s, i){
+      return '<div class="lesson"><h5>' + (i + 1) + ". " + esc(s[0]) + '</h5><p>' + esc(s[1]) + "</p></div>";
+    }).join("") + '<div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap"><button type="button" class="btn primary" id="plQuiz">TAKE THE QUIZ →</button><button type="button" class="btn" id="plClose">CLOSE</button></div>';
+  } else if(acad.phase === "quiz"){
+    body = m.quiz.map(function(q, qi){
+      return '<div class="qblock"><div class="qtext">' + (qi + 1) + ". " + esc(q[0]) + "</div>" + q[1].map(function(opt, oi){
+        return '<label class="qopt"><input type="radio" name="qz' + qi + '" value="' + oi + '"><span>' + esc(opt) + "</span></label>";
+      }).join("") + "</div>";
+    }).join("") + '<div id="quizErr" style="color:var(--bad);font-weight:700;display:none;margin-bottom:10px"></div><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn primary" id="plGrade">GRADE MY QUIZ</button><button type="button" class="btn" id="plBack">← BACK TO LESSONS</button></div>';
+  } else if(acad.phase === "result" && acad.result){
+    var r = acad.result;
+    body = '<div class="score-banner ' + (r.pass ? "pass" : "fail") + '">' + (r.pass ? "✓ PASSED" : "✗ NOT YET") + " — " + r.score + "% (" + r.correct + " of " + m.quiz.length + " correct)" +
+      (r.pass ? '<div class="sb-sub">Recorded on ' + esc(aw.name) + "'s training record. It rides with them onto every board in the system.</div>" : '<div class="sb-sub">Pass mark is 75%. Review the misses below and retake it — the record only saves a pass.</div>') + "</div>" +
+      m.quiz.map(function(q, qi){
+        var pick = r.picks[qi], ok = pick === q[2];
+        return '<div class="qblock"><div class="qtext">' + (qi + 1) + ". " + esc(q[0]) + "</div>" +
+          q[1].map(function(opt, oi){
+            var cls = "qopt locked" + (oi === q[2] ? " right" : (oi === pick ? " wrong" : ""));
+            return '<div class="' + cls + '"><span>' + (oi === q[2] ? "✓ " : (oi === pick ? "✗ " : "")) + esc(opt) + "</span></div>";
+          }).join("") +
+          '<div class="qwhy">' + (ok ? "✓ Correct. " : "✗ Not quite. ") + esc(q[3]) + "</div></div>";
+      }).join("") +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn primary" id="plRetake">' + (r.pass ? "RETAKE FOR A BETTER SCORE" : "RETAKE THE QUIZ") + '</button><button type="button" class="btn" id="plClose2">DONE</button></div>';
+  }
+  p.innerHTML = head + body;
+  var q = $("plQuiz"); if(q) q.addEventListener("click", function(){ acad.phase = "quiz"; acad.result = null; renderAcademy(); scrollPlayer(); });
+  var c = $("plClose"); if(c) c.addEventListener("click", function(){ acad.open = null; renderAcademy(); });
+  var bk = $("plBack"); if(bk) bk.addEventListener("click", function(){ acad.phase = "lessons"; renderAcademy(); scrollPlayer(); });
+  var g = $("plGrade"); if(g) g.addEventListener("click", gradeQuiz);
+  var rt = $("plRetake"); if(rt) rt.addEventListener("click", function(){ acad.phase = "quiz"; acad.result = null; renderAcademy(); scrollPlayer(); });
+  var c2 = $("plClose2"); if(c2) c2.addEventListener("click", function(){ acad.open = null; acad.phase = "lessons"; renderAcademy(); });
+}
+function scrollPlayer(){ var p = $("acadPlayer"); if(p) p.scrollIntoView({ behavior:"smooth", block:"start" }); }
+function openModule(mid){ acad.open = mid; acad.phase = "lessons"; acad.result = null; renderAcademy(); scrollPlayer(); }
+function gradeQuiz(){
+  var aw = acadWorker(); var m = moduleById(acad.open); if(!aw || !m) return;
+  var picks = [], missing = 0;
+  m.quiz.forEach(function(q, qi){
+    var sel = document.querySelector('input[name="qz' + qi + '"]:checked');
+    if(!sel) missing++; picks.push(sel ? Number(sel.value) : -1);
+  });
+  if(missing){
+    var e = $("quizErr"); if(e){ e.textContent = "Answer all 4 questions first — " + missing + " left blank."; e.style.display = "block"; }
+    return;
+  }
+  var correct = 0; m.quiz.forEach(function(q, qi){ if(picks[qi] === q[2]) correct++; });
+  var score = Math.round(correct / m.quiz.length * 100);
+  var pass = score >= 75;
+  acad.result = { picks:picks, correct:correct, score:score, pass:pass };
+  acad.phase = "result";
+  if(pass){
+    if(!state.training) state.training = {};
+    if(!state.training[aw.id]) state.training[aw.id] = {};
+    state.training[aw.id][m.id] = { done:true, score:score, at:Date.now() };
+    save();
+    logFeed("🎓 <b>" + esc(aw.name.split(" ")[0]) + "</b> completed training — " + esc(m.title) + " (" + score + "%)", true);
+    save();
+    toast("🎓 " + aw.name + " passed " + m.title + " — " + score + "%");
+    if(typeof renderRoster === "function") renderRoster();
+  }
+  renderAcademy(); scrollPlayer();
+}
+function renderMatrix(){
+  var el = $("acadMatrix"); if(!el) return;
+  var cell = function(pct){
+    var col = pct >= 100 ? "var(--good)" : (pct > 0 ? "var(--ink)" : "var(--faint)");
+    return '<td class="mpct" style="color:' + col + '">' + pct + "%</td>";
+  };
+  el.innerHTML = '<table class="mtx"><thead><tr><th style="text-align:left">WORKER</th>' +
+    TRACKS.map(function(t){ return "<th>" + t.name + "</th>"; }).join("") + "<th>OVERALL</th></tr></thead><tbody>" +
+    (state.workers || []).map(function(w){
+      return "<tr><td><b>" + esc(w.name) + '</b> <span style="color:var(--faint);font-size:12px">' + esc((w.status || "").toUpperCase()) + "</span></td>" +
+        TRACKS.map(function(t){ return cell(trackPct(w.id, t.key)); }).join("") + cell(workerTrainPct(w.id)) + "</tr>";
+    }).join("") + "</tbody></table>";
+}
+/* academy boot: render once init() has seeded state */
+function acadBoot(){ if(window.state && state.jobs){ renderAcademy(); } else { setTimeout(acadBoot, 80); } }
+if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ setTimeout(acadBoot, 0); });
+else setTimeout(acadBoot, 0);
+
+</script>
+
+<script>
 /* ================= LOAD & WORKER BOARD ================= */
 function workerById(id){ return state.workers.filter(function(w){ return w.id === id; })[0]; }
 function actingWorker(){ return workerById(state.actingId) || state.workers[0]; }
@@ -1552,6 +1989,7 @@ function renderLoadBoard(){
         '<span class="sl-count' + (s.assigned.length >= s.count ? " full" : "") + '">' + s.assigned.length + " / " + s.count + " FILLED</span>" +
         (s.reqCert ? '<span class="sl-req">⚠ ' + esc(CERTS[s.reqCert]) + " REQUIRED</span>" : "") + "</div>" +
         (names ? '<div class="sl-names">' + names + "</div>" : "") +
+        slotFlagHTML(s, job) +
         '<div class="sl-actions">' +
         (mine ? '<span style="color:var(--good);font-weight:700">✓ ' + esc(aw.name.split(" ")[0]) + " holds this seat</span>"
               : '<button type="button" class="btn primary small" data-accept="' + p.id + "|" + si + '"' + (el.ok ? "" : " disabled") + ">ACCEPT JOB</button>" +
@@ -1561,6 +1999,7 @@ function renderLoadBoard(){
     return '<div class="ltile"><div class="lt-img"><img src="' + svc.img + '" alt="' + esc(svc.name) + '"><span class="lt-svc">' + svc.icon + " " + esc(svc.name) + '</span><span class="lt-status"><span class="stpill ' + st.cls + '">' + st.label + '</span></span></div>' +
       '<div class="lt-body"><h5>' + esc(job.title) + '</h5><div class="lt-meta">📍 ' + esc(job.site) + (job.dest ? " → " + esc(job.dest) : "") + "<br>🗓 " + esc(p.date || "TBD") + " · " + esc(p.loadLabel) + " · Client: " + esc(job.client) + '</div>' +
       '<div class="lt-pay">PAY BASIS · PER JOB — OWNER SETS RATE</div>' +
+      trainLineHTML(job) +
       '<div style="margin-top:10px"><button type="button" class="btn small" data-promote="' + p.id + '">📣 PROMOTE THIS LOAD</button></div>' + slotsHTML + "</div></div>";
   }).join("");
   $("lbGrid").querySelectorAll("[data-accept]").forEach(function(b){
@@ -1603,6 +2042,11 @@ function acceptJob(postId, slotIdx){
   var job = getJob(post.jobId); if(job) syncStaffing(job);
   save();
   logFeed("<b>" + esc(w.name.split(" ")[0]) + "</b> accepted " + ROLES[slot.role].name + " — " + (job ? esc(job.title) : "job") + ", " + esc(post.loadLabel), true);
+  var reqM = job ? REQ_MODULE[job.service] : null;
+  if(reqM && !moduleDone(w.id, reqM)){
+    logFeed("⚠ <b>" + esc(w.name.split(" ")[0]) + "</b> took a " + (job ? esc(SERVICES[job.service].name) : "") + " seat with training pending — " + esc(moduleTitle(reqM)) + " not yet completed in the Academy", true);
+    toast("⚠ Seat accepted — " + moduleTitle(reqM) + " training pending for " + w.name.split(" ")[0]);
+  }
   save(); renderLoadBoard();
   toast("✓ " + w.name + " assigned — " + ROLES[slot.role].name);
 }
@@ -1636,7 +2080,9 @@ function renderRoster(){
     return '<div class="wcard"><div class="w-top"><div class="avatar">' + esc(initials) + '</div><div><h5>' + esc(w.name) + '</h5><div class="w-roles">' + effRoles(w).map(function(r){ return ROLES[r] ? ROLES[r].name : r; }).join(" · ") + '</div></div>' +
       '<span class="stpill ' + p[0] + '" style="margin-left:auto">' + p[1] + "</span></div>" +
       '<div class="badges">' + (w.isNew && w.status === "applicant" ? '<span class="badge newb">★ NEW APPLICANT</span>' : "") +
-      (w.certs || []).map(function(c){ return '<span class="badge">🏅 ' + esc(CERTS[c] || c) + "</span>"; }).join("") + "</div>" +
+      (w.certs || []).map(function(c){ return '<span class="badge">🏅 ' + esc(CERTS[c] || c) + "</span>"; }).join("") +
+      '<span class="badge" style="border-color:var(--accent);color:var(--accent)">🎓 TRAINING ' + workerTrainPct(w.id) + "%</span>" + "</div>" +
+      trainListHTML(w) +
       assignTxt +
       '<div class="w-foot"><span>JOBS DONE · ' + (w.jobsDone || 0) + "</span><span>" + esc(w.county || "") + "</span></div>" +
       (w.status === "applicant" ? '<div style="display:flex;gap:9px;margin-top:13px"><button type="button" class="btn primary small" data-approve="' + w.id + '">✓ APPROVE TO ROSTER</button><button type="button" class="btn small danger" data-decline="' + w.id + '">DECLINE</button></div>' : "") +
