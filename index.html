@@ -309,6 +309,14 @@ input[type=range]{width:100%;accent-color:var(--accent);height:28px}
 .consent-box{border:1px solid rgba(255,179,64,.45);background:rgba(255,179,64,.06);border-radius:12px;padding:15px 17px}
 .success-box{border:1px solid rgba(61,220,132,.5);background:rgba(61,220,132,.07);border-radius:14px;padding:22px;text-align:center}
 .success-box .big{font-size:40px}
+.codebox{background:#0a1120;border:1px solid var(--line2);border-radius:12px;padding:14px 16px;font-family:var(--font-m);font-size:12.3px;line-height:1.55;color:#c2cfe9;white-space:pre-wrap;word-break:break-word;max-height:300px;overflow:auto}
+.rate-row{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line)}
+.rate-row .r-name{font-weight:700;font-size:15.5px}
+.rate-row input{padding:9px 12px}
+.segx{display:inline-flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden}
+.segx button{background:transparent;border:none;color:var(--muted);padding:8px 16px;font-weight:700;font-size:14px}
+.segx button.on{background:var(--accent);color:var(--accent-ink)}
+
 /* ads */
 .ad-grid{display:grid;grid-template-columns:1fr;gap:15px}
 .adcard{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--panel)}
@@ -345,6 +353,8 @@ window.MUSE_TICKER = {
     "WAREHOUSE WORKFLOW CONTRACTING",
     "MATERIALS MOVING — STONE &amp; SLAB",
     "LUMBER SERVICES",
+    "LUMPER SERVICES",
+    "LUMPER CREWS → <b>TRAILERS TURNED FAST</b>",
     "FREIGHT &amp; HAULING",
     "CREW ASSIGNED → <b>PACKET AUTO-BUILT</b>",
     "PAPERWORK ENGINE — W-9 · I-9 · COI · COMP CERTS",
@@ -441,6 +451,7 @@ window.MUSE_TICKER = {
             <div><label class="f">Destination / Second Site (optional)</label><input type="text" id="fDest" placeholder="e.g. Scranton warehouse"></div>
             <div><label class="f" id="fUnitsLabel">Estimated Units / Loads</label><input type="number" id="fUnits" min="1" value="100"></div>
             <div><label class="f">Job Value ($)</label><input type="number" id="fValue" min="0" value="10000"></div>
+            <div><label class="f">Estimated Hours (labor math)</label><input type="number" id="fHours" min="1" value="8"></div>
             <div><label class="f">Whose Trucks?</label><select id="fTrucks"><option value="ours">Our trucks</option><option value="customer">Customer trucks</option><option value="mixed">Mixed / TBD</option></select></div>
             <div><label class="f">Crew Lane (paperwork path)</label><select id="fLane"><option value="employee">W-2 Employees</option><option value="contractor">1099 Contractors</option><option value="mixed">Mixed crew</option></select></div>
             <div class="full"><label class="f">Notes / Scope</label><textarea id="fNotes" placeholder="Scope details, site conditions, special handling…"></textarea></div>
@@ -464,6 +475,7 @@ window.MUSE_TICKER = {
             <span class="pill">TOTAL HEADCOUNT <b id="orgTotal" style="color:var(--accent)">0</b></span>
             <span class="pill">CERTS REQUIRED <b id="orgCerts" style="color:var(--accent)">0</b></span>
           </div>
+          <div id="orgLabor"></div>
         </div>
         <div class="wiz-nav"><button class="btn" data-wiz="2">← BACK</button><button class="btn primary" data-wiz="4">CONTINUE → PAPERWORK PACKET</button></div>
       </div>
@@ -570,6 +582,25 @@ window.MUSE_TICKER = {
           <div class="note-box" style="margin-top:16px">The preview updates as you type and pick colors — the same rebrand engine drives the sidebar, dashboard, board and client portal. <b>Zero LOGIX footprint</b> on the White-Label Partner tier.</div>
         </div>
       </div>
+      <div class="panel" style="margin-top:18px">
+        <h4>HOURLY RATES — OWNER SET</h4>
+        <div class="p-sub"><b>Bill rate</b> = what the client is charged per hour. <b>Pay rate</b> = what the worker earns per hour. <b>Rates are set by the owner — buyers set their own.</b> Blank means not set; the system never invents a number. Set rates power the labor math in job initiation and the job drawer, the position cards, and the pay line in hiring ads.</div>
+        <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:12px;font-family:var(--font-m);font-size:10.5px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase;margin-bottom:4px"><span>Position</span><span>Bill $/hr (client)</span><span>Pay $/hr (worker)</span></div>
+        <div id="ratesTable"></div>
+        <div style="margin-top:14px"><button class="btn primary small" id="ratesSave">💾 SAVE RATES</button></div>
+      </div>
+      <div class="panel" style="margin-top:18px">
+        <h4>GROWTH PACK — RECRUITING, ADS &amp; AI VISIBILITY</h4>
+        <div class="p-sub">The marketing add-on ($79/mo, add-on pricing set by the owner): platform ad generation for Facebook / LinkedIn / Indeed, the apply-link funnel, promote-a-load, plus AI Visibility — the AI Business Card, the Answer Profile (llms.txt) and the engine-source checklist. The Crew Intake form itself is never gated; only ad generation is the paid feature.</div>
+        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:18px">
+          <span style="font-weight:700">Growth Pack</span>
+          <span class="segx"><button type="button" id="gpOn">ACTIVE</button><button type="button" id="gpOff">OFF</button></span>
+          <span class="stpill st-open" id="gpState">ACTIVE — $79/mo add-on</span>
+        </div>
+        <label class="f">Recruiting Apply Link</label>
+        <input type="text" id="wlApplyUrl" placeholder="https://your-site.com/#intake">
+        <p style="color:var(--faint);font-size:13.5px;margin-top:9px;line-height:1.55">Every generated ad and AI profile embeds this link verbatim. The default lands workers on this app's Crew Intake form.</p>
+      </div>
     </section>
 
     <!-- ================= LOAD & WORKER BOARD ================= -->
@@ -603,7 +634,7 @@ window.MUSE_TICKER = {
         <p>Post these ads where workers look — the intake form catches them, the board puts them to work. New applicants land on the roster as APPLICANT until you approve them.</p>
       </div>
       <div class="grid2" style="grid-template-columns:1.25fr 1fr;align-items:start">
-        <div class="panel">
+        <div class="panel" id="intake">
           <h4>CREW INTAKE FORM</h4>
           <div class="p-sub">The application your recruiting ads point to. Mirrors a real crew intake — ID and certs are provided at verification.</div>
           <form id="intakeForm" novalidate>
@@ -669,16 +700,65 @@ window.MUSE_TICKER = {
             <div class="ad-grid" id="adGrid"></div>
           </div>
           <div class="panel">
-            <h4>AD COMPOSER</h4>
-            <div class="p-sub">Pick a role and a service line — the composer writes the ad with your current brand name and tagline baked in.</div>
-            <label class="f">Role</label>
-            <select id="adRole"></select>
-            <div style="height:12px"></div>
-            <label class="f">Service Line</label>
-            <select id="adSvc"></select>
-            <div style="height:14px"></div>
-            <div style="background:#0a1120;border:1px solid var(--line2);border-radius:12px;padding:16px;font-size:15px;line-height:1.6;white-space:pre-line" id="adPreview"></div>
-            <button class="btn primary small" id="adCopy" style="margin-top:13px">📋 COPY THIS AD</button>
+            <h4>AD COMPOSER <span class="stpill st-open" id="gpBadge" style="margin-left:6px">GROWTH PACK · ACTIVE</span></h4>
+            <div class="p-sub">Pick a role, a service line and a platform — the composer writes correctly-shaped ad copy with your current brand name, tagline and apply link baked in.</div>
+            <div id="composerBody">
+              <label class="f">Role</label>
+              <select id="adRole"></select>
+              <div style="height:12px"></div>
+              <label class="f">Service Line</label>
+              <select id="adSvc"></select>
+              <div style="height:12px"></div>
+              <label class="f">Platform</label>
+              <select id="adPlatform">
+                <option value="facebook">Facebook post</option>
+                <option value="linkedin">LinkedIn post</option>
+                <option value="indeed">Indeed job post</option>
+                <option value="generic">Generic</option>
+              </select>
+              <div style="height:12px"></div>
+              <label class="f">Location (Indeed + local posts)</label>
+              <input type="text" id="adLoc" value="Wilkes-Barre, PA">
+              <div style="height:14px"></div>
+              <div style="background:#0a1120;border:1px solid var(--line2);border-radius:12px;padding:16px;font-size:15px;line-height:1.6;white-space:pre-line" id="adPreview"></div>
+              <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:13px;align-items:center">
+                <button class="btn primary small" id="adCopy">📋 COPY THIS AD</button>
+                <a class="btn small" href="https://www.facebook.com" target="_blank" rel="noopener">OPEN FACEBOOK ↗</a>
+                <a class="btn small" href="https://www.linkedin.com" target="_blank" rel="noopener">OPEN LINKEDIN ↗</a>
+                <a class="btn small" href="https://www.indeed.com" target="_blank" rel="noopener">OPEN INDEED ↗</a>
+              </div>
+              <p style="color:var(--faint);font-size:13.5px;margin-top:12px;line-height:1.55">The honest flow: <b style="color:var(--muted)">Copy → open the platform → paste → post.</b> Workers land on your intake through the apply link in every ad.</p>
+            </div>
+            <div id="composerLocked" style="display:none">
+              <div class="note-box">🔒 <b>Recruiting ad generation is part of the Growth Pack add-on.</b><br>Turn the Growth Pack ON in the White-Label Lab to unlock platform ad generation (Facebook / LinkedIn / Indeed), the apply-link funnel and promote-a-load.</div>
+            </div>
+          </div>
+          <div class="panel" style="margin-top:16px">
+            <h4>AI VISIBILITY — GET FOUND BY THE ANSWER ENGINES</h4>
+            <div class="p-sub">ChatGPT, Claude, Perplexity, Google AI Overviews and Bing Copilot answer questions by reading structured sources. This pack structures your business so those engines can <b>read it and cite it</b> — built to be found and cited by the answer engines.</div>
+            <div id="aiVisBody">
+              <div class="note-box" style="margin-bottom:16px">⚖️ Honesty first: <b>no one can guarantee an AI ranking</b> — this makes your business machine-readable so the engines can find you.</div>
+              <label class="f">Service Area</label>
+              <input type="text" id="aiArea" value="Northeast Pennsylvania">
+              <div style="height:16px"></div>
+              <label class="f">AI Business Card — JSON-LD for your website</label>
+              <div class="codebox" id="aiCardPrev"></div>
+              <button class="btn small" id="aiCardCopy" style="margin-top:10px">📋 COPY BUSINESS CARD</button>
+              <div style="height:18px"></div>
+              <label class="f">Answer Profile — your llms.txt</label>
+              <div class="codebox" id="aiProfilePrev"></div>
+              <button class="btn small" id="aiProfileCopy" style="margin-top:10px">📋 COPY ANSWER PROFILE</button>
+              <p style="color:var(--faint);font-size:13.5px;margin-top:10px;line-height:1.55">Publish the Answer Profile at <b style="color:var(--muted)">yoursite.com/llms.txt</b> and reuse it in your directory profiles so the engines quote your business accurately.</p>
+              <div style="height:18px"></div>
+              <label class="f">Engine Source Checklist</label>
+              <div class="p-sub" style="margin-bottom:10px">The sources the answer engines pull from. Check them off as you publish each one.</div>
+              <div id="aiChecklist"></div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--font-m);font-size:11.5px;letter-spacing:1.4px;color:var(--muted);margin:12px 0 7px"><span>VISIBILITY READINESS</span><span id="aiVisPct">0%</span></div>
+              <div class="progress"><i id="aiVisBar" style="width:0%"></i></div>
+            </div>
+            <div id="aiVisLocked" style="display:none">
+              <div class="note-box">🔒 <b>AI Visibility is part of the Growth Pack add-on.</b><br>Turn the Growth Pack ON in the White-Label Lab to unlock the AI Business Card, the Answer Profile (llms.txt) generator and the engine-source checklist.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -692,7 +772,21 @@ window.MUSE_TICKER = {
         <p>One system that structures the company, staffs the job, builds the paperwork and rides every load from intake to invoice.</p>
       </div>
       <div class="price-grid" id="priceGrid"></div>
-      <div class="note-box" style="margin-top:20px"><b>Founding pricing — set by the owner, change anytime in settings.</b> White-Label Partner seats carry full rebrand + resell rights: your clients run the platform under your name, and their customers never see LOGIX branding. Every tier starts on the waitlist — founding seats are issued in order.</div>
+      <div class="note-box" style="margin-top:20px"><b>Founding pricing — set by the owner, change anytime in settings.</b> White-Label Partner seats carry full rebrand + resell rights: your clients run the platform under your name, and their customers never see LOGIX branding. Every tier starts on the waitlist — founding seats are issued in order. Recruiting ads, the ad composer and AI Visibility live in the Growth Pack add-on below.</div>
+      <div class="price" style="margin-top:16px;border-style:dashed">
+        <div class="p-tag">Optional Add-On · Any Tier</div>
+        <h4>GROWTH PACK — RECRUITING, ADS &amp; AI VISIBILITY</h4>
+        <div class="amt">$79<small>/mo add-on</small></div>
+        <div class="setup">Add-on pricing set by the owner</div>
+        <ul>
+          <li>Platform ad generation — Facebook, LinkedIn and Indeed, correctly shaped for each</li>
+          <li>Apply-link funnel — every ad lands workers on your intake form</li>
+          <li>Promote-a-load — turn any open board tile into a hiring ad in one tap</li>
+          <li>AI Business Card + Answer Profile (llms.txt) generators — built to be found and cited by the answer engines</li>
+          <li>Engine-source checklist — Google, Bing, LinkedIn, Indeed, Facebook and your site</li>
+        </ul>
+        <a class="btn" style="width:100%;justify-content:center" href="mailto:capital7lllc@gmail.com?subject=LOGIX%20COMMAND%20waitlist%20%E2%80%94%20Growth%20Pack">ADD THE GROWTH PACK</a>
+      </div>
     </section>
   </main>
 </div>
@@ -734,6 +828,8 @@ var ROLES = {
   laborer:    { name:"Loader / Laborer", pay:"Per job", mission:"The muscle of the operation — loads it right, every time.", duties:["Loads and unloads trucks by hand and dolly","Wraps, pads and secures freight","Site clean-up and debris runs","Follows the crew lead's load plan"], certs:"PPE issued · Background consent on file · Lift-technique training" },
   slab:       { name:"Slab & Stone Handler", pay:"Per job", mission:"Handles stone worth more than the truck — slow hands, zero cracks.", duties:["Lifts slabs flat → A-frames with clamps / vacuum lifter","Never hands under a raised slab — tag lines only","Photo-logs slab condition before every move","Straps and pads loads for shuttle runs"], certs:"Slab-handling training · PPE (steel toe + gloves) · Photo-log training" },
   lumber:     { name:"Lumber Puller", pay:"Hourly", mission:"Pulls clean, straight, on-count lumber — every bundle right.", duties:["Pulls orders from yard racks to the pick list","Bands and bundles lumber for flatbed loads","Grades out damaged stock as it is pulled","Keeps the yard stacked, counted and safe"], certs:"Forklift cert a plus · PPE issued · Yard safety brief" },
+  lumperlead: { name:"Lumper Lead", pay:"Hourly", mission:"Runs the dock crew — every trailer counted, sealed and turned on time.", duties:["Assigns lumpers per trailer and tracks start/stop times","Verifies piece counts and seal numbers against the paperwork","Signs the per-trailer unload log","Calls exceptions to dispatch before the driver waits"], certs:"OSHA dock safety briefing · Background-check per company policy" },
+  lumper:     { name:"Lumper", pay:"Hourly", mission:"Unloads and loads trailers fast and clean — freight sorted, stacked and counted right.", duties:["Unloads & sorts freight off inbound trailers","Restacks and fixes shifted or leaning loads","Breaks down and repacks pallets to spec","Keeps the dock clear and the next trailer ready"], certs:"None required — OSHA dock safety briefing · Background-check per company policy" },
   crewlead:   { name:"Crew Lead", pay:"Hourly", mission:"Leads a working crew from inside the work — not the truck cab.", duties:["Works the job while directing 2–6 crew","Owns the day's checklist on site","Trains new hands on the standard","First call when something goes sideways"], certs:"OSHA 10 · First aid a plus · Crew paperwork pack" },
   admin:      { name:"Admin & Compliance", pay:"Salary", mission:"The paper shield — every cert, contract and invoice airtight.", duties:["Maintains W-9s, I-9s, COIs and comp certs","Issues 1099s and closes job files","Tracks expirations before they lapse","Builds invoices from signed load sheets"], certs:"Document system access · Compliance calendar owner" }
 };
@@ -754,6 +850,10 @@ var SERVICES = {
     desc:"Lumber yard pulls, bundling and banding, flatbed loading and jobsite delivery — clean counts, straight stacks, on schedule.",
     staff:[ {role:"opsmgr",base:1,row:0}, {role:"crewlead",base:1,row:1}, {role:"lumber",base:2,row:2,anchor:10,per:8}, {role:"forklift",base:1,row:2,anchor:15,per:20,reqCert:"forklift"}, {role:"cdl",base:1,row:2,anchor:10,per:12,reqCert:"cdl"}, {role:"laborer",base:1,row:2,anchor:15,per:15}, {role:"coordinator",base:1,row:3} ],
     equip:[["🚜","Yard forklift","Long-fork yard machine for bundles"],["🔗","Banders & strapping","Steel/poly banding, seals, crimper"],["🚛","Flatbed / moffett","Flatbed with piggyback forklift option"],["🧤","PPE kits — yard crew","Gloves, eye protection, steel toes"],["📏","Tally & grade kit","Tape, lumber crayons, tally sheets"]] },
+  lumper:{ icon:"🚪", img:"board-lumper.jpg", name:"Lumper Services", unitLabel:"Trailers",
+    desc:"Trailer loading and unloading at warehouse docks — restacking and fixing shifted loads, pallet breakdown and repack. Freight touched right, drivers turned fast.",
+    staff:[ {role:"coordinator",base:0,row:1,anchor:7,per:1,cap:1}, {role:"lumperlead",base:0,row:1,whenRole:{role:"lumper",min:4}}, {role:"lumper",base:2,row:2,anchor:0,per:2}, {role:"forklift",base:0,row:2,anchor:5,per:1,cap:1,reqCert:"forklift"} ],
+    equip:[["🛒","Pallet jacks","Manual + electric pallet jacks, one per active door"],["🔪","Box cutters — crew issue","Safety cutters for breakdown and repack"],["🎞️","Stretch wrap & banding","Film and banding for restacked, road-ready pallets"],["🟦","Dock plates","Rated dock plates for door transitions"],["🦺","PPE kits — dock crew","Vests, gloves, steel toes"]] },
   freight:{ icon:"🚛", img:"board-freight.jpg", name:"Freight & Hauling", unitLabel:"Loads",
     desc:"Line-haul, hotshot and flatbed / step-deck freight — dispatched tight, tracked live, delivered with clean paperwork.",
     staff:[ {role:"opsmgr",base:1,row:0}, {role:"coordinator",base:1,row:1,anchor:8,per:10}, {role:"cdl",base:1,row:2,anchor:1,per:2,reqCert:"cdl"}, {role:"laborer",base:1,row:2,anchor:6,per:8}, {role:"safety",base:0,row:1,whenCrew:10}, {role:"admin",base:1,row:3} ],
@@ -777,10 +877,17 @@ function staffFor(svcKey, units, scalePct){
   svc.staff.forEach(function(s){
     var c = s.base || 0;
     if(s.per){ c += Math.floor(Math.max(0, eff - (s.anchor||0)) / s.per); }
-    var entry = { role:s.role, count:c, row:s.row||2, reqCert:s.reqCert||null, whenCrew:s.whenCrew||0 };
-    if(s.whenCrew){ pending.push(entry); } else { out.push(entry); total += c; }
+    if(s.cap) c = Math.min(c, s.cap);
+    var entry = { role:s.role, count:c, row:s.row||2, reqCert:s.reqCert||null, whenCrew:s.whenCrew||0, whenRole:s.whenRole||null };
+    if(s.whenCrew || s.whenRole){ pending.push(entry); } else { out.push(entry); total += c; }
   });
-  pending.forEach(function(e){ if(total >= e.whenCrew){ e.count = 1; total += 1; out.push(e); } });
+  pending.forEach(function(e){
+    if(e.whenCrew){ if(total >= e.whenCrew){ e.count = 1; total += 1; out.push(e); } return; }
+    if(e.whenRole){
+      var rc = 0; out.forEach(function(o){ if(o.role === e.whenRole.role) rc += o.count; });
+      if(rc >= e.whenRole.min){ e.count = 1; total += 1; out.push(e); }
+    }
+  });
   return out.filter(function(e){ return e.count > 0; });
 }
 function orgRows(staff){
@@ -819,6 +926,10 @@ function packetFor(job){
   if(job.service === "slab"){
     add("slabplan","Slab handling plan — signed by Safety Lead","Clamps/vacuum lifter rated, tag lines, spotters, no hands under a raised slab.");
     add("forkliftcert","Forklift operator certs verified","OSHA 1910.178 certification + evaluation for the operator on this job.");
+  }
+  if(job.service === "lumper"){
+    add("dockrules","Facility access & dock rules — signed off","Dock access, facility rules, door assignments and site contact confirmed with the facility before the first trailer is touched.");
+    add("unloadlog","Per-trailer unload log — set up","Trailer #, seal #, start/stop times and piece counts logged for every trailer, signed by the Lumper Lead.");
   }
   if(job.service === "freight"){
     add("securement","Load securement checklist","Chains, binders, tarps verified against the load plan per DOT standard.");
@@ -860,7 +971,36 @@ var TIERS = [
 var LS_KEY = "logix_command_v1";
 var state = null;
 function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
-function load(){ try{ var raw = localStorage.getItem(LS_KEY); if(raw){ state = JSON.parse(raw); if(state && state.jobs) return; } }catch(e){} seed(); }
+function load(){ try{ var raw = localStorage.getItem(LS_KEY); if(raw){ state = JSON.parse(raw); if(state && state.jobs){ migrate(); return; } } }catch(e){} seed(); }
+function buildLumperDemo(){
+  var d = new Date(Date.now() + 3 * 864e5);
+  var iso = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  var job = mkJob({ service:"lumper", client:"NEPA Distribution Center", title:"Trailer Unload & Restack — Distribution Dock",
+    site:"NEPA Distribution Center, Wilkes-Barre, PA", dest:"", units:6, value:4200, hours:8,
+    trucks:"customer", lane:"mixed", stage:4, date: iso,
+    notes:"Inbound trailers to unload, restack and repack at the dock. Per-trailer unload log with trailer # and seal #, signed by the Lumper Lead.",
+    packetDone:["contract","survey","dockrules","unloadlog","gl"], equipSrc:["own","own","own","own","own"] });
+  return { job: job, posting: { id:uid("post"), jobId: job.id, loadLabel:"DOCK CREW · DOORS 4–9", date: iso,
+    slots:[ {role:"lumperlead", count:1, reqCert:null, assigned:[]}, {role:"lumper", count:3, reqCert:null, assigned:[]} ] } };
+}
+function migrate(){
+  if(!state.brand) state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold" };
+  if(state.brand.applyUrl == null) state.brand.applyUrl = "";
+  if(!state.rates) state.rates = {};
+  if(!state.entitlements) state.entitlements = { growthPack:true };
+  if(state.entitlements.growthPack == null) state.entitlements.growthPack = true;
+  if(!state.aiVis) state.aiVis = { area:"Northeast Pennsylvania", checks:{} };
+  if(!state.aiVis.checks) state.aiVis.checks = {};
+  (state.jobs || []).forEach(function(j){ if(!j.hours) j.hours = 8; });
+  if(!state._lumperSeeded){
+    var demo = buildLumperDemo();
+    state.jobs.push(demo.job);
+    state.postings.push(demo.posting);
+    syncStaffing(demo.job);
+    state._lumperSeeded = true;
+  }
+  save();
+}
 function nowTime(){ var d=new Date(); var h=d.getHours(), m=("0"+d.getMinutes()).slice(-2), ap=h>=12?"PM":"AM"; h=h%12||12; return h+":"+m+" "+ap; }
 function logFeed(msg, hot){
   if(!state) return;
@@ -871,7 +1011,7 @@ function logFeed(msg, hot){
 function mkJob(o){
   var job = { id: uid("job"), service:o.service, client:o.client, title:o.title, site:o.site, dest:o.dest||"",
     date:o.date||"", units:o.units||0, value:o.value||0, trucks:o.trucks||"ours", lane:o.lane||"employee",
-    notes:o.notes||"", stage:(o.stage==null?0:o.stage), scale:o.scale||100,
+    notes:o.notes||"", stage:(o.stage==null?0:o.stage), scale:o.scale||100, hours:o.hours||8,
     org: staffFor(o.service, o.units, o.scale||100), packet:{}, equip:{}, created: Date.now() };
   packetFor(job).forEach(function(it){ job.packet[it.id] = !!o.packetDone && o.packetDone.indexOf(it.id) >= 0; });
   (SERVICES[o.service].equip||[]).forEach(function(e,i){ job.equip["eq"+i] = (o.equipSrc && o.equipSrc[i]) || "own"; });
@@ -890,8 +1030,9 @@ function syncStaffing(job){
   }
 }
 function seed(){
-  state = { brand:{ name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold" },
-    jobs:[], workers:[], postings:[], actingId:null, feed:[], tpl:"growing" };
+  state = { brand:{ name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl:"" },
+    jobs:[], workers:[], postings:[], actingId:null, feed:[], tpl:"growing",
+    rates:{}, entitlements:{ growthPack:true }, aiVis:{ area:"Northeast Pennsylvania", checks:{} }, _lumperSeeded:true };
   /* ---- workers ---- */
   var W = function(name, roles, certs, status, done){ return { id:uid("w"), name:name, roles:roles, certs:certs, status:status, jobsDone:done, isNew:false, phone:"", county:"Luzerne" }; };
   state.workers = [
@@ -900,7 +1041,7 @@ function seed(){
     W("Rico Alvarez", ["cdl","boxdriver"], ["cdl"], "available", 31),
     W("Tommy Kowalski", ["laborer","slab","lumber"], [], "available", 9),
     W("Jess Marino", ["warehouse","forklift"], ["forklift"], "available", 17),
-    W("Andre Boateng", ["laborer","warehouse","lumber"], ["osha10"], "available", 6),
+    W("Andre Boateng", ["laborer","warehouse","lumber","lumper"], ["osha10"], "available", 6),
     W("Priya Nair", ["coordinator","admin"], ["osha10"], "available", 8),
     W("Sam Delgado", ["boxdriver","laborer"], [], "off", 12),
     W("Chris Doyle", ["laborer"], [], "applicant", 0)
@@ -921,7 +1062,8 @@ function seed(){
     site:"Hazleton Distribution Center, PA", dest:"", units:900, value:18500,
     trucks:"customer", lane:"mixed", stage:5, notes:"Receiving + put-away crew inside client DC. Two leads, scanners provided by client.",
     packetDone:["contract","survey","gl","comp"], equipSrc:["customer","own","customer","own","own"] });
-  state.jobs = [slab, lumber, wh];
+  var lumperDemo = buildLumperDemo();
+  state.jobs = [slab, lumber, wh, lumperDemo.job];
   /* ---- board postings linked to jobs ---- */
   var marcus = state.workers[0], tommy = state.workers[3], jess = state.workers[4];
   state.postings = [
@@ -937,7 +1079,8 @@ function seed(){
     { id:uid("post"), jobId:wh.id, loadLabel:"DC CREW · SHIFT A", date:"This week",
       slots:[ {role:"warehouse", count:4, reqCert:null, assigned:[jess.id]},
               {role:"forklift", count:1, reqCert:"forklift", assigned:[]},
-              {role:"crewlead", count:1, reqCert:null, assigned:[]} ] }
+              {role:"crewlead", count:1, reqCert:null, assigned:[]} ] },
+    lumperDemo.posting
   ];
   [marcus, tommy, jess].forEach(function(w){ w.status = "assigned"; });
   state.jobs.forEach(syncStaffing);
@@ -982,6 +1125,7 @@ function gotoView(v){
   if(v === "loadboard") renderLoadBoard();
   if(v === "org") renderOrgBuilder();
   if(v === "intake") renderAds();
+  if(v === "whitelabel") renderRates();
 }
 
 /* ================= TICKER ================= */
@@ -1063,6 +1207,55 @@ function orgHTML(staff){
   }).join("");
 }
 
+/* ================= RATES & LABOR MATH ================= */
+function growthOn(){ return !state.entitlements || state.entitlements.growthPack !== false; }
+function applyLink(){ var u = (state.brand.applyUrl || "").trim(); return u || (window.location.href.split("#")[0] + "#intake"); }
+function rateOf(key){ return (state.rates && state.rates[key]) || {}; }
+function money2(n){ n = Number(n) || 0; return "$" + (Math.round(n * 100) / 100).toLocaleString("en-US", { minimumFractionDigits:0, maximumFractionDigits:2 }); }
+function rateText(key){
+  var r = rateOf(key);
+  if(r.bill || r.pay) return "Bill " + (r.bill ? money2(r.bill) + "/hr" : "—") + " · Pay " + (r.pay ? money2(r.pay) + "/hr" : "—");
+  return "Rate not set — owner sets hourly rates";
+}
+function laborMath(staff, hours){
+  var any = false, bill = 0, cost = 0;
+  (staff || []).forEach(function(e){
+    var r = rateOf(e.role);
+    if(r.bill || r.pay){ any = true; bill += e.count * hours * (Number(r.bill) || 0); cost += e.count * hours * (Number(r.pay) || 0); }
+  });
+  return any ? { bill:bill, cost:cost, margin:bill - cost, hours:hours } : null;
+}
+function laborHTML(staff, hours){
+  var lm = laborMath(staff, hours);
+  if(!lm) return '<div style="margin-top:16px" class="note-box">💲 <b>LABOR MATH</b> — Set hourly rates in the Rates panel to see labor math for this crew.</div>';
+  return '<div style="margin-top:16px" class="note-box">💲 <b>ESTIMATED LABOR — ' + lm.hours + ' HRS</b><br>Bill to client <b>' + money2(lm.bill) + '</b> · Crew cost <b>' + money2(lm.cost) + '</b> · Margin <b style="color:var(--good)">' + money2(lm.margin) + '</b> <span style="color:var(--muted)">(owner-set hourly rates × generated headcount × hours)</span></div>';
+}
+function renderRates(){
+  var t = $("ratesTable"); if(!t) return;
+  t.innerHTML = ROLE_KEYS.map(function(k){
+    var r = rateOf(k);
+    return '<div class="rate-row"><span class="r-name">' + esc(ROLES[k].name) + '</span>' +
+      '<input type="number" min="0" step="0.25" placeholder="e.g. 45" data-rate="' + k + '|bill" value="' + (r.bill || "") + '">' +
+      '<input type="number" min="0" step="0.25" placeholder="e.g. 22" data-rate="' + k + '|pay" value="' + (r.pay || "") + '"></div>';
+  }).join("");
+  t.querySelectorAll("[data-rate]").forEach(function(inp){
+    inp.addEventListener("change", function(){
+      var parts = inp.getAttribute("data-rate").split("|");
+      var v = inp.value === "" ? null : Number(inp.value);
+      if(!state.rates[parts[0]]) state.rates[parts[0]] = {};
+      if(v == null || isNaN(v) || v <= 0) delete state.rates[parts[0]][parts[1]]; else state.rates[parts[0]][parts[1]] = v;
+      if(!state.rates[parts[0]].bill && !state.rates[parts[0]].pay) delete state.rates[parts[0]];
+      save(); renderOrgBuilder();
+    });
+  });
+  var on = growthOn();
+  if($("gpOn")){ $("gpOn").classList.toggle("on", on); $("gpOff").classList.toggle("on", !on); }
+  var gs = $("gpState");
+  if(gs){ gs.textContent = on ? "ACTIVE — $79/mo add-on" : "OFF — composer locked"; gs.className = "stpill " + (on ? "st-open" : "st-off"); }
+  var au = $("wlApplyUrl");
+  if(au && document.activeElement !== au) au.value = state.brand.applyUrl || "";
+}
+
 /* ================= WIZARD ================= */
 var wiz = { step:1, service:"slab", scale:100, packetSel:{}, equipSel:{} };
 var WIZ_STEPS = ["Service Line","Job Details","Org Chart","Paperwork Packet","Equipment"];
@@ -1088,6 +1281,7 @@ function wizDraft(){
     site: ($("fSite").value || "").trim() || "Site TBD",
     dest: ($("fDest").value || "").trim(), date: $("fDate").value || "",
     units: Math.max(1, Number($("fUnits").value) || 1), value: Math.max(0, Number($("fValue").value) || 0),
+    hours: Math.max(1, Number($("fHours").value) || 8),
     trucks: $("fTrucks").value, lane: $("fLane").value, notes: ($("fNotes").value || "").trim(),
     scale: wiz.scale };
 }
@@ -1117,6 +1311,7 @@ function renderWizOrg(){
   $("orgTotal").textContent = total;
   $("orgCerts").textContent = Object.keys(certRoles).length;
   $("scaleReadout").textContent = d.scale + "% — " + total + " total positions";
+  $("orgLabor").innerHTML = laborHTML(staff, d.hours);
 }
 function renderWizPacket(){
   var d = wizDraft();
@@ -1218,11 +1413,12 @@ function renderDrawer(){
     '<div class="progress" style="margin-top:12px"><i style="width:' + jobProgress(j) + '%"></i></div>' +
     '<div class="d-sec">Job Facts</div><div class="kv">' +
     "<span><b>Site</b>" + esc(j.site) + "</span><span><b>Destination</b>" + esc(j.dest || "—") + "</span>" +
-    "<span><b>Start</b>" + esc(j.date || "TBD") + "</span><span><b>Units</b>" + Number(j.units).toLocaleString() + " " + esc(svc.unitLabel.toLowerCase()) + "</span>" +
+    "<span><b>Start</b>" + esc(j.date || "TBD") + "</span><span><b>Units</b>" + Number(j.units).toLocaleString() + " " + esc(svc.unitLabel.toLowerCase()) + "</span><span><b>Est. Hours</b>" + (j.hours || 8) + "</span>" +
     "<span><b>Value</b>" + money(j.value) + "</span><span><b>Trucks</b>" + esc(j.trucks === "ours" ? "Our trucks" : j.trucks === "customer" ? "Customer trucks" : "Mixed / TBD") + "</span>" +
     "<span><b>Crew Lane</b>" + esc(j.lane === "employee" ? "W-2 Employees" : j.lane === "contractor" ? "1099 Contractors" : "Mixed crew") + "</span>" +
     "<span><b>Staffing</b>" + (j.staffing ? j.staffing.filled + " of " + j.staffing.total + " seats filled" : "—") + "</span></div>" +
     (j.notes ? '<p style="color:var(--muted);margin-top:13px;font-size:15px;line-height:1.6">📝 ' + esc(j.notes) + "</p>" : "") +
+    (laborMath(j.org || [], j.hours || 8) ? '<div class="d-sec">Labor Math — Owner-Set Rates</div>' + laborHTML(j.org || [], j.hours || 8) : "") +
     '<div class="d-sec">Board Assignments</div><div class="stage-strip">' + assignHTML + "</div>" +
     '<div style="margin-top:12px"><button class="btn small" id="gotoLoads">STAFF THIS JOB ON THE LOAD BOARD →</button></div>' +
     '<div class="d-sec">Generated Organization</div><div class="org">' + orgHTML(j.org || []) + "</div>" +
@@ -1284,7 +1480,8 @@ function renderOrgBuilder(){
   $("posLib").innerHTML = ROLE_KEYS.map(function(k){
     var r = ROLES[k];
     return '<div class="lib-card"><h5>' + esc(r.name) + '</h5><div class="mission">' + esc(r.mission) + "</div><ul>" +
-      r.duties.map(function(d){ return "<li>" + esc(d) + "</li>"; }).join("") + '</ul><div class="certs">📋 ' + esc(r.certs) + '</div><div class="payb">PAY BASIS · ' + esc(r.pay.toUpperCase()) + " — OWNER SETS RATE</div></div>";
+      r.duties.map(function(d){ return "<li>" + esc(d) + "</li>"; }).join("") + '</ul><div class="certs">📋 ' + esc(r.certs) + '</div><div class="payb">PAY BASIS · ' + esc(r.pay.toUpperCase()) + " — OWNER SETS RATE</div>" +
+      '<div class="payb" style="color:var(--accent);text-transform:none;letter-spacing:.4px">💲 ' + esc(rateText(k)) + "</div></div>";
   }).join("");
 }
 
@@ -1304,7 +1501,7 @@ function renderPricing(){
   $("priceGrid").innerHTML = TIERS.map(function(t){
     return '<div class="price' + (t.hot ? " hot" : "") + '">' + (t.hot ? '<span class="p-flag">MOST POPULAR</span>' : "") +
       '<div class="p-tag">' + esc(t.tag) + "</div><h4>" + esc(t.name) + '</h4><div class="amt">$' + t.amt + "<small>/mo</small></div>" +
-      '<div class="setup">' + (t.setup ? "+ $" + t.setup + " one-time setup" : "No setup fee") + "</div><ul>" +
+      '<div class="setup">' + (t.setup ? "+ $" + t.setup + " one-time setup" : "No setup fee") + '</div><div class="setup" style="color:var(--accent)">Recruiting ads: Growth Pack add-on</div><ul>' +
       t.feats.map(function(f){ return "<li>" + esc(f) + "</li>"; }).join("") + "</ul>" +
       '<a class="btn ' + (t.hot ? "primary" : "") + '" style="width:100%;justify-content:center" href="mailto:capital7lllc@gmail.com?subject=' + encodeURIComponent("LOGIX COMMAND waitlist — " + t.name) + '">JOIN THE WAITLIST</a></div>';
   }).join("");
@@ -1363,7 +1560,8 @@ function renderLoadBoard(){
     }).join("");
     return '<div class="ltile"><div class="lt-img"><img src="' + svc.img + '" alt="' + esc(svc.name) + '"><span class="lt-svc">' + svc.icon + " " + esc(svc.name) + '</span><span class="lt-status"><span class="stpill ' + st.cls + '">' + st.label + '</span></span></div>' +
       '<div class="lt-body"><h5>' + esc(job.title) + '</h5><div class="lt-meta">📍 ' + esc(job.site) + (job.dest ? " → " + esc(job.dest) : "") + "<br>🗓 " + esc(p.date || "TBD") + " · " + esc(p.loadLabel) + " · Client: " + esc(job.client) + '</div>' +
-      '<div class="lt-pay">PAY BASIS · PER JOB — OWNER SETS RATE</div>' + slotsHTML + "</div></div>";
+      '<div class="lt-pay">PAY BASIS · PER JOB — OWNER SETS RATE</div>' +
+      '<div style="margin-top:10px"><button type="button" class="btn small" data-promote="' + p.id + '">📣 PROMOTE THIS LOAD</button></div>' + slotsHTML + "</div></div>";
   }).join("");
   $("lbGrid").querySelectorAll("[data-accept]").forEach(function(b){
     b.addEventListener("click", function(){
@@ -1375,7 +1573,27 @@ function renderLoadBoard(){
       var parts = b.getAttribute("data-release").split("|"); releaseSeat(parts[0], Number(parts[1]), parts[2]);
     });
   });
+  $("lbGrid").querySelectorAll("[data-promote]").forEach(function(b){
+    b.addEventListener("click", function(){ promoteLoad(b.getAttribute("data-promote")); });
+  });
   renderRoster();
+}
+var PROMOTE_LABEL = { cdl:"Driver", boxdriver:"Driver", slab:"Slab Handler", lumber:"Lumber Puller", warehouse:"Warehouse Associate", laborer:"Loader / Laborer", safety:"Safety Lead" };
+function promoteLoad(postId){
+  if(!growthOn()){ toast("🔒 Promote-a-load is part of the Growth Pack — turn it ON in the White-Label Lab"); return; }
+  var post = state.postings.filter(function(p){ return p.id === postId; })[0]; if(!post) return;
+  var job = getJob(post.jobId); if(!job) return;
+  gotoView("intake");
+  var first = post.slots[0];
+  var label = first ? (PROMOTE_LABEL[first.role] || (ROLES[first.role] ? ROLES[first.role].name : "Loader / Laborer")) : "Loader / Laborer";
+  var roleSel = $("adRole");
+  for(var i = 0; i < roleSel.options.length; i++){ if(roleSel.options[i].value === label) roleSel.selectedIndex = i; }
+  $("adSvc").value = job.service;
+  var pf = $("adPlatform"); if(pf) pf.value = "facebook";
+  var lc = $("adLoc"); if(lc) lc.value = job.site || "Wilkes-Barre, PA";
+  renderAdPreview();
+  toast("📣 Composer pre-filled — " + job.title);
+  var pv = $("adPreview"); if(pv) pv.scrollIntoView({ behavior:"smooth", block:"center" });
 }
 function acceptJob(postId, slotIdx){
   var post = state.postings.filter(function(p){ return p.id === postId; })[0]; if(!post) return;
@@ -1443,7 +1661,7 @@ function renderRoster(){
 }
 
 /* ================= CREW INTAKE ================= */
-var INTAKE_ROLES = [ ["boxdriver","Driver"], ["forklift","Forklift Operator"], ["laborer","Loader / Laborer"], ["slab","Slab Handler"], ["lumber","Lumber Puller"], ["warehouse","Warehouse Associate"], ["crewlead","Crew Lead"] ];
+var INTAKE_ROLES = [ ["boxdriver","Driver"], ["forklift","Forklift Operator"], ["laborer","Loader / Laborer"], ["slab","Slab Handler"], ["lumber","Lumber Puller"], ["lumper","Lumper"], ["lumperlead","Lumper Lead"], ["warehouse","Warehouse Associate"], ["crewlead","Crew Lead"] ];
 var INTAKE_CERTS = [ ["forklift","Forklift Cert"], ["cdl","CDL"], ["osha10","OSHA 10"], ["osha30","OSHA 30"] ];
 var DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 function chipHTML(name, val, label, type){
@@ -1498,7 +1716,9 @@ var SEED_ADS = [
   { role:"Driver", img:"board-freight.jpg", head:"DRIVERS — BOX TRUCK & FLATBED RUNS, HOME DAILY",
     body:"Local and regional runs, clean equipment, dispatch that answers the phone. CDL and box-truck seats open now.\nPer-job pay — rate agreed before the wheels turn." },
   { role:"General Labor", img:"board-cleanout.jpg", head:"GENERAL LABOR — GET ON THE BOARD, GET TO WORK",
-    body:"Loaders, clean-out crews, warehouse hands. Apply once, then accept jobs straight from the board as they post.\nReliable transportation and a good attitude are the whole resume." }
+    body:"Loaders, clean-out crews, warehouse hands. Apply once, then accept jobs straight from the board as they post.\nReliable transportation and a good attitude are the whole resume." },
+  { role:"Lumper", img:"board-lumper.jpg", head:"LUMPERS — UNLOAD, RESTACK, GET TRAILERS TURNED",
+    body:"Dock work at live distribution centers — unload inbound freight, fix shifted loads, break down and repack pallets.\nHourly work, steady doors. Bring steel toes and a strong back — we bring the crew, the lead and the system." }
 ];
 var AD_HOOKS = {
   warehouse:"Inside a live distribution operation — scanners, racks and a crew that runs like a system.",
@@ -1506,17 +1726,19 @@ var AD_HOOKS = {
   lumber:"Yard pulls, banding and flatbed loads in the open air — clean counts, straight stacks.",
   freight:"Real freight, real dispatch, routes planned before you roll.",
   moving:"Pad, wrap, load, place — treat people's homes like your own and get tipped like it.",
-  cleanout:"Clean-outs and haul-away — leave every site broom-clean and photo-documented."
+  cleanout:"Clean-outs and haul-away — leave every site broom-clean and photo-documented.",
+  lumper:"Dock doors, inbound trailers and freight that needs a careful hand — turned fast, counted right."
 };
 function adText(ad){
-  return ad.head + "\n\n" + ad.body + "\n\nApply in 2 minutes — submit the Crew Intake and get on the board.\n— " + state.brand.name + " · " + state.brand.tag;
+  return ad.head + "\n\n" + ad.body + "\n\nApply in 2 minutes: " + applyLink() + "\n— " + state.brand.name + " · " + state.brand.tag;
 }
 function renderAds(){
   var g = $("adGrid"); if(!g) return;
+  var on = growthOn();
   g.innerHTML = SEED_ADS.map(function(ad, i){
-    return '<div class="adcard"><img src="' + ad.img + '" alt="' + esc(ad.role) + '"><div class="ad-body"><div class="ad-role">NOW HIRING · ' + esc(ad.role).toUpperCase() + '</div><h5>' + esc(ad.head) + "</h5><p>" + esc(ad.body) + '</p><div style="margin-top:11px;display:flex;gap:9px;align-items:center"><button type="button" class="btn small" data-copyad="' + i + '">📋 COPY AD</button><span style="font-family:var(--font-m);font-size:10.5px;color:var(--faint)">' + esc(state.brand.name.toUpperCase()) + "</span></div></div></div>";
+    return '<div class="adcard"><img src="' + ad.img + '" alt="' + esc(ad.role) + '"><div class="ad-body"><div class="ad-role">NOW HIRING · ' + esc(ad.role).toUpperCase() + '</div><h5>' + esc(ad.head) + "</h5><p>" + esc(ad.body) + '</p><div style="margin-top:11px;display:flex;gap:9px;align-items:center"><button type="button" class="btn small" data-copyad="' + i + '"' + (on ? "" : " disabled") + ">" + (on ? "📋 COPY AD" : "🔒 GROWTH PACK") + '</button><span style="font-family:var(--font-m);font-size:10.5px;color:var(--faint)">' + esc(state.brand.name.toUpperCase()) + "</span></div></div></div>";
   }).join("");
-  g.querySelectorAll("[data-copyad]").forEach(function(b){
+  if(on) g.querySelectorAll("[data-copyad]").forEach(function(b){
     b.addEventListener("click", function(){ copyText(adText(SEED_ADS[Number(b.getAttribute("data-copyad"))]), "Ad copied — paste it where workers look"); });
   });
   var roleSel = $("adRole"), svcSel = $("adSvc");
@@ -1525,16 +1747,58 @@ function renderAds(){
     svcSel.innerHTML = SVC_KEYS.map(function(k){ return '<option value="' + k + '">' + esc(SERVICES[k].name) + "</option>"; }).join("");
     roleSel.addEventListener("change", renderAdPreview);
     svcSel.addEventListener("change", renderAdPreview);
+    var pf = $("adPlatform"); if(pf) pf.addEventListener("change", renderAdPreview);
+    var lc = $("adLoc"); if(lc) lc.addEventListener("input", renderAdPreview);
   }
+  var cb = $("composerBody"), cl = $("composerLocked");
+  if(cb) cb.style.display = on ? "block" : "none";
+  if(cl) cl.style.display = on ? "none" : "block";
+  var badge = $("gpBadge");
+  if(badge){ badge.textContent = on ? "GROWTH PACK · ACTIVE" : "GROWTH PACK · OFF"; badge.className = "stpill " + (on ? "st-open" : "st-off"); }
   renderAdPreview();
+  renderAiVis();
+}
+function roleKeyForLabel(label){
+  for(var i = 0; i < INTAKE_ROLES.length; i++){ if(INTAKE_ROLES[i][1] === label) return INTAKE_ROLES[i][0]; }
+  if(label === "Safety Lead") return "safety";
+  if(label === "Crew Lead") return "crewlead";
+  return "laborer";
 }
 function composerText(){
   var role = $("adRole").value || "Loader / Laborer";
   var svcKey = $("adSvc").value || "slab";
+  var platform = ($("adPlatform") && $("adPlatform").value) || "generic";
+  var loc = (($("adLoc") && $("adLoc").value) || "").trim() || "Wilkes-Barre, PA";
+  var key = roleKeyForLabel(role);
+  var r = ROLES[key] || {};
+  var duties = r.duties || [];
+  var certs = r.certs || "Reliable, safety-first, ready to work";
+  var brand = state.brand.name, tag = state.brand.tag, url = applyLink();
+  var hook = AD_HOOKS[svcKey] || "";
+  var payR = rateOf(key);
+  var paySet = payR.pay ? money2(payR.pay) + "/hr" : null;
+  if(platform === "indeed"){
+    return "Job Title: " + role + "\nCompany: " + brand + "\nLocation: " + loc + "\nPay: " + (paySet ? paySet : "Pay set by company — discussed at intake") + "\n\n" +
+      brand + " is hiring " + role + "s for " + SERVICES[svcKey].name + ". " + hook + "\n\nDuties:\n" +
+      duties.map(function(d){ return "• " + d; }).join("\n") +
+      "\n\nRequirements:\n• " + certs + "\n• Reliable transportation to the job site\n• License/ID and certifications verified at intake\n\nHow to apply:\nApply in 2 minutes at " + url + " — submit the Crew Intake form and the office reviews your application.\n— " + brand + " · " + tag;
+  }
+  if(platform === "linkedin"){
+    return brand + " is hiring: " + role + " — " + SERVICES[svcKey].name + "\n\n" + hook + "\n\nWhat you'll do:\n" +
+      duties.map(function(d){ return "• " + d; }).join("\n") +
+      "\n\nWhat you bring:\n• " + certs + (paySet ? "\n• Pay: " + paySet + " (owner-set)" : "") +
+      "\n\n" + tag + "\nApply here: " + url + "\n\n#Hiring #Logistics #SupplyChain #WarehouseJobs";
+  }
+  if(platform === "facebook"){
+    return "🚨 NOW HIRING: " + role.toUpperCase() + "S 🚨\n" + brand + " · " + SERVICES[svcKey].name + " — " + loc + "\n\n" + hook + "\n" +
+      (paySet ? "💲 " + paySet + " — owner-set rate, agreed before you start.\n" : "💲 Pay agreed before you start — no surprises.\n") +
+      "Apply in 2 minutes 👇\n" + url + "\n\n#NowHiring #LogisticsJobs #WarehouseJobs #Hiring";
+  }
   return "NOW HIRING: " + role.toUpperCase() + "S — " + SERVICES[svcKey].name.toUpperCase() + "\n\n" +
-    state.brand.name + " is staffing up. " + (AD_HOOKS[svcKey] || "") + "\n" +
-    "Per-job pay — the rate is set by the owner and agreed before you start. Reliable hands get called back first, every time.\n\n" +
-    "Apply in 2 minutes: submit the Crew Intake form — license/ID and certs are checked at verification.\n— " + state.brand.name + " · " + state.brand.tag;
+    brand + " is staffing up. " + hook + "\n" +
+    (paySet ? "Pay: " + paySet + " (owner-set), agreed before you start.\n" : "Per-job pay — the rate is set by the owner and agreed before you start.\n") +
+    "Reliable hands get called back first, every time.\n\n" +
+    "Apply in 2 minutes: " + url + "\n— " + brand + " · " + tag;
 }
 function renderAdPreview(){ var p = $("adPreview"); if(p) p.textContent = composerText(); }
 function copyText(text, okMsg){
@@ -1550,13 +1814,94 @@ function copyText(text, okMsg){
   }
 }
 
+/* ================= AI VISIBILITY (GROWTH PACK) ================= */
+var AI_SOURCES = [ ["gbp","Google Business Profile"], ["bing","Bing Places"], ["linkedin","LinkedIn Company Page"], ["indeedpg","Indeed Company Page"], ["fb","Facebook Page"], ["aicard","Website with AI Business Card installed"], ["llms","llms.txt published"] ];
+function hiringRoles(){
+  var seen = {}, out = [];
+  state.postings.forEach(function(p){
+    p.slots.forEach(function(s){ if(s.assigned.length < s.count && !seen[s.role]){ seen[s.role] = 1; out.push(s.role); } });
+  });
+  return out;
+}
+function aiBusinessCard(){
+  var b = state.brand;
+  var hiring = hiringRoles().map(function(k){
+    var r = rateOf(k);
+    return ROLES[k].name + (r.pay ? " (" + money2(r.pay) + "/hr)" : "");
+  });
+  var card = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": b.name,
+    "slogan": b.tag,
+    "description": b.name + " is a logistics services company serving " + state.aiVis.area + " — organized crews for warehouse workflow contracting, materials moving, stone and slab handling, lumber, freight, moving, clean-outs and lumper services." + (hiring.length ? " Now hiring: " + hiring.join(", ") + "." : ""),
+    "url": applyLink(),
+    "areaServed": state.aiVis.area,
+    "knowsAbout": SVC_KEYS.map(function(k){ return SERVICES[k].name; }),
+    "sameAs": [ "https://www.linkedin.com/", "https://www.indeed.com/", "https://www.google.com/" ]
+  };
+  return '<script type="application/ld+json">\n' + JSON.stringify(card, null, 2) + "\n</" + "script>";
+}
+function answerProfile(){
+  var b = state.brand;
+  var lines = [];
+  lines.push("# " + b.name);
+  lines.push(b.tag);
+  lines.push("");
+  lines.push(b.name + " is a logistics services company serving " + state.aiVis.area + ". We structure the organization for every job — the right positions, the paperwork packet and the workflow — then run it from intake to closeout.");
+  lines.push("");
+  lines.push("## What we do");
+  SVC_KEYS.forEach(function(k){ lines.push("- " + SERVICES[k].name + ": " + SERVICES[k].desc.split(".")[0] + "."); });
+  lines.push("");
+  lines.push("## Service area");
+  lines.push(state.aiVis.area);
+  var hiring = hiringRoles();
+  if(hiring.length){
+    lines.push("");
+    lines.push("## Now hiring");
+    hiring.forEach(function(k){
+      var r = rateOf(k);
+      lines.push("- " + ROLES[k].name + (r.pay ? " — " + money2(r.pay) + "/hr (owner-set)" : ""));
+    });
+    lines.push("Apply: " + applyLink());
+  }
+  lines.push("");
+  lines.push("## Contact");
+  lines.push("Applications and job inquiries: " + applyLink());
+  return lines.join("\n");
+}
+function renderAiVis(){
+  var body = $("aiVisBody"), locked = $("aiVisLocked");
+  if(!body || !locked) return;
+  var on = growthOn();
+  body.style.display = on ? "block" : "none";
+  locked.style.display = on ? "none" : "block";
+  if(!on) return;
+  var area = $("aiArea");
+  if(area && document.activeElement !== area) area.value = state.aiVis.area || "Northeast Pennsylvania";
+  $("aiCardPrev").textContent = aiBusinessCard();
+  $("aiProfilePrev").textContent = answerProfile();
+  var checks = state.aiVis.checks || {};
+  $("aiChecklist").innerHTML = AI_SOURCES.map(function(s){
+    var done = !!checks[s[0]];
+    return '<label class="check' + (done ? " done" : "") + '"><input type="checkbox" data-aichk="' + s[0] + '"' + (done ? " checked" : "") + '><span><span class="c-t">' + esc(s[1]) + "</span></span></label>";
+  }).join("");
+  var n = AI_SOURCES.filter(function(s){ return checks[s[0]]; }).length;
+  var pct = Math.round(n / AI_SOURCES.length * 100);
+  $("aiVisPct").textContent = pct + "%";
+  $("aiVisBar").style.width = pct + "%";
+  $("aiChecklist").querySelectorAll("[data-aichk]").forEach(function(cb){
+    cb.addEventListener("change", function(){ state.aiVis.checks[cb.getAttribute("data-aichk")] = cb.checked; save(); renderAiVis(); });
+  });
+}
+
 /* ================= INIT ================= */
 function init(){
   load();
   buildTicker();
   applyBrand();
   renderSvcGrid(); renderWizSteps(); renderSwatches(); renderPricing();
-  renderIntake(); renderAds();
+  renderIntake(); renderAds(); renderRates();
   renderDashboard(); renderBoard(); renderLoadBoard(); renderOrgBuilder();
   /* nav */
   document.querySelectorAll(".nav-btn").forEach(function(b){
@@ -1597,18 +1942,29 @@ function init(){
   $("wlName").addEventListener("input", function(){ state.brand.name = (this.value || "").trim() || "LOGIX COMMAND"; applyBrand(); renderAds(); });
   $("wlTag").addEventListener("input", function(){ state.brand.tag = (this.value || "").trim() || "LOGISTICS MANAGER OS"; applyBrand(); renderAds(); });
   $("wlCapital7").addEventListener("click", function(){
-    state.brand = { name:"Capital 7 Logistics", tag:"MOVING · HANDYMAN · LOGISTICS", preset:"gold" };
+    state.brand = { name:"Capital 7 Logistics", tag:"MOVING · HANDYMAN · LOGISTICS", preset:"gold", applyUrl: state.brand.applyUrl || "" };
     applyBrand(); save(); renderAds(); toast("♛ Rebranded — the whole platform is now Capital 7 Logistics");
   });
   $("wlDefault").addEventListener("click", function(){
-    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold" };
+    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl: state.brand.applyUrl || "" };
     applyBrand(); save(); renderAds(); toast("Brand reset to LOGIX COMMAND");
   });
   $("wlSave").addEventListener("click", function(){ save(); toast("💾 Brand saved — it persists on this device"); });
   $("wlReset").addEventListener("click", function(){
-    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold" };
+    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold", applyUrl: state.brand.applyUrl || "" };
     applyBrand(); save(); renderAds(); toast("Brand reset");
   });
+  /* rates + growth pack */
+  $("ratesSave").addEventListener("click", function(){ save(); renderOrgBuilder(); renderRates(); toast("💾 Rates saved — labor math is live"); });
+  $("gpOn").addEventListener("click", function(){ state.entitlements.growthPack = true; save(); renderRates(); renderAds(); toast("🚀 Growth Pack ACTIVE — ad generation unlocked"); });
+  $("gpOff").addEventListener("click", function(){ state.entitlements.growthPack = false; save(); renderRates(); renderAds(); toast("Growth Pack OFF — composer locked"); });
+  $("wlApplyUrl").addEventListener("input", function(){ state.brand.applyUrl = this.value; save(); renderAds(); });
+  /* ai visibility */
+  $("aiArea").addEventListener("input", function(){ state.aiVis.area = this.value; save(); renderAiVis(); });
+  $("aiCardCopy").addEventListener("click", function(){ copyText(aiBusinessCard(), "AI Business Card copied — paste it into your website <head>"); });
+  $("aiProfileCopy").addEventListener("click", function(){ copyText(answerProfile(), "Answer Profile copied — publish it as yoursite.com/llms.txt"); });
+  /* apply-link landing */
+  if(window.location.hash === "#intake") gotoView("intake");
   /* reveal on scroll */
   if("IntersectionObserver" in window){
     var io = new IntersectionObserver(function(entries){
