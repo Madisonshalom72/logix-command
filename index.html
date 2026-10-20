@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOGIX COMMAND — Logistics Manager OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b16; --bg2:#0a1020; --panel:#0d1526; --panel2:#111b31; --panel3:#16223c;
+  --line:rgba(120,150,220,.16); --line2:rgba(120,150,220,.28);
+  --ink:#e8eefc; --muted:#8fa1c4; --faint:#5b6d92;
+  --accent:#e8c766; --accent2:#b8912f; --accent-ink:#131003;
+  --accent-soft:rgba(232,199,102,.12); --accent-glow:rgba(232,199,102,.45);
+  --good:#3ddc84; --warn:#ffb340; --bad:#ff5a5a; --cyan:#4dd8ff;
+  --radius:14px;
+  --font-d:'Orbitron',sans-serif; --font-b:'Rajdhani',sans-serif; --font-m:'Share Tech Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-b);font-size:17px;line-height:1.45;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(900px 500px at 85% -10%,var(--accent-soft),transparent 60%),
+             radial-gradient(700px 500px at -10% 110%,rgba(77,216,255,.05),transparent 60%);}
+a{color:var(--accent);text-decoration:none}
+button{font-family:var(--font-b);cursor:pointer}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--panel3);border-radius:99px}::-webkit-scrollbar-track{background:transparent}
+
+/* ============ APP FRAME ============ */
+#app{position:relative;z-index:1;display:grid;grid-template-columns:248px 1fr;min-height:100vh}
+aside{background:linear-gradient(180deg,var(--bg2),var(--bg));border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px}
+.logo{display:flex;align-items:center;gap:11px;padding:4px 8px 18px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.logo-mark{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-family:var(--font-d);font-weight:900;font-size:20px;color:var(--accent-ink);box-shadow:0 0 22px var(--accent-glow);flex-shrink:0}
+.logo h1{font-family:var(--font-d);font-size:16.5px;letter-spacing:1.2px;line-height:1.15}
+.logo small{display:block;font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:1.6px;font-weight:400}
+.nav-btn{display:flex;align-items:center;gap:11px;width:100%;text-align:left;background:transparent;border:1px solid transparent;color:var(--muted);padding:11px 13px;border-radius:11px;font-size:16.5px;font-weight:600;letter-spacing:.4px;transition:all .2s ease}
+.nav-btn .ic{font-size:17px;width:22px;text-align:center}
+.nav-btn:hover{color:var(--ink);background:var(--panel)}
+.nav-btn.active{color:var(--ink);background:linear-gradient(90deg,var(--accent-soft),transparent);border-color:var(--line2);box-shadow:inset 3px 0 0 var(--accent)}
+.side-foot{margin-top:auto;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--panel);font-size:13.5px;color:var(--muted);line-height:1.5}
+.side-foot b{color:var(--accent);font-family:var(--font-m);font-size:11px;letter-spacing:1.4px;display:block;margin-bottom:4px}
+main{min-width:0}
+.topbar{position:sticky;top:0;z-index:40;backdrop-filter:blur(12px);background:rgba(7,11,22,.82);border-bottom:1px solid var(--line);padding:13px 26px;display:flex;align-items:center;gap:16px}
+.topbar .crumb{font-family:var(--font-m);font-size:11.5px;color:var(--faint);letter-spacing:1.6px;text-transform:uppercase}
+.topbar h2{font-family:var(--font-d);font-size:19px;letter-spacing:1.4px}
+.topbar .sp{flex:1}
+.pill{font-family:var(--font-m);font-size:11px;letter-spacing:1.2px;padding:6px 12px;border-radius:99px;border:1px solid var(--line2);color:var(--muted)}
+.pill b{color:var(--good)}
+.view{display:none;padding:26px;animation:viewIn .45s cubic-bezier(.22,1,.36,1) both}
+.view.active{display:block}
+@keyframes viewIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============ TICKER ============ */
+.ticker-wrap{overflow:hidden;border-bottom:1px solid var(--line);background:linear-gradient(90deg,var(--accent-soft),transparent 30%,transparent 70%,var(--accent-soft));position:relative;z-index:30}
+.ticker{display:flex;gap:0;white-space:nowrap;width:max-content;animation:tick 46s linear infinite;padding:7px 0}
+.ticker span{font-family:var(--font-m);font-size:11.5px;letter-spacing:1.6px;color:var(--muted);padding:0 26px;text-transform:uppercase}
+.ticker span b{color:var(--accent)}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ============ BUTTONS ============ */
+.btn{display:inline-flex;align-items:center;gap:9px;border-radius:11px;border:1px solid var(--line2);background:var(--panel2);color:var(--ink);padding:11px 20px;font-size:16px;font-weight:700;letter-spacing:.5px;transition:all .2s ease}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);border-color:transparent;box-shadow:0 6px 24px var(--accent-glow)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}
+.btn.small{padding:7px 13px;font-size:14px;border-radius:9px}
+.btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+/* ============ DASHBOARD ============ */
+.hero{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--line2);min-height:308px;display:flex;align-items:flex-end;margin-bottom:24px}
+.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05)}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,8,16,.92) 30%,rgba(5,8,16,.45) 62%,rgba(5,8,16,.15)),linear-gradient(0deg,rgba(5,8,16,.85),transparent 55%)}
+.hero-in{position:relative;z-index:2;padding:30px;max-width:660px}
+.hero .tag{font-family:var(--font-m);font-size:11.5px;letter-spacing:2.6px;color:var(--accent);text-transform:uppercase;margin-bottom:10px}
+.hero h3{font-family:var(--font-d);font-size:clamp(26px,4.4vw,42px);font-weight:900;line-height:1.08;letter-spacing:.6px;margin-bottom:12px}
+.hero p{color:#c6d2ec;font-size:17.5px;max-width:520px;margin-bottom:20px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:20px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),transparent)}
+.kpi .k-label{font-family:var(--font-m);font-size:11px;letter-spacing:1.8px;color:var(--muted);text-transform:uppercase}
+.kpi .k-num{font-family:var(--font-d);font-size:36px;font-weight:900;margin:7px 0 3px;color:var(--ink)}
+.kpi .k-sub{font-size:14px;color:var(--faint)}
+.kpi .k-ic{position:absolute;right:16px;top:16px;font-size:22px;opacity:.85}
+.grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:16px}
+.panel{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.panel h4{font-family:var(--font-d);font-size:14.5px;letter-spacing:1.6px;margin-bottom:6px}
+.panel .p-sub{color:var(--muted);font-size:14.5px;margin-bottom:16px}
+.feed{font-family:var(--font-m);font-size:12.8px;line-height:1.5;max-height:342px;overflow:hidden;display:flex;flex-direction:column;gap:9px}
+.feed .fl{display:flex;gap:11px;animation:fadeUp .5s ease both;border-left:2px solid var(--line2);padding-left:11px}
+.feed .fl.hot{border-color:var(--accent)}
+.feed .ft{color:var(--faint);flex-shrink:0}
+.feed .fm{color:#c2cfe9}
+.feed .fm b{color:var(--accent)}
+.stage-strip{display:flex;flex-direction:column;gap:10px}
+.ss-row{display:flex;align-items:center;gap:12px;font-size:15px}
+.ss-row .dot{width:10px;height:10px;border-radius:50%;background:var(--panel3);border:1px solid var(--line2);flex-shrink:0}
+.ss-row .dot.on{background:var(--accent);box-shadow:0 0 10px var(--accent-glow)}
+.ss-row .n{margin-left:auto;font-family:var(--font-m);color:var(--muted);font-size:13px}
+
+/* ============ CARDS / FORMS ============ */
+.sec-head{margin-bottom:20px}
+.sec-head .tag{font-family:var(--font-m);font-size:11.5px;letter-spacing:2.4px;color:var(--accent);text-transform:uppercase}
+.sec-head h3{font-family:var(--font-d);font-size:clamp(22px,3.4vw,31px);font-weight:900;letter-spacing:.6px;margin:6px 0 8px}
+.sec-head p{color:var(--muted);max-width:760px;font-size:16.5px}
+label.f{display:block;font-family:var(--font-m);font-size:11px;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase;margin:0 0 7px 2px}
+input[type=text],input[type=number],input[type=date],select,textarea{width:100%;background:#0a1120;border:1px solid var(--line2);border-radius:11px;color:var(--ink);padding:12px 14px;font-family:var(--font-b);font-size:16.5px;font-weight:600;outline:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:74px}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.f-grid .full{grid-column:1/-1}
+
+/* service line picker */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.svc{border:1px solid var(--line);background:linear-gradient(180deg,var(--panel2),var(--panel));border-radius:16px;padding:20px;cursor:pointer;transition:all .22s ease;position:relative;overflow:hidden;text-align:left;color:var(--ink);width:100%}
+.svc::before{content:"";position:absolute;inset:auto -20% -55% -20%;height:120px;background:radial-gradient(closest-side,var(--accent-soft),transparent);opacity:0;transition:opacity .25s}
+.svc:hover{transform:translateY(-4px);border-color:var(--line2)}
+.svc:hover::before,.svc.sel::before{opacity:1}
+.svc.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent),0 14px 34px rgba(0,0,0,.45)}
+.svc .s-ic{font-size:30px;margin-bottom:10px}
+.svc h5{font-family:var(--font-d);font-size:15.5px;letter-spacing:.6px;margin-bottom:7px;line-height:1.3}
+.svc p{color:var(--muted);font-size:14.5px;line-height:1.5}
+.svc .s-flag{position:absolute;top:13px;right:13px;font-family:var(--font-m);font-size:9.5px;letter-spacing:1.4px;color:var(--accent-ink);background:var(--accent);padding:3px 8px;border-radius:99px;font-weight:700;display:none}
+.svc.sel .s-flag{display:block}
+
+/* wizard */
+.wiz-steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.wstep{display:flex;align-items:center;gap:9px;padding:9px 15px;border-radius:99px;border:1px solid var(--line);color:var(--muted);font-weight:700;font-size:14.5px;background:var(--panel)}
+.wstep .wn{width:23px;height:23px;border-radius:50%;background:var(--panel3);display:grid;place-items:center;font-family:var(--font-m);font-size:12px}
+.wstep.on{color:var(--accent-ink);background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent}
+.wstep.on .wn{background:rgba(0,0,0,.25);color:#fff}
+.wstep.done{color:var(--accent);border-color:var(--accent)}
+.wiz-pane{display:none}.wiz-pane.on{display:block;animation:fadeUp .4s ease both}
+.wiz-nav{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px}
+
+/* org chart */
+.org{display:flex;flex-direction:column;align-items:center;gap:0}
+.org-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;padding-top:26px}
+.org-row::before{content:"";position:absolute;top:0;left:50%;width:2px;height:26px;background:linear-gradient(180deg,var(--accent),var(--line2))}
+.org-row:first-child{padding-top:0}.org-row:first-child::before{display:none}
+.pos{background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--line2);border-radius:13px;padding:13px 15px;width:212px;position:relative}
+.pos .p-count{position:absolute;top:-11px;right:12px;background:var(--accent);color:var(--accent-ink);font-family:var(--font-d);font-weight:900;font-size:13px;border-radius:99px;padding:2px 11px;box-shadow:0 4px 14px var(--accent-glow)}
+.pos h6{font-family:var(--font-d);font-size:13px;letter-spacing:.5px;line-height:1.3;margin-bottom:5px;padding-right:26px}
+.pos .p-pay{font-family:var(--font-m);font-size:10px;letter-spacing:1.2px;color:var(--accent);text-transform:uppercase}
+.pos ul{list-style:none;margin-top:8px}
+.pos li{font-size:13px;color:var(--muted);line-height:1.45;padding-left:13px;position:relative}
+.pos li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+.pos .p-cert{margin-top:9px;padding-top:8px;border-top:1px dashed var(--line2);font-size:12px;color:var(--cyan);line-height:1.45}
+
+/* checklist */
+.check{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:9px;cursor:pointer;transition:all .2s}
+.check:hover{border-color:var(--line2)}
+.check input{width:19px;height:19px;accent-color:var(--accent);margin-top:2px;flex-shrink:0;cursor:pointer}
+.check .c-t{font-weight:700;font-size:15.5px}
+.check .c-d{color:var(--muted);font-size:13.5px;line-height:1.45}
+.check.done{border-color:rgba(61,220,132,.4);background:rgba(61,220,132,.05)}
+.check.done .c-t{color:var(--good)}
+.progress{height:10px;background:#0a1120;border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:99px;transition:width .6s cubic-bezier(.22,1,.36,1);box-shadow:0 0 12px var(--accent-glow)}
+
+/* equipment */
+.eq-row{display:flex;align-items:center;gap:13px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:9px;flex-wrap:wrap}
+.eq-row .e-ic{font-size:21px}
+.eq-row .e-n{font-weight:700;font-size:16px}
+.eq-row .e-d{color:var(--muted);font-size:13.5px}
+.eq-row .seg{margin-left:auto;display:flex;border:1px solid var(--line2);border-radius:9px;overflow:hidden}
+.eq-row .seg button{background:transparent;border:none;color:var(--muted);padding:7px 13px;font-weight:700;font-size:13.5px}
+.eq-row .seg button.on{background:var(--accent);color:var(--accent-ink)}
+
+/* board */
+.board{display:flex;gap:13px;overflow-x:auto;padding-bottom:16px;align-items:flex-start}
+.bcol{flex:0 0 252px;background:rgba(13,21,38,.6);border:1px solid var(--line);border-radius:14px;padding:12px;min-height:180px}
+.bcol h5{font-family:var(--font-m);font-size:10.5px;letter-spacing:1.6px;color:var(--muted);text-transform:uppercase;display:flex;justify-content:space-between;margin-bottom:11px}
+.bcol h5 b{color:var(--accent)}
+.jcard{background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--line2);border-radius:12px;padding:14px;margin-bottom:11px;cursor:pointer;transition:all .2s}
+.jcard:hover{transform:translateY(-3px);border-color:var(--accent)}
+.jcard .j-svc{font-family:var(--font-m);font-size:10px;letter-spacing:1.4px;color:var(--accent);text-transform:uppercase}
+.jcard h6{font-size:16.5px;line-height:1.25;margin:5px 0 3px;font-weight:700}
+.jcard .j-cli{color:var(--muted);font-size:14px}
+.jcard .j-meta{display:flex;justify-content:space-between;font-family:var(--font-m);font-size:11.5px;color:var(--faint);margin-top:10px}
+.jcard .progress{margin-top:9px;height:7px}
+.empty-col{color:var(--faint);font-size:13.5px;text-align:center;padding:16px 6px;border:1px dashed var(--line);border-radius:10px}
+
+/* drawer */
+.drawer-wrap{position:fixed;inset:0;z-index:80;display:none}
+.drawer-wrap.open{display:block}
+.drawer-bg{position:absolute;inset:0;background:rgba(3,5,10,.72);backdrop-filter:blur(3px)}
+.drawer{position:absolute;top:0;right:0;bottom:0;width:min(680px,96vw);background:var(--bg2);border-left:1px solid var(--line2);overflow-y:auto;padding:26px;animation:slideIn .35s cubic-bezier(.22,1,.36,1) both}
+@keyframes slideIn{from{transform:translateX(60px);opacity:0}to{transform:none;opacity:1}}
+.drawer h3{font-family:var(--font-d);font-size:21px;letter-spacing:.6px;line-height:1.25}
+.drawer .d-sec{font-family:var(--font-m);font-size:11px;letter-spacing:2px;color:var(--accent);text-transform:uppercase;margin:26px 0 12px}
+.stage-adv{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stage-adv .cur{font-family:var(--font-d);font-size:14px;color:var(--accent)}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;font-size:15px}
+.kv b{color:var(--muted);font-weight:600;display:block;font-size:12.5px;font-family:var(--font-m);letter-spacing:1.2px;text-transform:uppercase}
+
+/* positions library */
+.pos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:15px}
+.lib-card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:14px;padding:19px}
+.lib-card h5{font-family:var(--font-d);font-size:14.5px;letter-spacing:.5px;margin-bottom:4px}
+.lib-card .mission{color:var(--accent);font-size:14.5px;font-weight:600;margin-bottom:9px}
+.lib-card ul{list-style:none}.lib-card li{font-size:14px;color:var(--muted);line-height:1.5;padding-left:13px;position:relative}
+.lib-card li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+.lib-card .certs{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line2);font-size:12.5px;color:var(--cyan);line-height:1.5}
+.lib-card .payb{font-family:var(--font-m);font-size:10.5px;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase;margin-top:9px}
+
+/* templates */
+.tpl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:8px}
+.tpl{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:18px;cursor:pointer;text-align:left;color:var(--ink);transition:all .2s;width:100%}
+.tpl:hover{transform:translateY(-3px)}
+.tpl.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.tpl h5{font-family:var(--font-d);font-size:14px;margin-bottom:5px}
+.tpl p{color:var(--muted);font-size:13.5px;line-height:1.45}
+.tpl .t-n{font-family:var(--font-m);color:var(--accent);font-size:12px;letter-spacing:1.4px}
+
+/* white label */
+.swatches{display:flex;gap:11px;flex-wrap:wrap}
+.swatch{width:56px;height:56px;border-radius:14px;cursor:pointer;border:2px solid transparent;position:relative;transition:all .2s}
+.swatch.sel{border-color:#fff;transform:scale(1.07)}
+.swatch small{position:absolute;bottom:-19px;left:50%;transform:translateX(-50%);font-family:var(--font-m);font-size:9.5px;color:var(--muted);letter-spacing:.6px;white-space:nowrap}
+.preview-frame{border:1px solid var(--line2);border-radius:16px;overflow:hidden;background:var(--panel)}
+.pf-head{display:flex;align-items:center;gap:11px;padding:15px 19px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.pf-body{padding:22px;background:linear-gradient(180deg,var(--panel2),var(--panel))}
+.pf-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:15px}
+.pf-kpi{border:1px solid var(--line);border-radius:11px;padding:13px;background:var(--panel)}
+.pf-kpi .n{font-family:var(--font-d);font-size:21px;font-weight:900}
+.pf-kpi .l{font-family:var(--font-m);font-size:9.5px;letter-spacing:1.4px;color:var(--muted);text-transform:uppercase}
+
+/* pricing */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.price{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:18px;padding:27px;position:relative}
+.price.hot{border-color:var(--accent);box-shadow:0 18px 44px rgba(0,0,0,.5),0 0 0 1px var(--accent)}
+.price .p-tag{font-family:var(--font-m);font-size:10.5px;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
+.price .p-flag{position:absolute;top:-13px;right:20px;background:var(--accent);color:var(--accent-ink);font-family:var(--font-m);font-size:10px;font-weight:700;letter-spacing:1.4px;padding:4px 12px;border-radius:99px}
+.price h4{font-family:var(--font-d);font-size:19px;margin:9px 0 4px}
+.price .amt{font-family:var(--font-d);font-size:42px;font-weight:900}
+.price .amt small{font-size:15px;color:var(--muted);font-family:var(--font-b);font-weight:600}
+.price .setup{font-family:var(--font-m);font-size:12px;color:var(--muted)}
+.price ul{list-style:none;margin:17px 0 21px}
+.price li{padding:7px 0 7px 22px;position:relative;color:#c6d2ec;font-size:15.5px;border-bottom:1px dashed var(--line)}
+.price li::before{content:"✓";position:absolute;left:0;color:var(--good);font-weight:700}
+.note-box{border:1px solid var(--line2);border-left:4px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:16px 19px;font-size:15.5px;line-height:1.6;color:#d8e2f5}
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,80px);background:var(--panel3);border:1px solid var(--accent);color:var(--ink);padding:13px 22px;border-radius:12px;font-weight:700;z-index:200;transition:transform .4s cubic-bezier(.22,1,.36,1);box-shadow:0 18px 40px rgba(0,0,0,.55);max-width:92vw;text-align:center}
+.toast.show{transform:translate(-50%,0)}
+
+/* ============ LOAD BOARD ============ */
+.zone-tabs{display:flex;gap:9px;margin-bottom:20px;flex-wrap:wrap}
+.ztab{padding:10px 20px;border-radius:99px;border:1px solid var(--line2);background:var(--panel);color:var(--muted);font-weight:700;font-size:15.5px}
+.ztab.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);border-color:transparent}
+.acting-bar{display:flex;gap:13px;align-items:center;flex-wrap:wrap;background:linear-gradient(90deg,var(--accent-soft),transparent);border:1px solid var(--line2);border-radius:14px;padding:15px 18px;margin-bottom:20px}
+.acting-bar select{width:auto;min-width:230px}
+.lb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(345px,1fr));gap:17px}
+.ltile{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:17px;overflow:hidden;transition:all .25s ease}
+.ltile:hover{transform:translateY(-4px);border-color:var(--line2);box-shadow:0 18px 38px rgba(0,0,0,.5)}
+.ltile .lt-img{height:172px;position:relative;overflow:hidden}
+.ltile .lt-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.ltile:hover .lt-img img{transform:scale(1.06)}
+.ltile .lt-img::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,11,22,.82),transparent 55%)}
+.ltile .lt-svc{position:absolute;left:14px;bottom:11px;z-index:2;font-family:var(--font-m);font-size:10.5px;letter-spacing:1.8px;color:var(--accent);text-transform:uppercase}
+.ltile .lt-status{position:absolute;top:12px;right:12px;z-index:2}
+.stpill{font-family:var(--font-m);font-size:10px;letter-spacing:1.3px;padding:4px 11px;border-radius:99px;font-weight:700;text-transform:uppercase}
+.st-open{background:rgba(61,220,132,.16);color:var(--good);border:1px solid rgba(61,220,132,.5)}
+.st-filling{background:rgba(255,179,64,.15);color:var(--warn);border:1px solid rgba(255,179,64,.5)}
+.st-full{background:rgba(77,216,255,.13);color:var(--cyan);border:1px solid rgba(77,216,255,.5)}
+.st-avail{background:rgba(61,220,132,.16);color:var(--good);border:1px solid rgba(61,220,132,.5)}
+.st-assigned{background:rgba(232,199,102,.14);color:var(--accent);border:1px solid var(--accent)}
+.st-applicant{background:rgba(255,179,64,.15);color:var(--warn);border:1px solid rgba(255,179,64,.5)}
+.st-off{background:rgba(120,140,180,.12);color:var(--muted);border:1px solid var(--line2)}
+.ltile .lt-body{padding:17px 18px 18px}
+.ltile h5{font-family:var(--font-d);font-size:16px;letter-spacing:.4px;line-height:1.3;margin-bottom:5px}
+.ltile .lt-meta{color:var(--muted);font-size:14px;line-height:1.5}
+.ltile .lt-pay{font-family:var(--font-m);font-size:10.5px;letter-spacing:1.3px;color:var(--faint);text-transform:uppercase;margin-top:7px}
+.slot{border-top:1px dashed var(--line2);padding:12px 0 2px;margin-top:12px}
+.slot .sl-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.slot .sl-role{font-weight:700;font-size:16px}
+.slot .sl-count{font-family:var(--font-d);font-weight:900;color:var(--accent);font-size:15px}
+.slot .sl-count.full{color:var(--good)}
+.slot .sl-req{font-family:var(--font-m);font-size:10px;color:var(--cyan);letter-spacing:1px}
+.slot .sl-names{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.namechip{display:inline-flex;align-items:center;gap:7px;background:var(--panel3);border:1px solid var(--line2);border-radius:99px;padding:4px 7px 4px 12px;font-size:13.5px;font-weight:600}
+.namechip button{background:rgba(255,90,90,.15);border:1px solid rgba(255,90,90,.4);color:#ff9d9d;border-radius:99px;font-size:10.5px;padding:2px 8px;font-weight:700}
+.slot .sl-actions{margin-top:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.slot .sl-why{font-size:13px;color:var(--warn)}
+/* roster */
+.wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(262px,1fr));gap:15px}
+.wcard{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:15px;padding:18px;position:relative}
+.wcard .w-top{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.avatar{width:47px;height:47px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--accent-ink);display:grid;place-items:center;font-family:var(--font-d);font-weight:900;font-size:16px;flex-shrink:0}
+.wcard h5{font-size:17px;line-height:1.2}
+.wcard .w-roles{color:var(--muted);font-size:13.5px;line-height:1.4}
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}
+.badge{font-family:var(--font-m);font-size:9.8px;letter-spacing:1px;padding:3px 9px;border-radius:99px;border:1px solid rgba(77,216,255,.45);color:var(--cyan);text-transform:uppercase}
+.badge.newb{border-color:var(--warn);color:var(--warn);animation:pulseB 1.6s ease infinite}
+@keyframes pulseB{0%,100%{box-shadow:0 0 0 0 rgba(255,179,64,.0)}50%{box-shadow:0 0 0 5px rgba(255,179,64,.12)}}
+.wcard .w-foot{display:flex;justify-content:space-between;align-items:center;margin-top:11px;padding-top:11px;border-top:1px dashed var(--line2);font-family:var(--font-m);font-size:11.5px;color:var(--muted)}
+.wcard .w-assign{font-size:13.5px;color:var(--accent);margin-top:7px;line-height:1.45}
+/* intake form */
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chipopt{position:relative}
+.chipopt input{position:absolute;opacity:0;pointer-events:none}
+.chipopt span{display:inline-block;padding:8px 15px;border-radius:99px;border:1px solid var(--line2);color:var(--muted);font-weight:700;font-size:14px;cursor:pointer;transition:all .18s}
+.chipopt input:checked + span{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.daychip span{width:44px;text-align:center;padding:8px 0}
+.consent-box{border:1px solid rgba(255,179,64,.45);background:rgba(255,179,64,.06);border-radius:12px;padding:15px 17px}
+.success-box{border:1px solid rgba(61,220,132,.5);background:rgba(61,220,132,.07);border-radius:14px;padding:22px;text-align:center}
+.success-box .big{font-size:40px}
+/* ads */
+.ad-grid{display:grid;grid-template-columns:1fr;gap:15px}
+.adcard{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:var(--panel)}
+.adcard img{width:100%;height:128px;object-fit:cover;display:block}
+.adcard .ad-body{padding:15px 17px}
+.adcard h5{font-family:var(--font-d);font-size:15px;line-height:1.35;margin-bottom:6px}
+.adcard p{color:var(--muted);font-size:14px;line-height:1.55;white-space:pre-line}
+.adcard .ad-role{font-family:var(--font-m);font-size:10px;letter-spacing:1.6px;color:var(--accent);text-transform:uppercase}
+
+@media(max-width:1080px){.kpis{grid-template-columns:repeat(2,1fr)}.svc-grid{grid-template-columns:1fr 1fr}.price-grid,.tpl-grid{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+@media(max-width:820px){
+  #app{grid-template-columns:1fr}
+  aside{position:fixed;z-index:90;left:0;right:0;bottom:0;top:auto;height:auto;flex-direction:row;align-items:center;padding:8px;overflow-x:auto;border-right:none;border-top:1px solid var(--line2)}
+  .logo,.side-foot{display:none}
+  .nav-btn{flex-direction:column;gap:3px;font-size:11px;padding:8px 10px;white-space:nowrap}
+  .nav-btn .ic{font-size:18px}
+  main{padding-bottom:78px}
+  .view{padding:18px 15px}
+  .svc-grid,.f-grid,.price-grid,.tpl-grid,.kpis{grid-template-columns:1fr}
+  .topbar{padding:11px 15px}.topbar h2{font-size:16px}
+  .pos{width:100%}
+  .hero-in{padding:22px}
+}
+</style>
+</head>
+<body>
+
+<script>
+/* ================= TICKER CONFIG ================= */
+window.MUSE_TICKER = {
+  speed: 46,
+  items: [
+    "JOB INITIATED → <b>ORG CHART GENERATED</b>",
+    "WAREHOUSE WORKFLOW CONTRACTING",
+    "MATERIALS MOVING — STONE &amp; SLAB",
+    "LUMBER SERVICES",
+    "FREIGHT &amp; HAULING",
+    "CREW ASSIGNED → <b>PACKET AUTO-BUILT</b>",
+    "PAPERWORK ENGINE — W-9 · I-9 · COI · COMP CERTS",
+    "WHITE-LABEL READY — <b>YOUR BRAND, YOUR CLIENTS</b>",
+    "10-STAGE WORKFLOW BOARD",
+    "LOADS IN MOTION → <b>DELIVERY CONFIRMED</b>"
+  ]
+};
+</script>
+
+<div id="app">
+  <aside>
+    <div class="logo">
+      <div class="logo-mark" id="logoMark">L</div>
+      <h1><span class="brand-name">LOGIX COMMAND</span><small class="brand-tag">LOGISTICS MANAGER OS</small></h1>
+    </div>
+    <button class="nav-btn active" data-view="dashboard"><span class="ic">◈</span>Command Dashboard</button>
+    <button class="nav-btn" data-view="initiate"><span class="ic">⚡</span>Initiate Job</button>
+    <button class="nav-btn" data-view="board"><span class="ic">▦</span>Workflow Board</button>
+    <button class="nav-btn" data-view="loadboard"><span class="ic">🧲</span>Load &amp; Worker Board</button>
+    <button class="nav-btn" data-view="org"><span class="ic">♟</span>Org Builder</button>
+    <button class="nav-btn" data-view="intake"><span class="ic">📥</span>Crew Intake</button>
+    <button class="nav-btn" data-view="whitelabel"><span class="ic">🎨</span>White-Label Lab</button>
+    <button class="nav-btn" data-view="pricing"><span class="ic">💎</span>Subscription</button>
+    <div class="side-foot"><b>SYSTEM STATUS</b>All engines online. Staffing engine, paperwork engine and workflow board run 100% in your browser — your data never leaves this device.</div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <div class="crumb"><span class="brand-name">LOGIX COMMAND</span> · Operations</div>
+        <h2 id="viewTitle">COMMAND DASHBOARD</h2>
+      </div>
+      <div class="sp"></div>
+      <span class="pill">CREW ONLINE <b>● LIVE</b></span>
+      <button class="btn primary small" id="topInitiate">⚡ INITIATE JOB</button>
+    </div>
+    <div class="ticker-wrap"><div class="ticker" id="ticker"></div></div>
+
+    <!-- ================= DASHBOARD ================= -->
+    <section class="view active" id="view-dashboard">
+      <div class="hero">
+        <img src="hero.jpg" alt="Logistics command center overlooking a warehouse floor">
+        <div class="hero-in">
+          <div class="tag">Operations Command · <span class="brand-name">LOGIX COMMAND</span></div>
+          <h3>EVERY JOB. EVERY CREW.<br>ONE COMMAND SCREEN.</h3>
+          <p>Initiate a job and the system builds the organization for it — org chart, staffing math, paperwork packet and equipment manifest — before the first truck rolls.</p>
+          <button class="btn primary" data-goto="initiate">⚡ INITIATE A JOB</button>
+          <button class="btn ghost" data-goto="board" style="margin-left:8px">VIEW WORKFLOW BOARD</button>
+        </div>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><span class="k-ic">📋</span><div class="k-label">Active Jobs</div><div class="k-num" id="kpiJobs">0</div><div class="k-sub">across all service lines</div></div>
+        <div class="kpi"><span class="k-ic">👷</span><div class="k-label">Crew Deployed</div><div class="k-num" id="kpiCrew">0</div><div class="k-sub">positions filled on live jobs</div></div>
+        <div class="kpi"><span class="k-ic">🚛</span><div class="k-label">Loads In Motion</div><div class="k-num" id="kpiLoads">0</div><div class="k-sub">units on jobs in execution</div></div>
+        <div class="kpi"><span class="k-ic">💰</span><div class="k-label">Pipeline Value</div><div class="k-num" id="kpiValue">$0</div><div class="k-sub">open job value, all stages</div></div>
+      </div>
+      <div class="grid2">
+        <div class="panel">
+          <h4>LIVE OPERATIONS FEED</h4>
+          <div class="p-sub">System events across every active job — staffing, paperwork, stage moves.</div>
+          <div class="feed" id="opsFeed"></div>
+        </div>
+        <div class="panel">
+          <h4>PIPELINE BY STAGE</h4>
+          <div class="p-sub">Where every job sits in the 10-stage workflow right now.</div>
+          <div class="stage-strip" id="stageStrip"></div>
+          <div style="margin-top:18px"><button class="btn small" data-goto="board">OPEN THE BOARD →</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= INITIATE JOB ================= -->
+    <section class="view" id="view-initiate">
+      <div class="sec-head">
+        <div class="tag">Job Initiation Engine</div>
+        <h3>INITIATE A JOB — THE SYSTEM BUILDS THE ORGANIZATION</h3>
+        <p>Pick the service line, drop in the job facts, and LOGIX generates the org chart, the compliance packet and the equipment manifest — scaled to the size of the job.</p>
+      </div>
+      <div class="wiz-steps" id="wizSteps"></div>
+
+      <div class="wiz-pane on" data-pane="1">
+        <div class="svc-grid" id="svcGrid"></div>
+        <div class="wiz-nav"><button class="btn primary" id="wizNext1">CONTINUE → JOB DETAILS</button></div>
+      </div>
+
+      <div class="wiz-pane" data-pane="2">
+        <div class="panel">
+          <div class="f-grid">
+            <div><label class="f">Client Name</label><input type="text" id="fClient" placeholder="e.g. ABG Stone Imports"></div>
+            <div><label class="f">Job Title</label><input type="text" id="fTitle" placeholder="e.g. Quartz Slab Program — Phase 1"></div>
+            <div class="full"><label class="f">Site Address</label><input type="text" id="fSite" placeholder="Street, City, State"></div>
+            <div><label class="f">Start Date</label><input type="date" id="fDate"></div>
+            <div><label class="f">Destination / Second Site (optional)</label><input type="text" id="fDest" placeholder="e.g. Scranton warehouse"></div>
+            <div><label class="f" id="fUnitsLabel">Estimated Units / Loads</label><input type="number" id="fUnits" min="1" value="100"></div>
+            <div><label class="f">Job Value ($)</label><input type="number" id="fValue" min="0" value="10000"></div>
+            <div><label class="f">Whose Trucks?</label><select id="fTrucks"><option value="ours">Our trucks</option><option value="customer">Customer trucks</option><option value="mixed">Mixed / TBD</option></select></div>
+            <div><label class="f">Crew Lane (paperwork path)</label><select id="fLane"><option value="employee">W-2 Employees</option><option value="contractor">1099 Contractors</option><option value="mixed">Mixed crew</option></select></div>
+            <div class="full"><label class="f">Notes / Scope</label><textarea id="fNotes" placeholder="Scope details, site conditions, special handling…"></textarea></div>
+          </div>
+        </div>
+        <div class="wiz-nav"><button class="btn" data-wiz="1">← BACK</button><button class="btn primary" id="wizNext2">GENERATE ORG CHART →</button></div>
+      </div>
+
+      <div class="wiz-pane" data-pane="3">
+        <div class="panel" style="margin-bottom:16px">
+          <h4>JOB SCALE</h4>
+          <div class="p-sub">Drag the scale — headcounts re-compute live off the staffing engine. <b id="scaleReadout" style="color:var(--accent)"></b></div>
+          <input type="range" id="scaleSlider" min="40" max="250" value="100" step="5">
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-m);font-size:11px;color:var(--faint)"><span>LEAN CREW · 40%</span><span>STANDARD · 100%</span><span>SURGE CREW · 250%</span></div>
+        </div>
+        <div class="panel">
+          <h4 id="orgTitle">GENERATED ORGANIZATION</h4>
+          <div class="p-sub" id="orgSub"></div>
+          <div class="org" id="wizOrg"></div>
+          <div style="margin-top:20px;display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+            <span class="pill">TOTAL HEADCOUNT <b id="orgTotal" style="color:var(--accent)">0</b></span>
+            <span class="pill">CERTS REQUIRED <b id="orgCerts" style="color:var(--accent)">0</b></span>
+          </div>
+        </div>
+        <div class="wiz-nav"><button class="btn" data-wiz="2">← BACK</button><button class="btn primary" data-wiz="4">CONTINUE → PAPERWORK PACKET</button></div>
+      </div>
+
+      <div class="wiz-pane" data-pane="4">
+        <div class="panel">
+          <h4>PAPERWORK &amp; COMPLIANCE PACKET</h4>
+          <div class="p-sub">Auto-generated for this job's crew lane and cargo exposure. Check items off — they save with the job and track in its progress.</div>
+          <div class="progress" style="margin-bottom:16px"><i id="wizPacketBar" style="width:0%"></i></div>
+          <div id="wizPacket"></div>
+        </div>
+        <div class="wiz-nav"><button class="btn" data-wiz="3">← BACK</button><button class="btn primary" data-wiz="5">CONTINUE → EQUIPMENT</button></div>
+      </div>
+
+      <div class="wiz-pane" data-pane="5">
+        <div class="panel">
+          <h4>EQUIPMENT MANIFEST</h4>
+          <div class="p-sub">Standard kit for this service line. Mark each line: we own it, we rent it, or the customer supplies it.</div>
+          <div id="wizEquip"></div>
+        </div>
+        <div class="wiz-nav"><button class="btn" data-wiz="4">← BACK</button><button class="btn primary" id="wizConfirm">✓ CONFIRM — LAUNCH JOB TO THE BOARD</button></div>
+      </div>
+    </section>
+
+    <!-- ================= BOARD ================= -->
+    <section class="view" id="view-board">
+      <div class="sec-head">
+        <div class="tag">Workflow Board</div>
+        <h3>10-STAGE JOB PIPELINE</h3>
+        <p>Every job rides the same rail: intake to invoice. Click any job card to open its command drawer — org chart, packet, equipment, stage controls.</p>
+      </div>
+      <div class="board" id="board"></div>
+    </section>
+
+    <!-- ================= ORG BUILDER ================= -->
+    <section class="view" id="view-org">
+      <div class="sec-head">
+        <div class="tag">Org Builder · Positions Library</div>
+        <h3>STRUCTURE FOR EVERY SIZE OF OPERATION</h3>
+        <p>Pick a scenario template to see the full company structure — then pull any position from the library when the staffing engine builds a job org.</p>
+      </div>
+      <div class="tpl-grid" id="tplGrid"></div>
+      <div class="panel" style="margin:18px 0 26px">
+        <h4 id="tplTitle">COMPANY STRUCTURE</h4>
+        <div class="p-sub" id="tplSub"></div>
+        <div class="org" id="tplOrg"></div>
+      </div>
+      <div class="sec-head"><div class="tag">Positions Library</div><h3 style="font-size:24px">EVERY SEAT IN THE OPERATION</h3></div>
+      <div class="pos-grid" id="posLib"></div>
+    </section>
+
+    <!-- ================= WHITE LABEL ================= -->
+    <section class="view" id="view-whitelabel">
+      <div class="sec-head">
+        <div class="tag">White-Label Lab</div>
+        <h3>MAKE IT YOURS — REBRAND IN REAL TIME</h3>
+        <p>This is the product your clients see. Change the name, the tagline and the color system and the entire platform re-skins instantly. On the Partner tier, buyers' customers never see LOGIX branding at all.</p>
+      </div>
+      <div class="grid2" style="grid-template-columns:1fr 1.2fr">
+        <div class="panel">
+          <h4>BRAND CONTROLS</h4>
+          <div class="p-sub">Takes effect across every screen, immediately.</div>
+          <label class="f">Company Name</label>
+          <input type="text" id="wlName" placeholder="Your company name">
+          <div style="height:14px"></div>
+          <label class="f">Tagline</label>
+          <input type="text" id="wlTag" placeholder="Your tagline">
+          <div style="height:18px"></div>
+          <label class="f">Color System</label>
+          <div class="swatches" id="wlSwatches" style="margin-bottom:30px"></div>
+          <label class="f">One-Tap Preset</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn small" id="wlCapital7">♛ CAPITAL 7 LOGISTICS</button>
+            <button class="btn small" id="wlDefault">↺ LOGIX DEFAULT</button>
+          </div>
+          <div style="height:18px"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn primary small" id="wlSave">💾 SAVE BRAND</button>
+            <button class="btn small danger" id="wlReset">RESET</button>
+          </div>
+          <p style="color:var(--muted);font-size:14px;margin-top:16px;line-height:1.55">Saved brands persist on this device. Partner-tier resellers push one brand to every client seat from a single console.</p>
+        </div>
+        <div>
+          <label class="f" style="margin-bottom:10px">Client Preview — what your customers see</label>
+          <div class="preview-frame">
+            <div class="pf-head">
+              <div class="logo-mark" id="pfMark">L</div>
+              <div><div style="font-family:var(--font-d);font-weight:700;letter-spacing:1px" class="brand-name" id="pfName">LOGIX COMMAND</div>
+              <div style="font-family:var(--font-m);font-size:10px;color:var(--muted);letter-spacing:1.6px" class="brand-tag" id="pfTag">LOGISTICS MANAGER OS</div></div>
+              <div style="margin-left:auto" class="pill">CLIENT PORTAL</div>
+            </div>
+            <div class="pf-body">
+              <div style="font-family:var(--font-d);font-size:19px;font-weight:700">Good morning. Your freight is moving.</div>
+              <p style="color:var(--muted);font-size:14.5px;margin-top:5px">Live status across every job <span class="brand-name">LOGIX COMMAND</span> is running for you right now.</p>
+              <div class="pf-kpis">
+                <div class="pf-kpi"><div class="n" style="color:var(--accent)">4</div><div class="l">Active Jobs</div></div>
+                <div class="pf-kpi"><div class="n" style="color:var(--accent)">27</div><div class="l">Units In Motion</div></div>
+                <div class="pf-kpi"><div class="n" style="color:var(--accent)">98%</div><div class="l">On-Time</div></div>
+              </div>
+              <div class="progress" style="margin-top:16px"><i style="width:72%"></i></div>
+              <div style="font-family:var(--font-m);font-size:11px;color:var(--muted);margin-top:7px;letter-spacing:1px">CURRENT JOB · STAGE 7 OF 10 · EXECUTION</div>
+            </div>
+          </div>
+          <div class="note-box" style="margin-top:16px">The preview updates as you type and pick colors — the same rebrand engine drives the sidebar, dashboard, board and client portal. <b>Zero LOGIX footprint</b> on the White-Label Partner tier.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= LOAD & WORKER BOARD ================= -->
+    <section class="view" id="view-loadboard">
+      <div class="sec-head">
+        <div class="tag">Load &amp; Worker Board</div>
+        <h3>OPEN LOADS. REAL WORKERS. ONE TAP TO STAFF.</h3>
+        <p>Every open load posts its positions here. Workers accept the seats they're qualified for — certs are checked automatically — and the parent job's staffing progress updates everywhere at once.</p>
+      </div>
+      <div class="acting-bar">
+        <div>
+          <div style="font-family:var(--font-d);font-size:14px;letter-spacing:.6px">ACTING AS</div>
+          <div style="color:var(--muted);font-size:13.5px">Pick a worker to accept jobs as them (demo of the crew portal)</div>
+        </div>
+        <select id="actingAs"></select>
+        <span id="actingInfo" style="font-size:14.5px;color:var(--muted)"></span>
+      </div>
+      <div class="zone-tabs">
+        <button class="ztab on" data-zone="loads">🧲 OPEN LOADS</button>
+        <button class="ztab" data-zone="roster">👷 WORKER ROSTER</button>
+      </div>
+      <div id="zone-loads"><div class="lb-grid" id="lbGrid"></div></div>
+      <div id="zone-roster" style="display:none"><div class="wgrid" id="rosterGrid"></div></div>
+    </section>
+
+    <!-- ================= CREW INTAKE ================= -->
+    <section class="view" id="view-intake">
+      <div class="sec-head">
+        <div class="tag">Worker Intake &amp; Recruiting</div>
+        <h3>POST THE AD. CATCH THE WORKER. PUT THEM TO WORK.</h3>
+        <p>Post these ads where workers look — the intake form catches them, the board puts them to work. New applicants land on the roster as APPLICANT until you approve them.</p>
+      </div>
+      <div class="grid2" style="grid-template-columns:1.25fr 1fr;align-items:start">
+        <div class="panel">
+          <h4>CREW INTAKE FORM</h4>
+          <div class="p-sub">The application your recruiting ads point to. Mirrors a real crew intake — ID and certs are provided at verification.</div>
+          <form id="intakeForm" novalidate>
+            <div class="f-grid">
+              <div><label class="f">Full Name *</label><input type="text" id="iName" placeholder="First and last name"></div>
+              <div><label class="f">Phone *</label><input type="text" id="iPhone" placeholder="(570) 555-0100"></div>
+              <div class="full"><label class="f">Email</label><input type="text" id="iEmail" placeholder="name@email.com"></div>
+              <div class="full"><label class="f">Street Address</label><input type="text" id="iStreet" placeholder="Street address"></div>
+              <div><label class="f">City</label><input type="text" id="iCity" placeholder="City"></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div><label class="f">State</label><input type="text" id="iState" placeholder="PA"></div>
+                <div><label class="f">ZIP</label><input type="text" id="iZip" placeholder="18702"></div>
+              </div>
+              <div><label class="f">County</label><input type="text" id="iCounty" placeholder="e.g. Luzerne"></div>
+              <div><label class="f">Experience Summary</label><input type="text" id="iExp" placeholder="e.g. 3 yrs warehouse, 1 yr moving"></div>
+            </div>
+            <div style="height:16px"></div>
+            <label class="f">Roles You Can Work *</label>
+            <div class="chips" id="iRoles"></div>
+            <div style="height:16px"></div>
+            <label class="f">Certifications</label>
+            <div class="chips" id="iCerts"></div>
+            <div style="height:16px"></div>
+            <div class="f-grid">
+              <div><label class="f">Own Tools?</label><select id="iTools"><option value="yes">Yes</option><option value="no">No</option></select></div>
+              <div><label class="f">Reliable Vehicle?</label><select id="iVehicle"><option value="yes">Yes</option><option value="no">No</option></select></div>
+            </div>
+            <div style="height:16px"></div>
+            <label class="f">Availability</label>
+            <div class="chips" id="iDays"></div>
+            <div style="height:18px"></div>
+            <div class="consent-box">
+              <label class="f" style="color:var(--warn)">Background — Required *</label>
+              <p style="font-size:15px;margin-bottom:10px">Have you been arrested for a violent crime within the last 7 years?</p>
+              <div class="chips" style="margin-bottom:12px">
+                <label class="chipopt"><input type="radio" name="iBg" value="no"><span>No</span></label>
+                <label class="chipopt"><input type="radio" name="iBg" value="yes"><span>Yes</span></label>
+              </div>
+              <input type="text" id="iBgExplain" placeholder="If yes, brief explanation (optional unless asked at verification)">
+              <label style="display:flex;gap:11px;align-items:flex-start;margin-top:14px;cursor:pointer;font-size:15px;line-height:1.5">
+                <input type="checkbox" id="iConsent" style="width:19px;height:19px;accent-color:var(--accent);margin-top:2px;flex-shrink:0">
+                <span>I understand the company may run a background check before I start work. *</span>
+              </label>
+            </div>
+            <p style="color:var(--faint);font-size:13.5px;margin-top:14px">📄 Documents — driver's license / photo ID and any certifications are provided at verification, before your first shift.</p>
+            <div id="intakeError" style="color:var(--bad);font-weight:700;margin-top:10px;display:none"></div>
+            <button type="submit" class="btn primary" style="margin-top:16px;width:100%;justify-content:center">SUBMIT APPLICATION →</button>
+          </form>
+          <div id="intakeSuccess" style="display:none">
+            <div class="success-box">
+              <div class="big">✅</div>
+              <h4 style="font-family:var(--font-d);margin:10px 0 6px">APPLICATION RECEIVED</h4>
+              <p style="color:var(--muted);font-size:15px;line-height:1.6" id="intakeSuccessText"></p>
+              <p style="color:var(--muted);font-size:14.5px;margin-top:9px">What happens next: the office reviews your application → you're approved onto the roster → you bring your license/ID and certs to verification → you start accepting jobs on the board.</p>
+              <button class="btn small" id="intakeAgain" style="margin-top:14px">SUBMIT ANOTHER APPLICATION</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:16px">
+            <h4>RECRUITING ADS — READY TO POST</h4>
+            <div class="p-sub">Pre-built for the roles you're hiring. Copy, paste into job groups and marketplaces, point them at the intake.</div>
+            <div class="ad-grid" id="adGrid"></div>
+          </div>
+          <div class="panel">
+            <h4>AD COMPOSER</h4>
+            <div class="p-sub">Pick a role and a service line — the composer writes the ad with your current brand name and tagline baked in.</div>
+            <label class="f">Role</label>
+            <select id="adRole"></select>
+            <div style="height:12px"></div>
+            <label class="f">Service Line</label>
+            <select id="adSvc"></select>
+            <div style="height:14px"></div>
+            <div style="background:#0a1120;border:1px solid var(--line2);border-radius:12px;padding:16px;font-size:15px;line-height:1.6;white-space:pre-line" id="adPreview"></div>
+            <button class="btn primary small" id="adCopy" style="margin-top:13px">📋 COPY THIS AD</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRICING ================= -->
+    <section class="view" id="view-pricing">
+      <div class="sec-head">
+        <div class="tag">Subscription · The Offer</div>
+        <h3>RUN YOUR WHOLE OPERATION ON LOGIX</h3>
+        <p>One system that structures the company, staffs the job, builds the paperwork and rides every load from intake to invoice.</p>
+      </div>
+      <div class="price-grid" id="priceGrid"></div>
+      <div class="note-box" style="margin-top:20px"><b>Founding pricing — set by the owner, change anytime in settings.</b> White-Label Partner seats carry full rebrand + resell rights: your clients run the platform under your name, and their customers never see LOGIX branding. Every tier starts on the waitlist — founding seats are issued in order.</div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ JOB DRAWER ============ -->
+<div class="drawer-wrap" id="drawerWrap">
+  <div class="drawer-bg" id="drawerBg"></div>
+  <div class="drawer" id="drawer"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   LOGIX COMMAND — Logistics Manager OS
+   Single-file app. All state lives in localStorage.
+============================================================ */
+var $ = function(id){ return document.getElementById(id); };
+var esc = function(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); };
+var money = function(n){ n = Number(n)||0; return "$" + n.toLocaleString("en-US"); };
+var uid = function(p){ return (p||"x") + Math.random().toString(36).slice(2,9); };
+function toast(msg){ var t=$("toast"); if(!t) return; t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(function(){ t.classList.remove("show"); }, 3400); }
+function hexRgb(hex){ var h=hex.replace("#",""); if(h.length===3) h=h.split("").map(function(c){return c+c;}).join(""); var n=parseInt(h,16); return [n>>16&255, n>>8&255, n&255]; }
+function rgba(hex,a){ var c=hexRgb(hex); return "rgba("+c[0]+","+c[1]+","+c[2]+","+a+")"; }
+
+/* ================= STAGES ================= */
+var STAGES = ["Intake","Site Survey","Quote & Approval","Contract & Insurance","Crew Assigned","Staging & Equipment","Execution","Load-Out / Transport","Delivery Confirmation","Closeout & Invoice"];
+
+/* ================= ROLES & CERTS ================= */
+var CERTS = { forklift:"Forklift · OSHA 1910.178", cdl:"CDL License", osha10:"OSHA 10", osha30:"OSHA 30" };
+var ROLES = {
+  opsmgr:    { name:"Operations Manager", pay:"Salary", mission:"Owns the whole operation — jobs, crews, clients, profit.", duties:["Approves quotes, staffing plans and schedules","Runs the daily ops briefing across all jobs","Owns client relationships and escalations","Reviews job profit and crew performance weekly"], certs:"Business insurance & contracts on file · Ops playbook signed" },
+  coordinator:{ name:"Logistics Coordinator / Dispatcher", pay:"Salary", mission:"The air-traffic controller — every truck, crew and clock runs through this seat.", duties:["Builds daily dispatch and route plans","Assigns crews and confirms arrivals","Tracks loads live and handles exceptions","Keeps clients updated before they ask"], certs:"Dispatch log access · ELD/GPS platform training" },
+  foreman:    { name:"Site Foreman", pay:"Hourly", mission:"Runs the job site — first in, last out, owns the day's production.", duties:["Runs the morning toolbox talk","Directs crew and equipment on site","Signs per-load sheets and condition logs","Reports progress and issues to Ops same-day"], certs:"OSHA 30 preferred · First aid · Site paperwork pack" },
+  safety:     { name:"Safety Lead", pay:"Hourly", mission:"Nobody gets hurt on my watch — owns safety on every site.", duties:["Runs toolbox talks and PPE checks","Inspects equipment and lift plans","Documents incidents and near-misses","Can stop any job, any time, no questions"], certs:"OSHA 30 · Incident report training · PPE issue log" },
+  cdl:        { name:"CDL Driver", pay:"Per job", mission:"Moves the heavy iron — licensed, legal, on time.", duties:["Pre-trip inspections and ELD logs","Secures and tarps loads to DOT standard","Runs line-haul, hotshot and flatbed routes","Delivers BOL / POD paperwork clean"], certs:"CDL A/B · Medical card · Driver qualification file (DOT)" },
+  boxdriver:  { name:"Box-Truck Driver", pay:"Per job", mission:"The face of the company at every curb and dock.", duties:["Drives box truck / stake body on local runs","Loads, secures and unloads with the crew","Collects delivery signatures and photos","Reports vehicle defects same-day"], certs:"Valid license · DOT medical (over 10k GVWR) · MVR on file" },
+  forklift:   { name:"Forklift Operator", pay:"Hourly", mission:"Moves anything on forks — certified, smooth, zero drama.", duties:["Operates forklift / telehandler on site","Loads and unloads trucks and racks","Daily equipment inspection checklist","Stages material exactly where the plan says"], certs:"OSHA 1910.178 operator certification — REQUIRED · Evaluation on file" },
+  warehouse:  { name:"Warehouse Associate", pay:"Hourly", mission:"Keeps the building flowing — pick, pack, stage, scan.", duties:["Picks and stages orders to the manifest","Scans and labels freight in/out","Keeps aisles and docks clean and safe","Counts inventory on cycle counts"], certs:"Scanner/WMS training · PPE issued · Background consent on file" },
+  laborer:    { name:"Loader / Laborer", pay:"Per job", mission:"The muscle of the operation — loads it right, every time.", duties:["Loads and unloads trucks by hand and dolly","Wraps, pads and secures freight","Site clean-up and debris runs","Follows the crew lead's load plan"], certs:"PPE issued · Background consent on file · Lift-technique training" },
+  slab:       { name:"Slab & Stone Handler", pay:"Per job", mission:"Handles stone worth more than the truck — slow hands, zero cracks.", duties:["Lifts slabs flat → A-frames with clamps / vacuum lifter","Never hands under a raised slab — tag lines only","Photo-logs slab condition before every move","Straps and pads loads for shuttle runs"], certs:"Slab-handling training · PPE (steel toe + gloves) · Photo-log training" },
+  lumber:     { name:"Lumber Puller", pay:"Hourly", mission:"Pulls clean, straight, on-count lumber — every bundle right.", duties:["Pulls orders from yard racks to the pick list","Bands and bundles lumber for flatbed loads","Grades out damaged stock as it is pulled","Keeps the yard stacked, counted and safe"], certs:"Forklift cert a plus · PPE issued · Yard safety brief" },
+  crewlead:   { name:"Crew Lead", pay:"Hourly", mission:"Leads a working crew from inside the work — not the truck cab.", duties:["Works the job while directing 2–6 crew","Owns the day's checklist on site","Trains new hands on the standard","First call when something goes sideways"], certs:"OSHA 10 · First aid a plus · Crew paperwork pack" },
+  admin:      { name:"Admin & Compliance", pay:"Salary", mission:"The paper shield — every cert, contract and invoice airtight.", duties:["Maintains W-9s, I-9s, COIs and comp certs","Issues 1099s and closes job files","Tracks expirations before they lapse","Builds invoices from signed load sheets"], certs:"Document system access · Compliance calendar owner" }
+};
+var ROLE_KEYS = Object.keys(ROLES);
+
+/* ================= SERVICE LINES + STAFFING ENGINE ================= */
+/* staff entry: role, base headcount, anchor (units covered by base), per (extra units per +1), row (org chart row), reqCert for board slots */
+var SERVICES = {
+  warehouse:{ icon:"🏭", img:"board-warehouse.jpg", name:"Warehouse Workflow Contracting", unitLabel:"Pallets / Orders per Week",
+    desc:"Contract crews running warehouse operations — receiving, put-away, pick/pack, loading — inside your building or the client's.",
+    staff:[ {role:"opsmgr",base:1,row:0}, {role:"coordinator",base:1,row:1}, {role:"crewlead",base:1,row:1,anchor:0,per:1200}, {role:"forklift",base:2,row:2,anchor:400,per:350,reqCert:"forklift"}, {role:"warehouse",base:4,row:2,anchor:400,per:180}, {role:"safety",base:0,row:1,whenCrew:12}, {role:"admin",base:1,row:3} ],
+    equip:[["🚜","Forklifts / reach trucks","Counterbalance + reach, inspected daily"],["📦","Pallet jacks & dollies","Manual + electric pallet jacks"],["📟","Scanners & label printers","WMS handhelds, label stock"],["🦺","PPE kits — full crew","Vests, gloves, steel toes, box cutters"],["🧹","Dock kit","Dock plates, wheel chocks, shrink wrap"]] },
+  slab:{ icon:"🪨", img:"board-slab.jpg", name:"Materials Moving — Stone & Slab", unitLabel:"Slabs / Units", flagship:true,
+    desc:"The flagship scenario: 1,650 quartz slabs — flat to A-frames, load, shuttle to the second warehouse. Heavy, fragile, high-value stone handled like it matters.",
+    staff:[ {role:"opsmgr",base:1,row:0}, {role:"foreman",base:1,row:1}, {role:"safety",base:1,row:1}, {role:"forklift",base:1,row:2,anchor:800,per:850,reqCert:"forklift"}, {role:"slab",base:3,row:2,anchor:600,per:350}, {role:"boxdriver",base:1,row:2,anchor:1650,per:1650}, {role:"coordinator",base:1,row:3} ],
+    equip:[["🚜","Forklift + certified operator","Rated for slab bundles, OSHA 1910.178 operator"],["🅰️","A-frames","Steel A-frames, enough for full staging"],["🛠️","Slab clamps / vacuum lifter","Rated clamps + suction lifter, inspected"],["🎞️","Pads, straps & corner protectors","Moving pads, ratchet straps, edge guards"],["🦺","PPE kits — stone crew","Steel toes, cut gloves, eye protection"],["📸","Photo-condition log kit","Phone/tablet for the per-slab photo log"]] },
+  lumber:{ icon:"🪵", img:"board-lumber.jpg", name:"Lumber Services", unitLabel:"Loads / Pulls",
+    desc:"Lumber yard pulls, bundling and banding, flatbed loading and jobsite delivery — clean counts, straight stacks, on schedule.",
+    staff:[ {role:"opsmgr",base:1,row:0}, {role:"crewlead",base:1,row:1}, {role:"lumber",base:2,row:2,anchor:10,per:8}, {role:"forklift",base:1,row:2,anchor:15,per:20,reqCert:"forklift"}, {role:"cdl",base:1,row:2,anchor:10,per:12,reqCert:"cdl"}, {role:"laborer",base:1,row:2,anchor:15,per:15}, {role:"coordinator",base:1,row:3} ],
+    equip:[["🚜","Yard forklift","Long-fork yard machine for bundles"],["🔗","Banders & strapping","Steel/poly banding, seals, crimper"],["🚛","Flatbed / moffett","Flatbed with piggyback forklift option"],["🧤","PPE kits — yard crew","Gloves, eye protection, steel toes"],["📏","Tally & grade kit","Tape, lumber crayons, tally sheets"]] },
+  freight:{ icon:"🚛", img:"board-freight.jpg", name:"Freight & Hauling", unitLabel:"Loads",
+    desc:"Line-haul, hotshot and flatbed / step-deck freight — dispatched tight, tracked live, delivered with clean paperwork.",
+    staff:[ {role:"opsmgr",base:1,row:0}, {role:"coordinator",base:1,row:1,anchor:8,per:10}, {role:"cdl",base:1,row:2,anchor:1,per:2,reqCert:"cdl"}, {role:"laborer",base:1,row:2,anchor:6,per:8}, {role:"safety",base:0,row:1,whenCrew:10}, {role:"admin",base:1,row:3} ],
+    equip:[["🚚","Tractors / hotshot rigs","Inspected, ELD-equipped"],["⛓️","Chains, binders & straps","Full securement kit per trailer"],["🎪","Tarps — steel & lumber","Tarp set with edge protectors"],["📍","GPS / ELD units","Live tracking on every load"],["🧰","Road kit","Spare, triangles, fluids, tools"]] },
+  moving:{ icon:"📦", img:"board-moving.jpg", name:"Moving & Relocation", unitLabel:"Truckloads / Jobs",
+    desc:"Household and commercial moves — pad, wrap, load, haul, place. Crews that treat other people's lives with care.",
+    staff:[ {role:"opsmgr",base:1,row:0}, {role:"crewlead",base:1,row:1,anchor:1,per:2}, {role:"laborer",base:3,row:2,anchor:1,per:1}, {role:"boxdriver",base:1,row:2,anchor:1,per:2}, {role:"coordinator",base:1,row:3} ],
+    equip:[["🚚","Box truck(s)","26-ft with ramp / liftgate"],["🛋️","Pads & shrink wrap","Full pad set, wrap, tape, bands"],["🛒","Dollies & hand trucks","Appliance + four-wheel dollies"],["🧰","Tool & disassembly kit","For beds, tables, office systems"],["🦺","PPE + floor protection","Floor runners, door jamb guards"]] },
+  cleanout:{ icon:"🧹", img:"board-cleanout.jpg", name:"Clean-Out & Demolition Support", unitLabel:"Dumpster Loads",
+    desc:"Estate and jobsite clean-outs, light demo support, debris and haul-away — sites left broom-clean and photo-documented.",
+    staff:[ {role:"opsmgr",base:1,row:0}, {role:"foreman",base:1,row:1}, {role:"laborer",base:3,row:2,anchor:2,per:2}, {role:"boxdriver",base:1,row:2,anchor:3,per:4}, {role:"coordinator",base:1,row:3} ],
+    equip:[["🗑️","Roll-off dumpsters","20/30-yard, scheduled swaps"],["⛏️","Demo hand tools","Bars, sledges, saws, blades"],["🧤","PPE kits — demo rated","Respirators, eye/hearing, gloves"],["🚚","Haul truck / trailer","For debris and donation runs"],["📸","Before/after photo kit","Documented site condition"]] }
+};
+var SVC_KEYS = Object.keys(SERVICES);
+
+/* staffing engine: units + scale% -> [{role,count,reqCert}] */
+function staffFor(svcKey, units, scalePct){
+  var svc = SERVICES[svcKey]; if(!svc) return [];
+  var eff = Math.max(1, Math.round((Number(units)||0) * (Number(scalePct)||100) / 100));
+  var out = [], pending = [], total = 0;
+  svc.staff.forEach(function(s){
+    var c = s.base || 0;
+    if(s.per){ c += Math.floor(Math.max(0, eff - (s.anchor||0)) / s.per); }
+    var entry = { role:s.role, count:c, row:s.row||2, reqCert:s.reqCert||null, whenCrew:s.whenCrew||0 };
+    if(s.whenCrew){ pending.push(entry); } else { out.push(entry); total += c; }
+  });
+  pending.forEach(function(e){ if(total >= e.whenCrew){ e.count = 1; total += 1; out.push(e); } });
+  return out.filter(function(e){ return e.count > 0; });
+}
+function orgRows(staff){
+  var rows = {};
+  staff.forEach(function(e){ (rows[e.row] = rows[e.row] || []).push(e); });
+  return Object.keys(rows).sort().map(function(k){ return rows[k]; });
+}
+
+/* ================= PAPERWORK PACKET BUILDER ================= */
+function packetFor(job){
+  var items = [];
+  var add = function(id,t,d){ items.push({id:id,t:t,d:d}); };
+  add("contract","Customer contract / work order — signed","Scope, price, dates and damage terms in writing before day one.");
+  add("survey","Site survey sign-off","Access, staging area, equipment path and site hours confirmed.");
+  add("photolog","Photo-condition log — set up","Photograph customer goods before handling; pre-existing damage documented, not debated later.");
+  add("toolbox","Toolbox-talk sign-in sheets","Daily safety talk, signed by the whole crew, filed per job.");
+  add("loadsheets","Per-load sheets / BOLs","Count, condition and driver sign-off on every load out and in.");
+  add("gl","General liability COI — current","Certificate of insurance on file and sent to the client.");
+  if(job.lane === "employee" || job.lane === "mixed"){
+    add("w4i9","W-4 + I-9 for every employee","Federal withholding + work authorization, verified in person within 3 business days of start.");
+    add("comp","Workers' comp certificate — active","Policy in force BEFORE the first shift. No coverage, no work — it is the law.");
+    add("newhire","PA new-hire reports filed","Every new hire reported within 20 days.");
+  }
+  if(job.lane === "contractor" || job.lane === "mixed"){
+    add("w9","W-9 from every contractor","Collected before first pay; kept on file — never sent to the IRS.");
+    add("ica","Independent contractor agreements — signed","Scope, per-job pay and who controls the work, in writing per contractor.");
+    add("1099","1099-NEC calendared","One per contractor paid $600+, filed by January 31.");
+  }
+  if(job.trucks === "ours" || job.trucks === "mixed"){
+    add("cargo","Cargo / motor-truck cargo coverage verified","Goods in our trucks are covered to the per-load value on the contract.");
+    add("dqfiles","Driver qualification files","License, medical card, MVR — on file for every driver.");
+  }
+  if(job.trucks === "customer" || job.service === "slab"){
+    add("bailee","Bailee / handling coverage for customer goods","Customer property in our hands is covered while we lift, stage and load it.");
+  }
+  if(job.service === "slab"){
+    add("slabplan","Slab handling plan — signed by Safety Lead","Clamps/vacuum lifter rated, tag lines, spotters, no hands under a raised slab.");
+    add("forkliftcert","Forklift operator certs verified","OSHA 1910.178 certification + evaluation for the operator on this job.");
+  }
+  if(job.service === "freight"){
+    add("securement","Load securement checklist","Chains, binders, tarps verified against the load plan per DOT standard.");
+  }
+  return items;
+}
+
+/* ================= ORG TEMPLATES ================= */
+var TEMPLATES = [
+  { key:"owner", name:"Owner-Operator", range:"1–5 PEOPLE", desc:"The owner is the operation — dispatching from the truck cab and leading from the front.",
+    rows:[ [{role:"opsmgr",n:1}], [{role:"crewlead",n:1},{role:"boxdriver",n:1}], [{role:"laborer",n:2},{role:"forklift",n:1}] ] },
+  { key:"growing", name:"Growing Crew", range:"6–15 PEOPLE", desc:"A real dispatcher and a foreman appear. The owner starts working ON the business.",
+    rows:[ [{role:"opsmgr",n:1}], [{role:"coordinator",n:1},{role:"foreman",n:1},{role:"safety",n:1}], [{role:"crewlead",n:2},{role:"forklift",n:2},{role:"boxdriver",n:2}], [{role:"laborer",n:4},{role:"warehouse",n:2},{role:"admin",n:1}] ] },
+  { key:"regional", name:"Regional Operator", range:"16–50 PEOPLE", desc:"Multiple crews, multiple service lines, a compliance seat keeping the paper shield up.",
+    rows:[ [{role:"opsmgr",n:1}], [{role:"coordinator",n:2},{role:"foreman",n:3},{role:"safety",n:1}], [{role:"crewlead",n:4},{role:"cdl",n:6},{role:"forklift",n:4},{role:"boxdriver",n:4}], [{role:"laborer",n:8},{role:"slab",n:4},{role:"lumber",n:3},{role:"warehouse",n:6},{role:"admin",n:2}] ] },
+  { key:"warehouse", name:"Warehouse Contractor", range:"50+ PEOPLE", desc:"Contract crews inside client buildings — leads per shift, safety per site, admin per contract.",
+    rows:[ [{role:"opsmgr",n:1}], [{role:"coordinator",n:3},{role:"foreman",n:4},{role:"safety",n:2}], [{role:"crewlead",n:6},{role:"forklift",n:10}], [{role:"warehouse",n:28},{role:"laborer",n:8},{role:"admin",n:3}] ] }
+];
+
+/* ================= WHITE-LABEL PRESETS ================= */
+var PRESETS = {
+  gold:    { label:"Gold / Navy", accent:"#e8c766", accent2:"#b8912f", ink:"#131003" },
+  emerald: { label:"Emerald", accent:"#3ddc84", accent2:"#1d9e5f", ink:"#04140a" },
+  crimson: { label:"Crimson", accent:"#ff5a5a", accent2:"#c22f3d", ink:"#1a0505" },
+  royal:   { label:"Royal", accent:"#6ea8ff", accent2:"#3b6fd4", ink:"#060d1f" },
+  carbon:  { label:"Carbon", accent:"#e8e8e8", accent2:"#9a9a9a", ink:"#111111" }
+};
+
+/* ================= PRICING ================= */
+var TIERS = [
+  { tag:"For Owner-Operators", name:"OPERATOR", amt:99, setup:null, feats:["1 company · 1 brand","10 active jobs on the board","Org Builder + staffing engine","Load & Worker Board","Crew intake form","Email support"] },
+  { tag:"Most Popular", name:"FLEET", amt:249, setup:null, hot:true, feats:["Everything in Operator","Unlimited active jobs","Paperwork & compliance engine","Recruiting ad composer","Multi-crew dispatch + live ops feed","Priority support"] },
+  { tag:"Resell It As Yours", name:"WHITE-LABEL PARTNER", amt:497, setup:499, feats:["Everything in Fleet","Full rebrand — your name, your colors","Resell rights: sell seats to other companies","Your clients' customers never see LOGIX","Client portal under your brand","Priority support + onboarding"] }
+];
+</script>
+
+<script>
+/* ================= STATE ================= */
+var LS_KEY = "logix_command_v1";
+var state = null;
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+function load(){ try{ var raw = localStorage.getItem(LS_KEY); if(raw){ state = JSON.parse(raw); if(state && state.jobs) return; } }catch(e){} seed(); }
+function nowTime(){ var d=new Date(); var h=d.getHours(), m=("0"+d.getMinutes()).slice(-2), ap=h>=12?"PM":"AM"; h=h%12||12; return h+":"+m+" "+ap; }
+function logFeed(msg, hot){
+  if(!state) return;
+  state.feed.unshift({ t: nowTime(), msg: msg, hot: !!hot });
+  if(state.feed.length > 40) state.feed.length = 40;
+  renderFeed();
+}
+function mkJob(o){
+  var job = { id: uid("job"), service:o.service, client:o.client, title:o.title, site:o.site, dest:o.dest||"",
+    date:o.date||"", units:o.units||0, value:o.value||0, trucks:o.trucks||"ours", lane:o.lane||"employee",
+    notes:o.notes||"", stage:(o.stage==null?0:o.stage), scale:o.scale||100,
+    org: staffFor(o.service, o.units, o.scale||100), packet:{}, equip:{}, created: Date.now() };
+  packetFor(job).forEach(function(it){ job.packet[it.id] = !!o.packetDone && o.packetDone.indexOf(it.id) >= 0; });
+  (SERVICES[o.service].equip||[]).forEach(function(e,i){ job.equip["eq"+i] = (o.equipSrc && o.equipSrc[i]) || "own"; });
+  syncStaffing(job);
+  return job;
+}
+function syncStaffing(job){
+  var post = state ? state.postings.filter(function(p){ return p.jobId === job.id; })[0] : null;
+  if(post){
+    var total=0, filled=0;
+    post.slots.forEach(function(s){ total += s.count; filled += s.assigned.length; });
+    job.staffing = { filled:filled, total:total };
+  } else {
+    var tot = 0; (job.org||[]).forEach(function(e){ tot += e.count; });
+    job.staffing = { filled: job.stage >= 4 ? tot : 0, total: tot };
+  }
+}
+function seed(){
+  state = { brand:{ name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold" },
+    jobs:[], workers:[], postings:[], actingId:null, feed:[], tpl:"growing" };
+  /* ---- workers ---- */
+  var W = function(name, roles, certs, status, done){ return { id:uid("w"), name:name, roles:roles, certs:certs, status:status, jobsDone:done, isNew:false, phone:"", county:"Luzerne" }; };
+  state.workers = [
+    W("Marcus Webb", ["forklift","slab","laborer"], ["forklift","osha10"], "available", 14),
+    W("Dana Whitfield", ["crewlead","safety","foreman"], ["osha30"], "available", 22),
+    W("Rico Alvarez", ["cdl","boxdriver"], ["cdl"], "available", 31),
+    W("Tommy Kowalski", ["laborer","slab","lumber"], [], "available", 9),
+    W("Jess Marino", ["warehouse","forklift"], ["forklift"], "available", 17),
+    W("Andre Boateng", ["laborer","warehouse","lumber"], ["osha10"], "available", 6),
+    W("Priya Nair", ["coordinator","admin"], ["osha10"], "available", 8),
+    W("Sam Delgado", ["boxdriver","laborer"], [], "off", 12),
+    W("Chris Doyle", ["laborer"], [], "applicant", 0)
+  ];
+  state.workers[8].isNew = true;
+  state.actingId = state.workers[0].id;
+  /* ---- demo jobs ---- */
+  var slab = mkJob({ service:"slab", client:"ABG Stone Imports", title:"Quartz Slab Program — 1,650 Slabs",
+    site:"1055 Hanover St, Wilkes-Barre, PA", dest:"Scranton Warehouse", units:1650, value:11500,
+    trucks:"mixed", lane:"contractor", stage:4, notes:"Flat slabs to A-frames, load, shuttle Wilkes-Barre → Scranton. Photo-log every slab before it moves.",
+    packetDone:["contract","survey","photolog","w9","ica","bailee","slabplan","forkliftcert","gl"],
+    equipSrc:["own","rent","own","own","own","own"] });
+  var lumber = mkJob({ service:"lumber", client:"Keystone Builders Supply", title:"Lumber Pull — Jobsite Delivery Run",
+    site:"Keystone Yard, Plains, PA", dest:"Jobsites — Luzerne County", units:24, value:6800,
+    trucks:"ours", lane:"employee", stage:4, notes:"Pull, band and load 24 units; flatbed deliveries across three jobsites.",
+    packetDone:["contract","survey","w4i9","comp","gl"], equipSrc:["own","own","own","own","own"] });
+  var wh = mkJob({ service:"warehouse", client:"Regional DC — Hazleton", title:"Contract Crew — Week 1 Launch",
+    site:"Hazleton Distribution Center, PA", dest:"", units:900, value:18500,
+    trucks:"customer", lane:"mixed", stage:5, notes:"Receiving + put-away crew inside client DC. Two leads, scanners provided by client.",
+    packetDone:["contract","survey","gl","comp"], equipSrc:["customer","own","customer","own","own"] });
+  state.jobs = [slab, lumber, wh];
+  /* ---- board postings linked to jobs ---- */
+  var marcus = state.workers[0], tommy = state.workers[3], jess = state.workers[4];
+  state.postings = [
+    { id:uid("post"), jobId:slab.id, loadLabel:"LOAD 3 · SHUTTLE CREW", date: slab.date || "This week",
+      slots:[ {role:"forklift", count:2, reqCert:"forklift", assigned:[marcus.id]},
+              {role:"slab", count:6, reqCert:null, assigned:[tommy.id]},
+              {role:"boxdriver", count:1, reqCert:null, assigned:[]},
+              {role:"safety", count:1, reqCert:null, assigned:[]} ] },
+    { id:uid("post"), jobId:lumber.id, loadLabel:"PULL CREW · 24 UNITS", date:"This week",
+      slots:[ {role:"lumber", count:2, reqCert:null, assigned:[]},
+              {role:"forklift", count:1, reqCert:"forklift", assigned:[]},
+              {role:"cdl", count:1, reqCert:"cdl", assigned:[]} ] },
+    { id:uid("post"), jobId:wh.id, loadLabel:"DC CREW · SHIFT A", date:"This week",
+      slots:[ {role:"warehouse", count:4, reqCert:null, assigned:[jess.id]},
+              {role:"forklift", count:1, reqCert:"forklift", assigned:[]},
+              {role:"crewlead", count:1, reqCert:null, assigned:[]} ] }
+  ];
+  [marcus, tommy, jess].forEach(function(w){ w.status = "assigned"; });
+  state.jobs.forEach(syncStaffing);
+  state.feed = [
+    { t:"9:02 AM", msg:"<b>Quartz Slab Program</b> advanced to CREW ASSIGNED — org chart generated, 13 positions", hot:true },
+    { t:"9:04 AM", msg:"Packet auto-built for Slab Program — <b>9 of 14</b> compliance items already on file", hot:false },
+    { t:"9:11 AM", msg:"<b>Marcus Webb</b> accepted Forklift Operator — Slab Program, Load 3", hot:true },
+    { t:"9:13 AM", msg:"<b>Tommy Kowalski</b> accepted Slab Handler — Slab Program, Load 3", hot:false },
+    { t:"9:20 AM", msg:"Lumber Pull posted to the board — <b>4 seats open</b>", hot:false },
+    { t:"9:26 AM", msg:"<b>Jess Marino</b> accepted Warehouse Associate — DC Crew, Shift A", hot:false },
+    { t:"9:31 AM", msg:"New applicant landed in Crew Intake — <b>Chris Doyle</b>, pending review", hot:true }
+  ];
+}
+
+/* ================= BRAND ================= */
+function applyBrand(){
+  var b = state.brand, p = PRESETS[b.preset] || PRESETS.gold;
+  var r = document.documentElement.style;
+  r.setProperty("--accent", p.accent); r.setProperty("--accent2", p.accent2);
+  r.setProperty("--accent-ink", p.ink);
+  r.setProperty("--accent-soft", rgba(p.accent, .12)); r.setProperty("--accent-glow", rgba(p.accent, .45));
+  document.querySelectorAll(".brand-name").forEach(function(el){ el.textContent = b.name; });
+  document.querySelectorAll(".brand-tag").forEach(function(el){ el.textContent = b.tag; });
+  var first = (b.name || "L").trim().charAt(0).toUpperCase() || "L";
+  ["logoMark","pfMark"].forEach(function(id){ var el = $(id); if(el) el.textContent = first; });
+  document.title = b.name + " — Logistics Manager OS";
+  var wn = $("wlName"), wt = $("wlTag");
+  if(wn && document.activeElement !== wn) wn.value = b.name === "LOGIX COMMAND" ? "" : b.name;
+  if(wt && document.activeElement !== wt) wt.value = b.tag === "LOGISTICS MANAGER OS" ? "" : b.tag;
+  document.querySelectorAll("#wlSwatches .swatch").forEach(function(s){ s.classList.toggle("sel", s.getAttribute("data-preset") === b.preset); });
+}
+
+/* ================= NAV ================= */
+var VIEW_TITLES = { dashboard:"COMMAND DASHBOARD", initiate:"INITIATE JOB", board:"WORKFLOW BOARD", loadboard:"LOAD & WORKER BOARD", org:"ORG BUILDER", intake:"CREW INTAKE", whitelabel:"WHITE-LABEL LAB", pricing:"SUBSCRIPTION" };
+function gotoView(v){
+  document.querySelectorAll(".view").forEach(function(s){ s.classList.toggle("active", s.id === "view-" + v); });
+  document.querySelectorAll(".nav-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-view") === v); });
+  $("viewTitle").textContent = VIEW_TITLES[v] || v.toUpperCase();
+  window.scrollTo({ top:0, behavior:"smooth" });
+  if(v === "dashboard") renderDashboard();
+  if(v === "board") renderBoard();
+  if(v === "loadboard") renderLoadBoard();
+  if(v === "org") renderOrgBuilder();
+  if(v === "intake") renderAds();
+}
+
+/* ================= TICKER ================= */
+function buildTicker(){
+  var cfg = window.MUSE_TICKER || { items: [] };
+  var html = cfg.items.map(function(i){ return "<span>" + i + "</span>"; }).join("");
+  $("ticker").innerHTML = html + html;
+  $("ticker").style.animationDuration = (cfg.speed || 46) + "s";
+}
+
+/* ================= DASHBOARD ================= */
+function countUp(el, target, prefix, suffix){
+  if(!el) return; var start = null;
+  function step(ts){ if(!start) start = ts; var p = Math.min(1, (ts - start) / 900);
+    var v = Math.round(target * (1 - Math.pow(1 - p, 3)));
+    el.textContent = (prefix||"") + v.toLocaleString("en-US") + (suffix||"");
+    if(p < 1) requestAnimationFrame(step); }
+  requestAnimationFrame(step);
+}
+function renderDashboard(){
+  var active = state.jobs.filter(function(j){ return j.stage < 9; });
+  var crew = 0, loads = 0, value = 0;
+  active.forEach(function(j){
+    value += Number(j.value) || 0;
+    if(j.stage >= 4){ var t = 0; (j.org||[]).forEach(function(e){ t += e.count; }); crew += t; }
+    if(j.stage >= 6 && j.stage <= 7) loads += Number(j.units) || 0;
+  });
+  var assignedWorkers = state.workers.filter(function(w){ return w.status === "assigned"; }).length;
+  countUp($("kpiJobs"), active.length);
+  countUp($("kpiCrew"), Math.max(crew, assignedWorkers));
+  countUp($("kpiLoads"), loads);
+  countUp($("kpiValue"), value, "$");
+  var strip = $("stageStrip"); if(!strip) return;
+  strip.innerHTML = STAGES.map(function(s, i){
+    var n = state.jobs.filter(function(j){ return j.stage === i; }).length;
+    return '<div class="ss-row"><span class="dot' + (n ? " on" : "") + '"></span>' + esc(s) + '<span class="n">' + n + " job" + (n === 1 ? "" : "s") + "</span></div>";
+  }).join("");
+  renderFeed();
+}
+function renderFeed(){
+  var f = $("opsFeed"); if(!f || !state) return;
+  f.innerHTML = state.feed.slice(0, 14).map(function(l){
+    return '<div class="fl' + (l.hot ? " hot" : "") + '"><span class="ft">' + esc(l.t) + '</span><span class="fm">' + l.msg + "</span></div>";
+  }).join("");
+  /* ambient simulated traffic */
+  if(!renderFeed._timer){
+    var lines = [
+      "GPS ping — shuttle unit en route, ETA inside the window",
+      "Per-load sheet signed off and filed to the job packet",
+      "Scanner sync complete — DC inventory counts updated",
+      "Toolbox-talk sign-in captured for the morning crew",
+      "Dispatch check — tomorrow's first pulls are staged",
+      "Photo-condition log updated — new images filed",
+      "ELD status clean across the active fleet"
+    ];
+    var li = 0;
+    renderFeed._timer = setInterval(function(){
+      if(!state || !document.getElementById("opsFeed")) return;
+      state.feed.unshift({ t: nowTime(), msg: lines[li++ % lines.length], hot:false });
+      if(state.feed.length > 40) state.feed.length = 40;
+      var el = $("opsFeed");
+      if(el && $("view-dashboard").classList.contains("active")) renderFeed();
+    }, 26000);
+  }
+}
+
+/* ================= ORG RENDERER ================= */
+function posCard(roleKey, count, compact){
+  var r = ROLES[roleKey]; if(!r) return "";
+  var duties = compact ? r.duties.slice(0,2) : r.duties.slice(0,3);
+  return '<div class="pos">' + (count ? '<span class="p-count">× ' + count + "</span>" : "") +
+    "<h6>" + esc(r.name) + '</h6><div class="p-pay">PAY BASIS · ' + esc(r.pay.toUpperCase()) + " — OWNER SETS RATE</div>" +
+    "<ul>" + duties.map(function(d){ return "<li>" + esc(d) + "</li>"; }).join("") + "</ul>" +
+    '<div class="p-cert">📋 ' + esc(r.certs) + "</div></div>";
+}
+function orgHTML(staff){
+  return orgRows(staff).map(function(row){
+    return '<div class="org-row">' + row.map(function(e){ return posCard(e.role, e.count); }).join("") + "</div>";
+  }).join("");
+}
+
+/* ================= WIZARD ================= */
+var wiz = { step:1, service:"slab", scale:100, packetSel:{}, equipSel:{} };
+var WIZ_STEPS = ["Service Line","Job Details","Org Chart","Paperwork Packet","Equipment"];
+function renderWizSteps(){
+  $("wizSteps").innerHTML = WIZ_STEPS.map(function(s, i){
+    var n = i + 1, cls = n === wiz.step ? "on" : (n < wiz.step ? "done" : "");
+    return '<div class="wstep ' + cls + '"><span class="wn">' + (n < wiz.step ? "✓" : n) + "</span>" + s + "</div>";
+  }).join("");
+}
+function wizGo(n){
+  wiz.step = n;
+  document.querySelectorAll(".wiz-pane").forEach(function(p){ p.classList.toggle("on", Number(p.getAttribute("data-pane")) === n); });
+  renderWizSteps();
+  if(n === 3) renderWizOrg();
+  if(n === 4) renderWizPacket();
+  if(n === 5) renderWizEquip();
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+function wizDraft(){
+  return { service: wiz.service,
+    client: ($("fClient").value || "").trim() || "Unnamed Client",
+    title: ($("fTitle").value || "").trim() || (SERVICES[wiz.service].name + " — New Job"),
+    site: ($("fSite").value || "").trim() || "Site TBD",
+    dest: ($("fDest").value || "").trim(), date: $("fDate").value || "",
+    units: Math.max(1, Number($("fUnits").value) || 1), value: Math.max(0, Number($("fValue").value) || 0),
+    trucks: $("fTrucks").value, lane: $("fLane").value, notes: ($("fNotes").value || "").trim(),
+    scale: wiz.scale };
+}
+function renderSvcGrid(){
+  $("svcGrid").innerHTML = SVC_KEYS.map(function(k){
+    var s = SERVICES[k];
+    return '<button type="button" class="svc' + (wiz.service === k ? " sel" : "") + '" data-svc="' + k + '">' +
+      (s.flagship ? '<span class="s-flag">FLAGSHIP</span>' : "") +
+      '<div class="s-ic">' + s.icon + '</div><h5>' + esc(s.name) + "</h5><p>" + esc(s.desc) + "</p></button>";
+  }).join("");
+  $("svcGrid").querySelectorAll("[data-svc]").forEach(function(b){
+    b.addEventListener("click", function(){
+      wiz.service = b.getAttribute("data-svc");
+      $("fUnitsLabel").textContent = "Estimated " + SERVICES[wiz.service].unitLabel;
+      renderSvcGrid();
+    });
+  });
+}
+function renderWizOrg(){
+  var d = wizDraft();
+  var staff = staffFor(d.service, d.units, d.scale);
+  var total = 0, certRoles = {};
+  staff.forEach(function(e){ total += e.count; if((ROLES[e.role].certs || "").match(/REQUIRED|certification|CDL/)) certRoles[e.role] = 1; });
+  $("orgTitle").textContent = "GENERATED ORGANIZATION — " + SERVICES[d.service].name.toUpperCase();
+  $("orgSub").innerHTML = "Built for <b style='color:var(--ink)'>" + esc(d.title) + "</b> · " + d.units.toLocaleString() + " " + esc(SERVICES[d.service].unitLabel.toLowerCase()) + " · scale " + d.scale + "% · effective workload " + Math.round(d.units * d.scale / 100).toLocaleString() + " units.";
+  $("wizOrg").innerHTML = orgHTML(staff);
+  $("orgTotal").textContent = total;
+  $("orgCerts").textContent = Object.keys(certRoles).length;
+  $("scaleReadout").textContent = d.scale + "% — " + total + " total positions";
+}
+function renderWizPacket(){
+  var d = wizDraft();
+  var items = packetFor(d);
+  $("wizPacket").innerHTML = items.map(function(it){
+    var on = !!wiz.packetSel[it.id];
+    return '<label class="check' + (on ? " done" : "") + '"><input type="checkbox" data-pk="' + it.id + '"' + (on ? " checked" : "") + '><span><span class="c-t">' + esc(it.t) + '</span><br><span class="c-d">' + esc(it.d) + "</span></span></label>";
+  }).join("");
+  var done = items.filter(function(it){ return wiz.packetSel[it.id]; }).length;
+  $("wizPacketBar").style.width = (items.length ? Math.round(done / items.length * 100) : 0) + "%";
+  $("wizPacket").querySelectorAll("[data-pk]").forEach(function(cb){
+    cb.addEventListener("change", function(){ wiz.packetSel[cb.getAttribute("data-pk")] = cb.checked; renderWizPacket(); });
+  });
+}
+function renderWizEquip(){
+  var svc = SERVICES[wiz.service];
+  $("wizEquip").innerHTML = svc.equip.map(function(e, i){
+    var src = wiz.equipSel["eq" + i] || "own";
+    return '<div class="eq-row"><span class="e-ic">' + e[0] + '</span><span><span class="e-n">' + esc(e[1]) + '</span><br><span class="e-d">' + esc(e[2]) + '</span></span>' +
+      '<span class="seg">' + ["own","rent","customer"].map(function(s){ return '<button type="button" data-eq="' + i + '" data-src="' + s + '"' + (src === s ? ' class="on"' : "") + ">" + s.toUpperCase() + "</button>"; }).join("") + "</span></div>";
+  }).join("");
+  $("wizEquip").querySelectorAll("[data-eq]").forEach(function(b){
+    b.addEventListener("click", function(){ wiz.equipSel["eq" + b.getAttribute("data-eq")] = b.getAttribute("data-src"); renderWizEquip(); });
+  });
+}
+function confirmJob(){
+  var d = wizDraft();
+  var job = mkJob(d);
+  Object.keys(wiz.packetSel).forEach(function(k){ if(k in job.packet) job.packet[k] = !!wiz.packetSel[k]; });
+  Object.keys(wiz.equipSel).forEach(function(k){ job.equip[k] = wiz.equipSel[k]; });
+  /* open board posting from the generated org's field roles */
+  var slots = (job.org || []).filter(function(e){ return e.row === 2; }).map(function(e){
+    return { role:e.role, count:e.count, reqCert:e.reqCert || null, assigned:[] };
+  });
+  if(slots.length){
+    state.postings.unshift({ id:uid("post"), jobId:job.id, loadLabel:"NEW JOB CREW", date: job.date || "TBD", slots:slots });
+  }
+  syncStaffing(job);
+  state.jobs.unshift(job);
+  save();
+  logFeed("<b>" + esc(job.title) + "</b> initiated — org chart generated, " + job.staffing.total + " positions posted to the board", true);
+  save();
+  toast("⚡ Job launched — find it on the Workflow Board and the Load Board");
+  wiz.packetSel = {}; wiz.equipSel = {};
+  gotoView("board");
+}
+</script>
+
+<script>
+/* ================= WORKFLOW BOARD ================= */
+function jobProgress(j){
+  var stagePct = (j.stage / (STAGES.length - 1)) * 100;
+  var pk = Object.keys(j.packet || {}), pkDone = pk.filter(function(k){ return j.packet[k]; }).length;
+  var pkPct = pk.length ? (pkDone / pk.length) * 100 : 100;
+  return Math.round(stagePct * 0.65 + pkPct * 0.35);
+}
+function renderBoard(){
+  var b = $("board"); if(!b) return;
+  b.innerHTML = STAGES.map(function(s, i){
+    var jobs = state.jobs.filter(function(j){ return j.stage === i; });
+    var cards = jobs.length ? jobs.map(function(j){
+      var svc = SERVICES[j.service];
+      return '<div class="jcard" data-job="' + j.id + '"><div class="j-svc">' + svc.icon + " " + esc(svc.name) + '</div><h6>' + esc(j.title) + '</h6><div class="j-cli">' + esc(j.client) + '</div>' +
+        '<div class="progress"><i style="width:' + jobProgress(j) + '%"></i></div>' +
+        '<div class="j-meta"><span>' + money(j.value) + '</span><span>CREW ' + (j.staffing ? j.staffing.filled : 0) + "/" + (j.staffing ? j.staffing.total : 0) + '</span><span>' + jobProgress(j) + "%</span></div></div>";
+    }).join("") : '<div class="empty-col">No jobs in this stage</div>';
+    return '<div class="bcol"><h5>' + esc(s) + " <b>" + jobs.length + "</b></h5>" + cards + "</div>";
+  }).join("");
+  b.querySelectorAll("[data-job]").forEach(function(c){
+    c.addEventListener("click", function(){ openDrawer(c.getAttribute("data-job")); });
+  });
+}
+
+/* ================= JOB DRAWER ================= */
+var drawerJobId = null;
+function openDrawer(id){ drawerJobId = id; renderDrawer(); $("drawerWrap").classList.add("open"); }
+function closeDrawer(){ drawerJobId = null; $("drawerWrap").classList.remove("open"); }
+function getJob(id){ return state.jobs.filter(function(j){ return j.id === id; })[0]; }
+function renderDrawer(){
+  var j = getJob(drawerJobId); if(!j) { closeDrawer(); return; }
+  var svc = SERVICES[j.service];
+  var pkItems = packetFor(j);
+  var pkDone = pkItems.filter(function(it){ return j.packet[it.id]; }).length;
+  var post = state.postings.filter(function(p){ return p.jobId === j.id; })[0];
+  var assignHTML = post ? post.slots.map(function(s){
+    var names = s.assigned.map(function(wid){ var w = state.workers.filter(function(x){ return x.id === wid; })[0]; return w ? esc(w.name) : ""; }).filter(Boolean).join(", ");
+    return '<div class="ss-row"><span class="dot' + (s.assigned.length >= s.count ? " on" : "") + '"></span>' + esc(ROLES[s.role].name) + '<span class="n">' + s.assigned.length + "/" + s.count + (names ? " · " + names : "") + "</span></div>";
+  }).join("") : '<p style="color:var(--muted);font-size:14.5px">No board posting for this job yet.</p>';
+  $("drawer").innerHTML =
+    '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div>' +
+    '<div style="font-family:var(--font-m);font-size:11px;letter-spacing:2px;color:var(--accent)">' + svc.icon + " " + esc(svc.name).toUpperCase() + '</div>' +
+    "<h3>" + esc(j.title) + '</h3><div style="color:var(--muted);margin-top:4px">' + esc(j.client) + "</div></div>" +
+    '<button class="btn small" id="drawerClose">✕ CLOSE</button></div>' +
+    '<div class="d-sec">Stage Control</div>' +
+    '<div class="stage-adv"><button class="btn small" id="stBack"' + (j.stage === 0 ? " disabled" : "") + '>← BACK</button>' +
+    '<span class="cur">STAGE ' + (j.stage + 1) + " OF 10 · " + esc(STAGES[j.stage]).toUpperCase() + '</span>' +
+    '<button class="btn primary small" id="stFwd"' + (j.stage === 9 ? " disabled" : "") + '>ADVANCE →</button>' +
+    '<span style="margin-left:auto;font-family:var(--font-m);font-size:12px;color:var(--muted)">PROGRESS ' + jobProgress(j) + "%</span></div>" +
+    '<div class="progress" style="margin-top:12px"><i style="width:' + jobProgress(j) + '%"></i></div>' +
+    '<div class="d-sec">Job Facts</div><div class="kv">' +
+    "<span><b>Site</b>" + esc(j.site) + "</span><span><b>Destination</b>" + esc(j.dest || "—") + "</span>" +
+    "<span><b>Start</b>" + esc(j.date || "TBD") + "</span><span><b>Units</b>" + Number(j.units).toLocaleString() + " " + esc(svc.unitLabel.toLowerCase()) + "</span>" +
+    "<span><b>Value</b>" + money(j.value) + "</span><span><b>Trucks</b>" + esc(j.trucks === "ours" ? "Our trucks" : j.trucks === "customer" ? "Customer trucks" : "Mixed / TBD") + "</span>" +
+    "<span><b>Crew Lane</b>" + esc(j.lane === "employee" ? "W-2 Employees" : j.lane === "contractor" ? "1099 Contractors" : "Mixed crew") + "</span>" +
+    "<span><b>Staffing</b>" + (j.staffing ? j.staffing.filled + " of " + j.staffing.total + " seats filled" : "—") + "</span></div>" +
+    (j.notes ? '<p style="color:var(--muted);margin-top:13px;font-size:15px;line-height:1.6">📝 ' + esc(j.notes) + "</p>" : "") +
+    '<div class="d-sec">Board Assignments</div><div class="stage-strip">' + assignHTML + "</div>" +
+    '<div style="margin-top:12px"><button class="btn small" id="gotoLoads">STAFF THIS JOB ON THE LOAD BOARD →</button></div>' +
+    '<div class="d-sec">Generated Organization</div><div class="org">' + orgHTML(j.org || []) + "</div>" +
+    '<div class="d-sec">Paperwork Packet — ' + pkDone + " / " + pkItems.length + " on file</div>" +
+    pkItems.map(function(it){
+      return '<label class="check' + (j.packet[it.id] ? " done" : "") + '"><input type="checkbox" data-dpk="' + it.id + '"' + (j.packet[it.id] ? " checked" : "") + '><span><span class="c-t">' + esc(it.t) + '</span><br><span class="c-d">' + esc(it.d) + "</span></span></label>";
+    }).join("") +
+    '<div class="d-sec">Equipment Manifest</div>' +
+    svc.equip.map(function(e, i){
+      var src = j.equip["eq" + i] || "own";
+      return '<div class="eq-row"><span class="e-ic">' + e[0] + '</span><span><span class="e-n">' + esc(e[1]) + '</span><br><span class="e-d">' + esc(e[2]) + '</span></span><span class="seg">' +
+        ["own","rent","customer"].map(function(s){ return '<button type="button" data-deq="' + i + '" data-src="' + s + '"' + (src === s ? ' class="on"' : "") + ">" + s.toUpperCase() + "</button>"; }).join("") + "</span></div>";
+    }).join("") +
+    '<div style="height:10px"></div><button class="btn small danger" id="jobDelete">DELETE THIS JOB</button>';
+  $("drawerClose").addEventListener("click", closeDrawer);
+  $("gotoLoads").addEventListener("click", function(){ closeDrawer(); gotoView("loadboard"); });
+  $("stBack").addEventListener("click", function(){ moveStage(j, -1); });
+  $("stFwd").addEventListener("click", function(){ moveStage(j, 1); });
+  $("drawer").querySelectorAll("[data-dpk]").forEach(function(cb){
+    cb.addEventListener("change", function(){
+      j.packet[cb.getAttribute("data-dpk")] = cb.checked; save(); renderDrawer(); renderBoard();
+    });
+  });
+  $("drawer").querySelectorAll("[data-deq]").forEach(function(b){
+    b.addEventListener("click", function(){ j.equip["eq" + b.getAttribute("data-deq")] = b.getAttribute("data-src"); save(); renderDrawer(); });
+  });
+  $("jobDelete").addEventListener("click", function(){
+    state.postings.filter(function(p){ return p.jobId === j.id; }).forEach(function(p){
+      p.slots.forEach(function(s){ s.assigned.slice().forEach(function(wid){ releaseWorker(wid, p, s, true); }); });
+    });
+    state.postings = state.postings.filter(function(p){ return p.jobId !== j.id; });
+    state.jobs = state.jobs.filter(function(x){ return x.id !== j.id; });
+    save(); closeDrawer(); renderBoard(); renderDashboard(); toast("Job deleted");
+  });
+}
+function moveStage(j, dir){
+  var n = Math.max(0, Math.min(9, j.stage + dir)); if(n === j.stage) return;
+  j.stage = n;
+  if(n >= 4 && !j._staffed){ j._staffed = true; }
+  syncStaffing(j); save(); renderDrawer(); renderBoard();
+  logFeed("<b>" + esc(j.title) + "</b> moved to " + STAGES[n].toUpperCase(), dir > 0);
+  save();
+}
+
+/* ================= ORG BUILDER ================= */
+function renderOrgBuilder(){
+  $("tplGrid").innerHTML = TEMPLATES.map(function(t){
+    return '<button type="button" class="tpl' + (state.tpl === t.key ? " sel" : "") + '" data-tpl="' + t.key + '"><div class="t-n">' + esc(t.range) + "</div><h5>" + esc(t.name) + "</h5><p>" + esc(t.desc) + "</p></button>";
+  }).join("");
+  $("tplGrid").querySelectorAll("[data-tpl]").forEach(function(b){
+    b.addEventListener("click", function(){ state.tpl = b.getAttribute("data-tpl"); save(); renderOrgBuilder(); });
+  });
+  var t = TEMPLATES.filter(function(x){ return x.key === state.tpl; })[0] || TEMPLATES[1];
+  $("tplTitle").textContent = t.name.toUpperCase() + " — " + t.range;
+  $("tplSub").textContent = t.desc;
+  var staff = [];
+  t.rows.forEach(function(row, ri){ row.forEach(function(e){ staff.push({ role:e.role, count:e.n, row:ri }); }); });
+  $("tplOrg").innerHTML = orgHTML(staff);
+  $("posLib").innerHTML = ROLE_KEYS.map(function(k){
+    var r = ROLES[k];
+    return '<div class="lib-card"><h5>' + esc(r.name) + '</h5><div class="mission">' + esc(r.mission) + "</div><ul>" +
+      r.duties.map(function(d){ return "<li>" + esc(d) + "</li>"; }).join("") + '</ul><div class="certs">📋 ' + esc(r.certs) + '</div><div class="payb">PAY BASIS · ' + esc(r.pay.toUpperCase()) + " — OWNER SETS RATE</div></div>";
+  }).join("");
+}
+
+/* ================= WHITE LABEL ================= */
+function renderSwatches(){
+  $("wlSwatches").innerHTML = Object.keys(PRESETS).map(function(k){
+    var p = PRESETS[k];
+    return '<div class="swatch" data-preset="' + k + '" title="' + esc(p.label) + '" style="background:linear-gradient(135deg,' + p.accent + "," + p.accent2 + ')"><small>' + esc(p.label.split(" ")[0].toUpperCase()) + "</small></div>";
+  }).join("");
+  $("wlSwatches").querySelectorAll(".swatch").forEach(function(s){
+    s.addEventListener("click", function(){ state.brand.preset = s.getAttribute("data-preset"); applyBrand(); save(); });
+  });
+}
+
+/* ================= PRICING ================= */
+function renderPricing(){
+  $("priceGrid").innerHTML = TIERS.map(function(t){
+    return '<div class="price' + (t.hot ? " hot" : "") + '">' + (t.hot ? '<span class="p-flag">MOST POPULAR</span>' : "") +
+      '<div class="p-tag">' + esc(t.tag) + "</div><h4>" + esc(t.name) + '</h4><div class="amt">$' + t.amt + "<small>/mo</small></div>" +
+      '<div class="setup">' + (t.setup ? "+ $" + t.setup + " one-time setup" : "No setup fee") + "</div><ul>" +
+      t.feats.map(function(f){ return "<li>" + esc(f) + "</li>"; }).join("") + "</ul>" +
+      '<a class="btn ' + (t.hot ? "primary" : "") + '" style="width:100%;justify-content:center" href="mailto:capital7lllc@gmail.com?subject=' + encodeURIComponent("LOGIX COMMAND waitlist — " + t.name) + '">JOIN THE WAITLIST</a></div>';
+  }).join("");
+}
+</script>
+
+<script>
+/* ================= LOAD & WORKER BOARD ================= */
+function workerById(id){ return state.workers.filter(function(w){ return w.id === id; })[0]; }
+function actingWorker(){ return workerById(state.actingId) || state.workers[0]; }
+function effRoles(w){ var r = (w.roles || []).slice(); if((w.certs || []).indexOf("cdl") >= 0 && r.indexOf("cdl") < 0) r.push("cdl"); return r; }
+function eligibility(w, slot){
+  if(!w) return { ok:false, why:"Pick a worker above" };
+  if(w.status === "applicant") return { ok:false, why:"Applicant — office must approve before accepting work" };
+  if(w.status === "off") return { ok:false, why:w.name.split(" ")[0] + " is marked OFF" };
+  if(w.status === "assigned") return { ok:false, why:"Already assigned — release that seat first" };
+  if(effRoles(w).indexOf(slot.role) < 0) return { ok:false, why:"Role mismatch — " + w.name.split(" ")[0] + " doesn't carry " + ROLES[slot.role].name };
+  if(slot.reqCert && (w.certs || []).indexOf(slot.reqCert) < 0) return { ok:false, why:"Requires the " + CERTS[slot.reqCert] + " badge" };
+  if(slot.assigned.length >= slot.count) return { ok:false, why:"This seat is filled" };
+  return { ok:true, why:"" };
+}
+function postStatus(post){
+  var total = 0, filled = 0;
+  post.slots.forEach(function(s){ total += s.count; filled += s.assigned.length; });
+  if(filled === 0) return { cls:"st-open", label:"OPEN" };
+  if(filled >= total) return { cls:"st-full", label:"FULLY STAFFED" };
+  return { cls:"st-filling", label:"FILLING · " + filled + "/" + total };
+}
+function renderLoadBoard(){
+  var sel = $("actingAs"); if(!sel) return;
+  sel.innerHTML = state.workers.map(function(w){
+    return '<option value="' + w.id + '"' + (state.actingId === w.id ? " selected" : "") + ">" + esc(w.name) + " — " + esc(w.status.toUpperCase()) + "</option>";
+  }).join("");
+  var aw = actingWorker();
+  $("actingInfo").innerHTML = aw ? ("Roles: <b style='color:var(--ink)'>" + effRoles(aw).map(function(r){ return ROLES[r] ? ROLES[r].name : r; }).join(" · ") + "</b>" +
+    ((aw.certs && aw.certs.length) ? " &nbsp;|&nbsp; Certs: <b style='color:var(--cyan)'>" + aw.certs.map(function(c){ return CERTS[c] || c; }).join(" · ") + "</b>" : " &nbsp;|&nbsp; No cert badges")) : "";
+  $("lbGrid").innerHTML = state.postings.map(function(p){
+    var job = getJob(p.jobId); if(!job) return "";
+    var svc = SERVICES[job.service]; var st = postStatus(p);
+    var slotsHTML = p.slots.map(function(s, si){
+      var el = eligibility(aw, s);
+      var names = s.assigned.map(function(wid){
+        var w = workerById(wid); if(!w) return "";
+        return '<span class="namechip">' + esc(w.name) + '<button type="button" data-release="' + p.id + "|" + si + "|" + wid + '">RELEASE</button></span>';
+      }).join("");
+      var mine = aw && s.assigned.indexOf(aw.id) >= 0;
+      return '<div class="slot"><div class="sl-head"><span class="sl-role">' + esc(ROLES[s.role].name) + '</span>' +
+        '<span class="sl-count' + (s.assigned.length >= s.count ? " full" : "") + '">' + s.assigned.length + " / " + s.count + " FILLED</span>" +
+        (s.reqCert ? '<span class="sl-req">⚠ ' + esc(CERTS[s.reqCert]) + " REQUIRED</span>" : "") + "</div>" +
+        (names ? '<div class="sl-names">' + names + "</div>" : "") +
+        '<div class="sl-actions">' +
+        (mine ? '<span style="color:var(--good);font-weight:700">✓ ' + esc(aw.name.split(" ")[0]) + " holds this seat</span>"
+              : '<button type="button" class="btn primary small" data-accept="' + p.id + "|" + si + '"' + (el.ok ? "" : " disabled") + ">ACCEPT JOB</button>" +
+                (el.ok ? "" : '<span class="sl-why">' + esc(el.why) + "</span>")) +
+        "</div></div>";
+    }).join("");
+    return '<div class="ltile"><div class="lt-img"><img src="' + svc.img + '" alt="' + esc(svc.name) + '"><span class="lt-svc">' + svc.icon + " " + esc(svc.name) + '</span><span class="lt-status"><span class="stpill ' + st.cls + '">' + st.label + '</span></span></div>' +
+      '<div class="lt-body"><h5>' + esc(job.title) + '</h5><div class="lt-meta">📍 ' + esc(job.site) + (job.dest ? " → " + esc(job.dest) : "") + "<br>🗓 " + esc(p.date || "TBD") + " · " + esc(p.loadLabel) + " · Client: " + esc(job.client) + '</div>' +
+      '<div class="lt-pay">PAY BASIS · PER JOB — OWNER SETS RATE</div>' + slotsHTML + "</div></div>";
+  }).join("");
+  $("lbGrid").querySelectorAll("[data-accept]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var parts = b.getAttribute("data-accept").split("|"); acceptJob(parts[0], Number(parts[1]));
+    });
+  });
+  $("lbGrid").querySelectorAll("[data-release]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var parts = b.getAttribute("data-release").split("|"); releaseSeat(parts[0], Number(parts[1]), parts[2]);
+    });
+  });
+  renderRoster();
+}
+function acceptJob(postId, slotIdx){
+  var post = state.postings.filter(function(p){ return p.id === postId; })[0]; if(!post) return;
+  var slot = post.slots[slotIdx]; var w = actingWorker(); if(!w) return;
+  var el = eligibility(w, slot); if(!el.ok){ toast(el.why); return; }
+  slot.assigned.push(w.id); w.status = "assigned"; w.assignment = { postId:postId, role:slot.role };
+  var job = getJob(post.jobId); if(job) syncStaffing(job);
+  save();
+  logFeed("<b>" + esc(w.name.split(" ")[0]) + "</b> accepted " + ROLES[slot.role].name + " — " + (job ? esc(job.title) : "job") + ", " + esc(post.loadLabel), true);
+  save(); renderLoadBoard();
+  toast("✓ " + w.name + " assigned — " + ROLES[slot.role].name);
+}
+function releaseSeat(postId, slotIdx, workerId){
+  var post = state.postings.filter(function(p){ return p.id === postId; })[0]; if(!post) return;
+  releaseWorker(workerId, post, post.slots[slotIdx], false);
+  var job = getJob(post.jobId); if(job) syncStaffing(job);
+  save(); renderLoadBoard();
+}
+function releaseWorker(workerId, post, slot, silent){
+  slot.assigned = slot.assigned.filter(function(x){ return x !== workerId; });
+  var w = workerById(workerId);
+  if(w && w.status === "assigned"){ w.status = "available"; w.assignment = null; }
+  if(!silent && w){
+    var job = getJob(post.jobId);
+    logFeed("<b>" + esc(w.name.split(" ")[0]) + "</b> released from " + ROLES[slot.role].name + " — " + (job ? esc(job.title) : "job"), false);
+  }
+}
+function renderRoster(){
+  var g = $("rosterGrid"); if(!g) return;
+  var pill = { available:["st-avail","AVAILABLE"], assigned:["st-assigned","ASSIGNED"], applicant:["st-applicant","APPLICANT"], off:["st-off","OFF"] };
+  g.innerHTML = state.workers.map(function(w){
+    var p = pill[w.status] || pill.available;
+    var assignTxt = "";
+    if(w.status === "assigned" && w.assignment){
+      var post = state.postings.filter(function(x){ return x.id === w.assignment.postId; })[0];
+      var job = post ? getJob(post.jobId) : null;
+      assignTxt = '<div class="w-assign">🧲 ' + esc(ROLES[w.assignment.role] ? ROLES[w.assignment.role].name : w.assignment.role) + (job ? " — " + esc(job.title) : "") + "</div>";
+    }
+    var initials = w.name.split(" ").map(function(x){ return x.charAt(0); }).slice(0,2).join("").toUpperCase();
+    return '<div class="wcard"><div class="w-top"><div class="avatar">' + esc(initials) + '</div><div><h5>' + esc(w.name) + '</h5><div class="w-roles">' + effRoles(w).map(function(r){ return ROLES[r] ? ROLES[r].name : r; }).join(" · ") + '</div></div>' +
+      '<span class="stpill ' + p[0] + '" style="margin-left:auto">' + p[1] + "</span></div>" +
+      '<div class="badges">' + (w.isNew && w.status === "applicant" ? '<span class="badge newb">★ NEW APPLICANT</span>' : "") +
+      (w.certs || []).map(function(c){ return '<span class="badge">🏅 ' + esc(CERTS[c] || c) + "</span>"; }).join("") + "</div>" +
+      assignTxt +
+      '<div class="w-foot"><span>JOBS DONE · ' + (w.jobsDone || 0) + "</span><span>" + esc(w.county || "") + "</span></div>" +
+      (w.status === "applicant" ? '<div style="display:flex;gap:9px;margin-top:13px"><button type="button" class="btn primary small" data-approve="' + w.id + '">✓ APPROVE TO ROSTER</button><button type="button" class="btn small danger" data-decline="' + w.id + '">DECLINE</button></div>' : "") +
+      "</div>";
+  }).join("");
+  g.querySelectorAll("[data-approve]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var w = workerById(b.getAttribute("data-approve")); if(!w) return;
+      w.status = "available"; w.isNew = false; save();
+      logFeed("Applicant approved — <b>" + esc(w.name) + "</b> is now ACTIVE on the roster", true);
+      save(); renderLoadBoard(); toast("✓ " + w.name + " approved — now on the roster");
+    });
+  });
+  g.querySelectorAll("[data-decline]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var w = workerById(b.getAttribute("data-decline")); if(!w) return;
+      state.workers = state.workers.filter(function(x){ return x.id !== w.id; });
+      if(state.actingId === w.id) state.actingId = state.workers.length ? state.workers[0].id : null;
+      save(); renderLoadBoard(); toast("Applicant declined and removed");
+    });
+  });
+}
+
+/* ================= CREW INTAKE ================= */
+var INTAKE_ROLES = [ ["boxdriver","Driver"], ["forklift","Forklift Operator"], ["laborer","Loader / Laborer"], ["slab","Slab Handler"], ["lumber","Lumber Puller"], ["warehouse","Warehouse Associate"], ["crewlead","Crew Lead"] ];
+var INTAKE_CERTS = [ ["forklift","Forklift Cert"], ["cdl","CDL"], ["osha10","OSHA 10"], ["osha30","OSHA 30"] ];
+var DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+function chipHTML(name, val, label, type){
+  return '<label class="chipopt' + (type === "day" ? " daychip" : "") + '"><input type="' + (type === "day" || type === "multi" ? "checkbox" : "checkbox") + '" name="' + name + '" value="' + val + '"><span>' + label + "</span></label>";
+}
+function renderIntake(){
+  $("iRoles").innerHTML = INTAKE_ROLES.map(function(r){ return chipHTML("iRoles", r[0], r[1], "multi"); }).join("");
+  $("iCerts").innerHTML = INTAKE_CERTS.map(function(r){ return chipHTML("iCerts", r[0], r[1], "multi"); }).join("");
+  $("iDays").innerHTML = DAYS.map(function(d){ return chipHTML("iDays", d, d, "day"); }).join("");
+}
+function checkedVals(name){
+  return Array.prototype.slice.call(document.querySelectorAll('input[name="' + name + '"]:checked')).map(function(i){ return i.value; });
+}
+function submitIntake(ev){
+  ev.preventDefault();
+  var err = [];
+  var name = ($("iName").value || "").trim();
+  var phone = ($("iPhone").value || "").trim();
+  var roles = checkedVals("iRoles");
+  var bg = document.querySelector('input[name="iBg"]:checked');
+  if(!name) err.push("full name");
+  if(!phone) err.push("phone");
+  if(!roles.length) err.push("at least one role");
+  if(!bg) err.push("the background Yes/No");
+  if(!$("iConsent").checked) err.push("the background-check consent");
+  var errBox = $("intakeError");
+  if(err.length){
+    errBox.style.display = "block";
+    errBox.textContent = "⚠ Still needed: " + err.join(" · ");
+    errBox.scrollIntoView({ behavior:"smooth", block:"center" });
+    return;
+  }
+  errBox.style.display = "none";
+  var w = { id: uid("w"), name: name, phone: phone, roles: roles, certs: checkedVals("iCerts"),
+    status: "applicant", jobsDone: 0, isNew: true, county: ($("iCounty").value || "").trim() || "—",
+    days: checkedVals("iDays"), bg: bg.value, exp: ($("iExp").value || "").trim() };
+  state.workers.push(w); save();
+  logFeed("New applicant landed in Crew Intake — <b>" + esc(name) + "</b>, pending review", true);
+  save();
+  $("intakeForm").style.display = "none";
+  $("intakeSuccessText").innerHTML = "Thanks, <b>" + esc(name.split(" ")[0]) + "</b> — your application is in as an <b>APPLICANT</b> on the roster. The office sees it right now under Load &amp; Worker Board → Worker Roster.";
+  $("intakeSuccess").style.display = "block";
+  toast("📥 Application received — " + name + " is on the roster as APPLICANT");
+}
+
+/* ================= RECRUITING ADS ================= */
+var SEED_ADS = [
+  { role:"Forklift Operator", img:"board-warehouse.jpg", head:"CERTIFIED FORKLIFT OPERATORS — STEADY WORK, REAL CREWS",
+    body:"Warehouses, yards and slab programs running daily. If you can run a lift smooth and safe, we have a seat with your name on it.\nOSHA 1910.178 cert required. Per-job pay, agreed before you start." },
+  { role:"Slab Handler", img:"board-slab.jpg", head:"STONE HANDLERS — WORK THE FLAGSHIP SLAB PROGRAM",
+    body:"1,650 quartz slabs don't move themselves. Train on our A-frame and vacuum-lifter standard, work with a safety lead on every lift.\nNo experience with stone? Strong backs and careful hands welcome — we train." },
+  { role:"Driver", img:"board-freight.jpg", head:"DRIVERS — BOX TRUCK & FLATBED RUNS, HOME DAILY",
+    body:"Local and regional runs, clean equipment, dispatch that answers the phone. CDL and box-truck seats open now.\nPer-job pay — rate agreed before the wheels turn." },
+  { role:"General Labor", img:"board-cleanout.jpg", head:"GENERAL LABOR — GET ON THE BOARD, GET TO WORK",
+    body:"Loaders, clean-out crews, warehouse hands. Apply once, then accept jobs straight from the board as they post.\nReliable transportation and a good attitude are the whole resume." }
+];
+var AD_HOOKS = {
+  warehouse:"Inside a live distribution operation — scanners, racks and a crew that runs like a system.",
+  slab:"High-value quartz slabs, A-frames, clamps and a certified forklift crew — the flagship program.",
+  lumber:"Yard pulls, banding and flatbed loads in the open air — clean counts, straight stacks.",
+  freight:"Real freight, real dispatch, routes planned before you roll.",
+  moving:"Pad, wrap, load, place — treat people's homes like your own and get tipped like it.",
+  cleanout:"Clean-outs and haul-away — leave every site broom-clean and photo-documented."
+};
+function adText(ad){
+  return ad.head + "\n\n" + ad.body + "\n\nApply in 2 minutes — submit the Crew Intake and get on the board.\n— " + state.brand.name + " · " + state.brand.tag;
+}
+function renderAds(){
+  var g = $("adGrid"); if(!g) return;
+  g.innerHTML = SEED_ADS.map(function(ad, i){
+    return '<div class="adcard"><img src="' + ad.img + '" alt="' + esc(ad.role) + '"><div class="ad-body"><div class="ad-role">NOW HIRING · ' + esc(ad.role).toUpperCase() + '</div><h5>' + esc(ad.head) + "</h5><p>" + esc(ad.body) + '</p><div style="margin-top:11px;display:flex;gap:9px;align-items:center"><button type="button" class="btn small" data-copyad="' + i + '">📋 COPY AD</button><span style="font-family:var(--font-m);font-size:10.5px;color:var(--faint)">' + esc(state.brand.name.toUpperCase()) + "</span></div></div></div>";
+  }).join("");
+  g.querySelectorAll("[data-copyad]").forEach(function(b){
+    b.addEventListener("click", function(){ copyText(adText(SEED_ADS[Number(b.getAttribute("data-copyad"))]), "Ad copied — paste it where workers look"); });
+  });
+  var roleSel = $("adRole"), svcSel = $("adSvc");
+  if(roleSel && !roleSel.options.length){
+    roleSel.innerHTML = INTAKE_ROLES.map(function(r){ return '<option value="' + r[1] + '">' + r[1] + "</option>"; }).join("") + '<option value="Safety Lead">Safety Lead</option><option value="Crew Lead">Crew Lead</option>';
+    svcSel.innerHTML = SVC_KEYS.map(function(k){ return '<option value="' + k + '">' + esc(SERVICES[k].name) + "</option>"; }).join("");
+    roleSel.addEventListener("change", renderAdPreview);
+    svcSel.addEventListener("change", renderAdPreview);
+  }
+  renderAdPreview();
+}
+function composerText(){
+  var role = $("adRole").value || "Loader / Laborer";
+  var svcKey = $("adSvc").value || "slab";
+  return "NOW HIRING: " + role.toUpperCase() + "S — " + SERVICES[svcKey].name.toUpperCase() + "\n\n" +
+    state.brand.name + " is staffing up. " + (AD_HOOKS[svcKey] || "") + "\n" +
+    "Per-job pay — the rate is set by the owner and agreed before you start. Reliable hands get called back first, every time.\n\n" +
+    "Apply in 2 minutes: submit the Crew Intake form — license/ID and certs are checked at verification.\n— " + state.brand.name + " · " + state.brand.tag;
+}
+function renderAdPreview(){ var p = $("adPreview"); if(p) p.textContent = composerText(); }
+function copyText(text, okMsg){
+  function done(){ toast("📋 " + okMsg); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallback(); });
+  } else fallback();
+  function fallback(){
+    var ta = document.createElement("textarea"); ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); done(); }catch(e){ toast("Copy blocked — long-press the ad text to copy"); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ================= INIT ================= */
+function init(){
+  load();
+  buildTicker();
+  applyBrand();
+  renderSvcGrid(); renderWizSteps(); renderSwatches(); renderPricing();
+  renderIntake(); renderAds();
+  renderDashboard(); renderBoard(); renderLoadBoard(); renderOrgBuilder();
+  /* nav */
+  document.querySelectorAll(".nav-btn").forEach(function(b){
+    b.addEventListener("click", function(){ gotoView(b.getAttribute("data-view")); });
+  });
+  document.querySelectorAll("[data-goto]").forEach(function(b){
+    b.addEventListener("click", function(){ gotoView(b.getAttribute("data-goto")); });
+  });
+  $("topInitiate").addEventListener("click", function(){ gotoView("initiate"); });
+  /* wizard */
+  $("wizNext1").addEventListener("click", function(){ wizGo(2); });
+  $("wizNext2").addEventListener("click", function(){ wizGo(3); });
+  document.querySelectorAll("[data-wiz]").forEach(function(b){
+    b.addEventListener("click", function(){ wizGo(Number(b.getAttribute("data-wiz"))); });
+  });
+  $("scaleSlider").addEventListener("input", function(){ wiz.scale = Number(this.value); renderWizOrg(); });
+  $("wizConfirm").addEventListener("click", confirmJob);
+  /* drawer */
+  $("drawerBg").addEventListener("click", closeDrawer);
+  /* load board */
+  $("actingAs").addEventListener("change", function(){ state.actingId = this.value; save(); renderLoadBoard(); });
+  document.querySelectorAll(".ztab").forEach(function(t){
+    t.addEventListener("click", function(){
+      document.querySelectorAll(".ztab").forEach(function(x){ x.classList.remove("on"); });
+      t.classList.add("on");
+      var z = t.getAttribute("data-zone");
+      $("zone-loads").style.display = z === "loads" ? "block" : "none";
+      $("zone-roster").style.display = z === "roster" ? "block" : "none";
+    });
+  });
+  /* intake */
+  $("intakeForm").addEventListener("submit", submitIntake);
+  $("intakeAgain").addEventListener("click", function(){
+    $("intakeForm").reset(); $("intakeForm").style.display = "block"; $("intakeSuccess").style.display = "none";
+  });
+  $("adCopy").addEventListener("click", function(){ copyText(composerText(), "Composer ad copied"); });
+  /* white label */
+  $("wlName").addEventListener("input", function(){ state.brand.name = (this.value || "").trim() || "LOGIX COMMAND"; applyBrand(); renderAds(); });
+  $("wlTag").addEventListener("input", function(){ state.brand.tag = (this.value || "").trim() || "LOGISTICS MANAGER OS"; applyBrand(); renderAds(); });
+  $("wlCapital7").addEventListener("click", function(){
+    state.brand = { name:"Capital 7 Logistics", tag:"MOVING · HANDYMAN · LOGISTICS", preset:"gold" };
+    applyBrand(); save(); renderAds(); toast("♛ Rebranded — the whole platform is now Capital 7 Logistics");
+  });
+  $("wlDefault").addEventListener("click", function(){
+    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold" };
+    applyBrand(); save(); renderAds(); toast("Brand reset to LOGIX COMMAND");
+  });
+  $("wlSave").addEventListener("click", function(){ save(); toast("💾 Brand saved — it persists on this device"); });
+  $("wlReset").addEventListener("click", function(){
+    state.brand = { name:"LOGIX COMMAND", tag:"LOGISTICS MANAGER OS", preset:"gold" };
+    applyBrand(); save(); renderAds(); toast("Brand reset");
+  });
+  /* reveal on scroll */
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll(".reveal").forEach(function(el){ el.classList.add("in"); });
+  }
+}
+if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+else init();
+</script>
+</body>
+</html>
